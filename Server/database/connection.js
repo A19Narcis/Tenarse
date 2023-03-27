@@ -1,6 +1,5 @@
 const mongoose = require("mongoose")
-const autoIncrement = require("mongoose-auto-increment")
-const { User } = require("./esquemas");
+const { User, Post, Chat } = require("./esquemas");
 
 
 const user = ""
@@ -9,7 +8,6 @@ const host = ""
 const puerto = 0
 const database = ""
 
-autoIncrement.initialize(mongoose.connection)
 //const URL = 'mongodb://' + user + ':' + passwd + '@' + host + ':' + puerto + '/?tls=false&authMechanism=DEFAULT&authSource=' + database + ''
 const URL = 'mongodb://127.0.0.1:27017/Tenarse'
 const options = {
@@ -44,5 +42,7 @@ async function main() {
 
 
 module.exports = {
-    User
+    User,
+    Post,
+    Chat
 }
