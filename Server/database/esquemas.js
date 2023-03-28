@@ -1,7 +1,4 @@
 const mongoose = require("mongoose")
-const autoIncrement = require("mongoose-auto-increment")
-
-autoIncrement.initialize(mongoose.connection)
 
 mongoose.set('strictQuery', false);
 
@@ -24,12 +21,6 @@ const comSchema = new mongoose.Schema({
 })
 
 const publiSchema = new mongoose.Schema({
-    id_post: {
-        type: Number,
-        unique: true,
-        required: true,
-        autoIncrement: true
-    },
     tipus: {
         type: String,
         required: true
@@ -65,11 +56,7 @@ const publiSchema = new mongoose.Schema({
 
 /* USUARIS */
 const followSchema = new mongoose.Schema({
-    url_img: {
-        type: String,
-        required: true
-    },
-    username: {
+    user: {
         type: String,
         required: true
     }
@@ -106,14 +93,14 @@ const userSchema = new mongoose.Schema({
         type: [followSchema],
         default: []
     },
-    following: {
+    followings: {
         type: [followSchema],
         default: []
     },
     publicacions: {
         type: [publiSchema],
         default: []
-    }
+    }/**/
 
 });
 
@@ -122,7 +109,7 @@ const userSchema = new mongoose.Schema({
 /* CHAT */
 const msgSchema = new mongoose.Schema({
     emisor: {
-        type: userSchema,
+        type: String,
         required: true
     },
     txt_msg: {
@@ -136,14 +123,15 @@ const msgSchema = new mongoose.Schema({
 })
 
 const chatSchema = new mongoose.Schema({
-    participants: [userSchema],
-    message: [msgSchema]
+    participants: [String],
+    messages: {
+        type: [msgSchema],
+        default: []
+    }
 })
 
 
 /* CREACIÓ MODELS */
-
-publiSchema.plugin(autoIncrement.plugin, {model: 'Partida', field: 'id_post'});
 
 const User = mongoose.model('User', userSchema);
 const Post = mongoose.model('Post', publiSchema);

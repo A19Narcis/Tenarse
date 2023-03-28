@@ -11,6 +11,7 @@ const insertUsuari = function (user, callback) {
     const newUser = new User(user);
     newUser.save(function (err) {
         if (err) {
+            console.log(err);
             callback("Aquest usuari ja es troba registrat")
         } else {
             callback("Usuari afegit a la base de dades")
@@ -27,7 +28,18 @@ const insertPost = function (post, callback) {
     callback();
 }
 
+
+const insertChat = function (chat, callback) {
+    const newChat = new Chat(chat);
+    newChat.save(function (err) {
+        if (err) return console.log(err);
+    })
+    callback();
+}
+
+
 module.exports = {
     insertUsuari,
-    insertPost
+    insertPost,
+    insertChat
 }
