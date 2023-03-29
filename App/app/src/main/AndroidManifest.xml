@@ -12,11 +12,15 @@
         android:theme="@style/Theme.Tenarse"
         tools:targetApi="31">
         <activity
-            android:name=".registro"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".Login"
+            android:exported="false" />
+        <activity
+            android:name=".AnimationScreen"
+            android:exported="true"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
