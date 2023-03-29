@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void navigateToSecondActivity(){
-        //Intent intent = new Intent(this, principal.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, registro.class);
+        startActivity(intent);
     }
 }

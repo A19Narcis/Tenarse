@@ -1,9 +1,3 @@
 <resources>
     <string name="app_name">Tenarse</string>
-    <string name="inicia_sesion">Inicia sesión</string>
-    <string name="title_activity_main">Main</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="title_activity_principal">principal</string>
 </resources>
