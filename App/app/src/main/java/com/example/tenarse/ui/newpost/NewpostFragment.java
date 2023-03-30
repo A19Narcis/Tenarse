@@ -1,4 +1,4 @@
-package com.example.tenarse.ui.home;
+package com.example.tenarse.ui.newpost;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,18 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.tenarse.databinding.FragmentHomeBinding;
+import com.example.tenarse.databinding.FragmentAddpostBinding;
 
-public class HomeFragment extends Fragment {
+public class NewpostFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentAddpostBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        NewpostViewModel newpostViewModel =
+                new ViewModelProvider(this).get(NewpostViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentAddpostBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         return root;

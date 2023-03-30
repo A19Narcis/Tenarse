@@ -12,14 +12,25 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.tenarse.ui.dashboard.DashboardFragment"
+        android:id="@+id/navigation_search"
+        android:name="com.example.tenarse.ui.search.SearchFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_addpost" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.tenarse.ui.notifications.NotificationsFragment"
+        android:id="@+id/navigation_add"
+        android:name="com.example.tenarse.ui.newpost.NewpostFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/navigation_message"
+        android:name="com.example.tenarse.ui.message.MessageFragment"
+        android:label="UserFragment" />
+
+    <fragment
+        android:id="@+id/navigation_user"
+        android:name="com.example.tenarse.ui.user.UserFragment"
+        android:label="MessageFragment" />
+
 </navigation>
