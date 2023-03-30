@@ -31,13 +31,12 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+/*
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        googleBtn = findViewById(R.id.google_btn);
         loginBtn = findViewById(R.id.button_login);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +54,7 @@ public class Login extends AppCompatActivity {
         GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
         if (googleSignInAccount != null){
-            startActivity(new Intent(Login.this, MainActivity.class));
+            startActivity(new Intent(Login.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
             finish();
         }
 
@@ -65,6 +64,7 @@ public class Login extends AppCompatActivity {
                 signIn();
             }
         });
+        */
     }
     void signIn(){
         Intent signInIntent = gsc.getSignInIntent();
@@ -78,7 +78,7 @@ public class Login extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 task.getResult(ApiException.class);
-                navigateToSecondActivity();
+
             } catch (ApiException e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -87,7 +87,7 @@ public class Login extends AppCompatActivity {
     }
 
     void navigateToSecondActivity(){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        Toast toast = Toast.makeText(getApplicationContext(), "Buenas", Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

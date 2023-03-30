@@ -25,7 +25,8 @@ public class AnimationScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(AnimationScreen.this, Login.class));
+                startActivity(new Intent(AnimationScreen.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                finish();
             }
         }, 2000);
     }
