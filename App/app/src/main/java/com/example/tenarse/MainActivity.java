@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -14,8 +15,10 @@ import com.example.tenarse.databinding.FragmentUserBinding;
 import com.example.tenarse.ui.home.HomeFragment;
 import com.example.tenarse.ui.login.LoginFragment;
 import com.example.tenarse.ui.notificaciones.NotificacionesFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -27,6 +30,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.tenarse.databinding.ActivityMainBinding;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.Objects;
 
@@ -70,18 +74,6 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         mobileNavigation = findViewById(R.id.mobile_navigation);
-    }
-
-    public boolean getIsLogged() {
-        return isLogged;
-    }
-
-    public View getMobileNavigation() {
-        return  mobileNavigation;
-    }
-
-    public Toolbar getToolbar() {
-        return toolbar;
     }
 
     @Override

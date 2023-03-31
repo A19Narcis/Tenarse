@@ -1,5 +1,6 @@
 package com.example.tenarse.ui.notificaciones;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -40,6 +42,14 @@ public class NotificacionesFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(v).popBackStack();
+            }
+        });
+
+        
+        binding.sendNot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 

@@ -12,10 +12,8 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_navigation_home_to_navigation_nots"
-            app:destination="@id/navigation_nots" />
-        <action
-            android:id="@+id/action_navigation_home_to_navigation_search"
-            app:destination="@id/navigation_search" />
+            app:destination="@id/navigation_nots"
+            app:enterAnim="@anim/home_to_notifications" />
     </fragment>
 
     <fragment
@@ -48,10 +46,6 @@
         android:id="@+id/navigation_nots"
         android:name="com.example.tenarse.ui.notificaciones.NotificacionesFragment"
         android:label="fragment_notificaciones"
-        tools:layout="@layout/fragment_notificaciones" >
-        <action
-            android:id="@+id/action_navigation_nots_to_navigation_home"
-            app:destination="@id/navigation_home" />
-    </fragment>
+        tools:layout="@layout/fragment_notificaciones" />
 
 </navigation>

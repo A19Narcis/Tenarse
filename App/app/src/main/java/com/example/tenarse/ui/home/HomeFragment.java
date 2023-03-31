@@ -67,7 +67,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         nots.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("TE MUEVES A NOTIFICACIONES");
                 Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_nots);
             }
         });
