@@ -4,7 +4,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,7 +33,7 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-/*
+
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -54,9 +56,11 @@ public class Login extends AppCompatActivity {
         GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
         if (googleSignInAccount != null){
-            startActivity(new Intent(Login.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+            startActivity(new Intent(Login.this, MainActivity.class));
             finish();
         }
+
+        googleBtn = findViewById(R.id.google_btn);
 
         googleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +68,7 @@ public class Login extends AppCompatActivity {
                 signIn();
             }
         });
-        */
+
     }
     void signIn(){
         Intent signInIntent = gsc.getSignInIntent();
@@ -89,5 +93,16 @@ public class Login extends AppCompatActivity {
     void navigateToSecondActivity(){
         Toast toast = Toast.makeText(getApplicationContext(), "Buenas", Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Guardar el nombre de la actividad actual en la preferencia compartida
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("lastActivity", "Login");
+        editor.apply();
     }
 }

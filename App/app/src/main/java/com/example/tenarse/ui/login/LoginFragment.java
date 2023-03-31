@@ -13,11 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentLoginBinding;
+import com.example.tenarse.ui.home.HomeFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -62,7 +64,9 @@ public class LoginFragment extends Fragment {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_navigation_login_to_navigation_home);
+                Intent intent = getActivity().getIntent();
+                getActivity().finish();
+                startActivity(intent);
             }
         });
 
@@ -72,10 +76,11 @@ public class LoginFragment extends Fragment {
         GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
 
         if (googleSignInAccount != null){
+
         }
 
 
-        googleBtn = binding.googleBtn;
+        googleBtn = binding.googleBtn1;
 
         googleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +129,7 @@ public class LoginFragment extends Fragment {
         if (toolbar != null) {
             toolbar.setVisibility(View.VISIBLE);
         }
+
         binding = null;
     }
 }

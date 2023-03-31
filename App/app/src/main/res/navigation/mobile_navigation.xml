@@ -9,7 +9,14 @@
         android:id="@+id/navigation_home"
         android:name="com.example.tenarse.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_nots"
+            app:destination="@id/navigation_nots" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_search"
+            app:destination="@id/navigation_search" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_search"
@@ -36,9 +43,14 @@
         android:id="@+id/navigation_login"
         android:name="com.example.tenarse.ui.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/navigation_nots"
+        android:name="com.example.tenarse.ui.notificaciones.NotificacionesFragment"
+        android:label="fragment_notificaciones"
+        tools:layout="@layout/fragment_notificaciones" >
         <action
-            android:id="@+id/action_navigation_login_to_navigation_home"
+            android:id="@+id/action_navigation_nots_to_navigation_home"
             app:destination="@id/navigation_home" />
     </fragment>
 

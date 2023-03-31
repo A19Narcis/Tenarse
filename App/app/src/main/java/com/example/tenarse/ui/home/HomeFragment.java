@@ -4,21 +4,28 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentHomeBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private FragmentHomeBinding binding;
+    private boolean shouldReloadOnBackPressed = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -27,6 +34,8 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        MainActivity mainActivity = (MainActivity) getActivity();
 
         // Obtener la referencia a la Toolbar de la MainActivity
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
@@ -42,6 +51,7 @@ public class HomeFragment extends Fragment {
             toolbar.setVisibility(View.VISIBLE);
         }
 
+
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -52,12 +62,32 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        ImageView nots = binding.notificacionesImg;
+
+        nots.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("TE MUEVES A NOTIFICACIONES");
+                Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_nots);
+            }
+        });
+
         return root;
     }
+
+
+
+
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        SwipeRefreshLayout swipeRefreshLayout = binding.swipeRefreshLayout;
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
