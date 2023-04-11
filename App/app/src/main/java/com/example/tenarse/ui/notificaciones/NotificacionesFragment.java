@@ -31,12 +31,6 @@ public class NotificacionesFragment extends Fragment{
         binding = FragmentNotificacionesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
-
-        if (bottomNavigationView != null){
-            bottomNavigationView.setVisibility(View.GONE);
-        }
-
 
         binding.backToMenu.setOnClickListener(new View.OnClickListener() {
             @Override

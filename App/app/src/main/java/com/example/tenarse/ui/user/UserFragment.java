@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
+import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentUserBinding;
 
 public class UserFragment extends Fragment {
@@ -22,6 +24,14 @@ public class UserFragment extends Fragment {
 
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+
+        binding.settingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.action_navigation_user_to_navigation_settings);
+            }
+        });
 
         return root;
     }

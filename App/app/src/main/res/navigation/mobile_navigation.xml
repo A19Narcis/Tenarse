@@ -36,7 +36,12 @@
     <fragment
         android:id="@+id/navigation_user"
         android:name="com.example.tenarse.ui.user.UserFragment"
-        android:label="MessageFragment" />
+        android:label="MessageFragment" >
+        <action
+            android:id="@+id/action_navigation_user_to_navigation_settings"
+            app:destination="@id/navigation_settings"
+            app:enterAnim="@anim/user_to_settings" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_login"
         android:name="com.example.tenarse.ui.login.LoginFragment"
@@ -47,5 +52,10 @@
         android:name="com.example.tenarse.ui.notificaciones.NotificacionesFragment"
         android:label="fragment_notificaciones"
         tools:layout="@layout/fragment_notificaciones" />
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.example.tenarse.ui.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 
 </navigation>
