@@ -14,8 +14,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 
+import com.example.tenarse.AnimationScreen;
+import com.example.tenarse.Login;
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentLoginBinding;
@@ -35,6 +38,8 @@ public class LoginFragment extends Fragment {
     Button googleBtn;
     private Button loginBtn;
 
+    TextView registrarseBtn;
+
     TextView test;
 
     private FragmentLoginBinding binding;
@@ -42,34 +47,28 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        // Obtener la referencia a la Toolbar de la MainActivity
-        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-
-        // Mostrar la Toolbar
-        if (toolbar != null) {
-            toolbar.setVisibility(View.GONE);
-        }
-
-        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
-
-        if (bottomNavigationView != null){
-            bottomNavigationView.setVisibility(View.GONE);
-        }
-
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         loginBtn = binding.buttonLogin;
 
+        registrarseBtn = binding.registrarseBtn;
+
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = getActivity().getIntent();
+                startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                 getActivity().finish();
-                startActivity(intent);
             }
         });
 
+        registrarseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("REGISTER CLIKED");
+                Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment);
+            }
+        });
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         gsc = GoogleSignIn.getClient(getActivity(), gso);
 
