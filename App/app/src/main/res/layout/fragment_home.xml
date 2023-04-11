@@ -17,6 +17,7 @@
         app:layout_scrollFlags="scroll|enterAlways">
 
         <ImageView
+            android:id="@+id/logo_home_toolbar"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"

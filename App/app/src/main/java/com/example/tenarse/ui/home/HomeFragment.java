@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -26,6 +27,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private FragmentHomeBinding binding;
     private boolean shouldReloadOnBackPressed = false;
+    private ScrollView scrollView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +53,15 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             toolbar.setVisibility(View.VISIBLE);
         }
 
+        scrollView = binding.scrollView;
+
+
+        binding.logoHomeToolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.smoothScrollTo(0,0);
+            }
+        });
 
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -73,10 +84,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         return root;
     }
-
-
-
-
 
     @Override
     public void onDestroyView() {

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.user.UserFragment">
+    tools:context=".ui.settings.SettingsFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,18 +17,28 @@
         app:layout_scrollFlags="scroll|enterAlways">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:src="@drawable/logo_claro" />
+            android:id="@+id/backToUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:src="@drawable/cancelar_post" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginStart="40dp"
+            android:textColor="@color/black"
+            android:text="Configuración"/>
 
         <ImageView
-            android:id="@+id/settings_btn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="end"
             android:layout_marginEnd="20dp"
-            android:src="@drawable/settings_icon"/>
+            android:src="@drawable/logo_claro" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -44,22 +55,14 @@
             android:orientation="vertical" >
 
             <Button
-                android:id="@+id/aiadsiuodas"
+                android:id="@+id/logout_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="USER"/>
-
-            <Button
-                android:id="@+id/btnBackToStart"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1500dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="test"/>
-
+                android:text="Cerrar Sesion"/>
         </LinearLayout>
+
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
