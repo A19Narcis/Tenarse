@@ -14,4 +14,9 @@
         <!-- Customize your theme here. -->
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
     </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
 </resources>

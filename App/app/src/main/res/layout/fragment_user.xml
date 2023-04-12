@@ -23,8 +23,8 @@
 
         <ImageView
             android:id="@+id/settings_btn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_gravity="end"
             android:layout_marginEnd="20dp"
             android:src="@drawable/settings_icon"/>
@@ -42,23 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
-            <Button
-                android:id="@+id/aiadsiuodas"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="USER"/>
-
-            <Button
-                android:id="@+id/btnBackToStart"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1500dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="test"/>
 
         </LinearLayout>
     </ScrollView>

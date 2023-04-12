@@ -1,5 +1,6 @@
 package com.example.tenarse.ui.home;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +17,36 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentHomeBinding;
+import com.example.tenarse.ui.home.adapters.ListElementImgAdapter;
+import com.example.tenarse.ui.home.adapters.ListElementVideoAdapter;
+import com.example.tenarse.ui.home.elements.ListElementImg;
+import com.example.tenarse.ui.home.elements.ListElementVideo;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private FragmentHomeBinding binding;
     private boolean shouldReloadOnBackPressed = false;
     private ScrollView scrollView;
+
+    List<ListElementImg> elementsImg;
+    List<ListElementVideo> elementVideos;
+
+    ListElementImgAdapter listElementImgAdapter;
+    ListElementVideoAdapter listElementVideoAdapter;
+
+    RecyclerView recyclerView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +57,17 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         View root = binding.getRoot();
 
         MainActivity mainActivity = (MainActivity) getActivity();
+
+
+        /*RecivlerView Images*/
+        elementsImg = new ArrayList<>();
+        elementVideos = new ArrayList<>();
+        listElementImgAdapter = new ListElementImgAdapter(elementsImg, getContext());
+        listElementVideoAdapter = new ListElementVideoAdapter(elementVideos, getContext());
+        recyclerView = binding.rvHome;
+
+        chechIfNewPost();
+
 
         // Obtener la referencia a la Toolbar de la MainActivity
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
@@ -66,9 +96,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Toast toast = Toast.makeText(getContext(), "Refrescante", Toast.LENGTH_SHORT);
-                toast.show();
-
+                chechIfNewPost();
                 binding.swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -83,6 +111,21 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
         return root;
+    }
+
+    private void chechIfNewPost() {
+        elementsImg.add(new ListElementImg("_A19Narcis_"));
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(listElementImgAdapter);
+
+        /*elementVideos.add(new ListElementVideo("SergiM03"));
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(listElementVideoAdapter);*/
+
     }
 
     @Override

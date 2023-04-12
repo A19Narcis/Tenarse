@@ -33,7 +33,7 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    *<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
@@ -50,22 +50,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
-                <Button
-                    android:id="@+id/aiadsiuodas"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_home"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:text="HOME"/>
-
-                <Button
-                    android:id="@+id/btnBackToStart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="1500dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:text="test"/>
+                    android:layout_height="match_parent"/>
 
             </LinearLayout>
 

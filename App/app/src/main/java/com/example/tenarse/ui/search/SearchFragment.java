@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -22,6 +24,34 @@ public class SearchFragment extends Fragment {
 
         binding = FragmentSearchBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        binding.logoSearchToolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.scrollView.smoothScrollTo(0,0);
+            }
+        });
+
+        binding.buscador.setQueryHint("Java, HTML, ChatGPT,...");
+
+        binding.buscador.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!query.equals("")){
+                    Toast.makeText(getActivity(), "Has buscado: " + query, Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.equals("")){
+                    Toast.makeText(getActivity(), "Has buscado: " + newText, Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
+
 
         return root;
     }

@@ -16,6 +16,7 @@
         app:layout_scrollFlags="scroll|enterAlways">
 
         <ImageView
+            android:id="@+id/logo_search_toolbar"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
@@ -30,29 +31,51 @@
         android:layout_marginTop="?android:actionBarSize"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <Button
-                android:id="@+id/aiadsiuodas"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/buscador_cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="SEARCH"/>
+                app:cardBackgroundColor="#EAEAEA"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="50dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <Button
-                android:id="@+id/btnBackToStart"
+                <SearchView
+                    android:id="@+id/buscador"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:queryBackground="@null"
+                    android:iconifiedByDefault="false"
+                    android:background="@android:color/transparent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_busqueda"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1500dp"
+                android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="25dp"
                 android:layout_marginEnd="10dp"
-                android:text="test"/>
+                app:layout_constraintEnd_toEndOf="@+id/buscador_cardView"
+                app:layout_constraintStart_toStartOf="@+id/buscador_cardView"
+                app:layout_constraintTop_toBottomOf="@+id/buscador_cardView" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
