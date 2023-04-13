@@ -1,9 +1,12 @@
 package com.example.tenarse.ui.home;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
@@ -29,6 +32,11 @@ import java.util.List;
 
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    // Establece una demora de 1 segundo antes de cancelar la animación de desplazamiento suave
+    private static final int DELAY_MILLIS = 500;
+
+    private Handler mHandler = new Handler();
+
     private FragmentHomeBinding binding;
     private boolean shouldReloadOnBackPressed = false;
     private ScrollView scrollView;
@@ -39,6 +47,17 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
     RecyclerView recyclerView;
+
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // Si la RecyclerView sigue desplazándose suavemente después de 1 segundo, cambia a un desplazamiento rápido
+            if (recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_SETTLING) {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                layoutManager.scrollToPositionWithOffset(0, 0);
+            }
+        }
+    };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -73,21 +92,37 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             toolbar.setVisibility(View.VISIBLE);
         }
 
-        scrollView = binding.scrollView;
-
-
         binding.logoHomeToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scrollView.smoothScrollTo(0,0);
+                RotateAnimation rotateAnimation = new RotateAnimation(
+                        0,
+                        360,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f
+                );
+
+                // Configura la duración de la animación y otras propiedades
+                rotateAnimation.setDuration(1000);
+                rotateAnimation.setFillAfter(true);
+
+                // Inicia la animación en la ImageView
+                v.startAnimation(rotateAnimation);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                layoutManager.smoothScrollToPosition(recyclerView, new RecyclerView.State(), 0);
+
+                // Programa la ejecución del Runnable después de una demora de 1 segundo
+                mHandler.postDelayed(mRunnable, DELAY_MILLIS);
             }
         });
 
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                chechIfNewPost();
-                binding.swipeRefreshLayout.setRefreshing(false);
+                    chechIfNewPost();
+                    binding.swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -105,9 +140,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void chechIfNewPost() {
         dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementDoubt("Xx_tEo_xX", "Duda real", "Como voy a la pagina web desde un socket en NodeJS?"));
-
+        dataList.add(new ListElementImg("_A19Narcis_", "Este es un ejemplo de post de imagen con texto"));
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
