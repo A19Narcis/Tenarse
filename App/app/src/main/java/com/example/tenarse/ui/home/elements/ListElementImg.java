@@ -4,9 +4,11 @@ public class ListElementImg {
     public String user_img_url;
     public String username;
     public String post_img_url;
+    public String post_img_text;
 
-    public ListElementImg(String username){
+    public ListElementImg(String username, String text){
         this.username = username;
+        this.post_img_text = text;
     }
 
     public String getUser_img_url() {
@@ -31,5 +33,13 @@ public class ListElementImg {
 
     public void setPost_img_url(String post_img_url) {
         this.post_img_url = post_img_url;
+    }
+
+    public String getPost_img_text() {
+        return post_img_text;
+    }
+
+    public void setPost_img_text(String post_img_text) {
+        this.post_img_text = post_img_text;
     }
 }

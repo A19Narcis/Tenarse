@@ -40,37 +40,29 @@
         app:layout_constraintTop_toTopOf="@+id/rv_userImage" />
 
     <TextView
-        android:id="@+id/rv_post_text"
+        android:id="@+id/rv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="Texto que puede tener una publicacion de imagen si el usu quiero tener un texto"
+        android:text="How to substract numeric and alphanumeric value in python"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="@+id/share_icon"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="@+id/rv_userImage"
-        app:layout_constraintTop_toBottomOf="@+id/rv_userImage" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_view_rv_image"
-        android:layout_width="match_parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
+        android:textStyle="bold"
+        android:textSize="22sp"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="@+id/share_icon"
         app:layout_constraintStart_toStartOf="@+id/rv_userImage"
-        app:layout_constraintTop_toBottomOf="@+id/rv_post_text">
+        app:layout_constraintTop_toBottomOf="@+id/rv_userImage" />
 
-        <ImageView
-            android:id="@+id/rv_post_image"
-            android:layout_width="match_parent"
-            android:layout_height="225dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/image_post_test"/>
-
-    </androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/rv_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="I have 2 column with numeric and alphanumeric value. I want to apply substraction on numeric value in third column and keep aplhanumeric value as &quot;Canadian&quot;. Please help"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="@+id/rv_title"
+        app:layout_constraintStart_toStartOf="@+id/rv_title"
+        app:layout_constraintTop_toBottomOf="@+id/rv_title" />
 
     <ImageView
         android:id="@+id/like_image"
@@ -79,8 +71,8 @@
         android:layout_marginStart="130dp"
         android:layout_marginTop="15dp"
         android:src="@drawable/like"
-        app:layout_constraintStart_toStartOf="@+id/card_view_rv_image"
-        app:layout_constraintTop_toBottomOf="@id/card_view_rv_image" />
+        app:layout_constraintStart_toStartOf="@+id/rv_description"
+        app:layout_constraintTop_toBottomOf="@id/rv_description" />
 
     <ImageView
         android:id="@+id/comment_image"
