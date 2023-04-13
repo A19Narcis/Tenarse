@@ -1,34 +1,27 @@
 package com.example.tenarse.ui.home;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentHomeBinding;
-import com.example.tenarse.ui.home.adapters.ListElementImgAdapter;
-import com.example.tenarse.ui.home.adapters.ListElementVideoAdapter;
+import com.example.tenarse.ui.home.adapters.MultiAdapter;
+import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
-import com.example.tenarse.ui.home.elements.ListElementVideo;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -40,11 +33,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private boolean shouldReloadOnBackPressed = false;
     private ScrollView scrollView;
 
-    List<ListElementImg> elementsImg;
-    List<ListElementVideo> elementVideos;
+    /* Multi ADAPTER */
+    List<Object> dataList;
+    MultiAdapter multiAdapter;
 
-    ListElementImgAdapter listElementImgAdapter;
-    ListElementVideoAdapter listElementVideoAdapter;
 
     RecyclerView recyclerView;
 
@@ -59,11 +51,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         MainActivity mainActivity = (MainActivity) getActivity();
 
 
-        /*RecivlerView Images*/
-        elementsImg = new ArrayList<>();
-        elementVideos = new ArrayList<>();
-        listElementImgAdapter = new ListElementImgAdapter(elementsImg, getContext());
-        listElementVideoAdapter = new ListElementVideoAdapter(elementVideos, getContext());
+        dataList = new ArrayList<>();
+        multiAdapter = new MultiAdapter(dataList);
+
         recyclerView = binding.rvHome;
 
         chechIfNewPost();
@@ -114,18 +104,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void chechIfNewPost() {
-        elementsImg.add(new ListElementImg("_A19Narcis_"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementDoubt("Xx_tEo_xX", "Duda real", "Como voy a la pagina web desde un socket en NodeJS?"));
+
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(listElementImgAdapter);
-
-        /*elementVideos.add(new ListElementVideo("SergiM03"));
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(listElementVideoAdapter);*/
-
+        recyclerView.setAdapter(multiAdapter);
     }
 
     @Override
