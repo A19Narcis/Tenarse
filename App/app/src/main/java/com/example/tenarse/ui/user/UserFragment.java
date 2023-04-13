@@ -14,29 +14,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentUserBinding;
+import com.example.tenarse.ui.user.elements.ListElementDoubt;
 import com.example.tenarse.ui.user.elements.ListElementImg;
-import com.example.tenarse.ui.user.adapters.ListElementAdapter;
+import com.example.tenarse.ui.user.adapters.MultiAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserFragment extends Fragment {
 
+    List<Object> dataList;
     private FragmentUserBinding binding;
 
     RecyclerView recyclerView;
 
-    List<ListElementImg> elementsImg;
-
-    ListElementAdapter listElementAdapter;
+    MultiAdapter MultiAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         UserViewModel userViewModel =
                 new ViewModelProvider(this).get(UserViewModel.class);
 
-        elementsImg = new ArrayList<>();
-        listElementAdapter = new ListElementAdapter(elementsImg, getContext());
+        dataList = new ArrayList<>();
+        MultiAdapter = new MultiAdapter(dataList);
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -48,15 +48,14 @@ public class UserFragment extends Fragment {
             }
         });
 
-        recyclerView = binding.recyclerViewFeed;
+        dataList.add(new ListElementImg("_A19Narcis_"));
+        dataList.add(new ListElementImg("_A19Narcis_"));
+        dataList.add(new ListElementDoubt("Xx_tEo_xX", "Como voy a la pagina web\ndesde un socket\n en NodeJS?", "Como voy a la pagina web desde un socket en NodeJS?"));
 
-        elementsImg.add(new ListElementImg(""));
-        elementsImg.add(new ListElementImg(""));
-        elementsImg.add(new ListElementImg(""));
-        elementsImg.add(new ListElementImg(""));
+        recyclerView = binding.recyclerViewFeed;
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        recyclerView.setAdapter(listElementAdapter);
+        recyclerView.setAdapter(MultiAdapter);
 
         return root;
     }
