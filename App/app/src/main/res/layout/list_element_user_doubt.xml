@@ -18,12 +18,14 @@
         <TextView
             android:gravity="center_vertical"
             android:paddingStart="4dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             android:id="@+id/userFeedPost"
             android:layout_width="123dp"
             android:layout_height="123dp"
             android:textSize="18dp"
             android:background="#F8F8F8"
-            android:text="Como voy a la pagina web\ndesde un socket\n en NodeJS?" />
+            android:text="Esto podria ser un ejemplo de pregunta :)" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

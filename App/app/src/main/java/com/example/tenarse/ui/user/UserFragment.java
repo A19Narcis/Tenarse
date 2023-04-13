@@ -1,7 +1,9 @@
 package com.example.tenarse.ui.user;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -48,11 +50,47 @@ public class UserFragment extends Fragment {
             }
         });
 
-        dataList.add(new ListElementImg("_A19Narcis_"));
-        dataList.add(new ListElementImg("_A19Narcis_"));
-        dataList.add(new ListElementDoubt("Xx_tEo_xX", "Como voy a la pagina web\ndesde un socket\n en NodeJS?", "Como voy a la pagina web desde un socket en NodeJS?"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", ""));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
+
+
 
         recyclerView = binding.recyclerViewFeed;
+
+        binding.recyclerViewFeed.setMinimumHeight(dataList.size() * 123);
+        System.out.println(dataList.size() / 3);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(MultiAdapter);
