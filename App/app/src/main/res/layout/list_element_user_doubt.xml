@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="123dp"
+    android:layout_height="123dp"
+    android:layout_margin="3dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="123dp"
+        android:layout_height="123dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:gravity="center_vertical"
+            android:paddingStart="4dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:id="@+id/userFeedPost"
+            android:layout_width="123dp"
+            android:layout_height="123dp"
+            android:textSize="18dp"
+            android:background="#F8F8F8"
+            android:text="Esto podria ser un ejemplo de pregunta :)" />
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
