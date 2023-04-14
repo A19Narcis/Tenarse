@@ -12,9 +12,9 @@ const insertUsuari = function (user, callback) {
     newUser.save(function (err) {
         if (err) {
             console.log(err);
-            callback("Aquest usuari ja es troba registrat")
+            callback(false)
         } else {
-            callback("Usuari afegit a la base de dades")
+            callback(true)
         }
     })
 }

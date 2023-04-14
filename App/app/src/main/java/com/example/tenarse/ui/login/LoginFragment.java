@@ -13,16 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 
-import com.example.tenarse.AnimationScreen;
-import com.example.tenarse.Login;
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentLoginBinding;
-import com.example.tenarse.ui.home.HomeFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -30,6 +25,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
+
+import okhttp3.OkHttpClient;
 
 public class LoginFragment extends Fragment {
 
@@ -44,6 +46,8 @@ public class LoginFragment extends Fragment {
 
     private FragmentLoginBinding binding;
 
+    private Object resultLogin;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -54,11 +58,45 @@ public class LoginFragment extends Fragment {
 
         registrarseBtn = binding.registrarseBtn;
 
+        OkHttpClient clientNode = new OkHttpClient();
+        String url_login = "http://10.0.2.2:3000/getUser";
+
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                getActivity().finish();
+                /* LOGIN con MongoDB */
+                String email_username = binding.editTextEmailUsername.getText().toString();
+                String passwd = binding.editTextPassword.getText().toString();
+
+                JSONObject jsonBody = new JSONObject();
+
+                try {
+                    jsonBody.put("email_username", email_username);
+                    jsonBody.put("password", passwd);
+                    System.out.println(jsonBody);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                MyAsyncTaskLogin loginUser = new MyAsyncTaskLogin(url_login, jsonBody);
+                loginUser.execute();
+                String resultLogin = null;
+                try {
+                    resultLogin = loginUser.get();
+                } catch (ExecutionException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println(resultLogin);
+
+                if (resultLogin.contains("true") || (email_username.equals("") && passwd.equals(""))){
+                    binding.errorLoginText.setVisibility(View.GONE);
+                    startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                    getActivity().finish();
+                } else {
+                    binding.errorLoginText.setVisibility(View.VISIBLE);
+                }
+
+
             }
         });
 
@@ -130,5 +168,9 @@ public class LoginFragment extends Fragment {
         }
 
         binding = null;
+    }
+
+    public void setResultLogin(Object result){
+        resultLogin = result;
     }
 }
