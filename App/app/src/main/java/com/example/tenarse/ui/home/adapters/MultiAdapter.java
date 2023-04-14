@@ -58,6 +58,12 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 ListElementImg imgElement = (ListElementImg) dataList.get(position);
                 ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
                 imageViewHolder.username.setText(imgElement.getUsername());
+                if (imgElement.getPost_img_text().equals("")){
+                    imageViewHolder.post_text.setVisibility(View.GONE);
+                } else {
+                    imageViewHolder.post_text.setText(imgElement.getPost_img_text());
+                }
+
                 break;
             case TYPE_DOUBT:
                 ListElementDoubt doubtElement = (ListElementDoubt) dataList.get(position);
@@ -77,11 +83,13 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView username;
+        TextView post_text;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.rv_post_image);
             username = itemView.findViewById(R.id.rv_username);
+            post_text = itemView.findViewById(R.id.rv_post_text);
         }
     }
 

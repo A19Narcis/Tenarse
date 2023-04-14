@@ -23,8 +23,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="UserTest"
+        android:textStyle="bold"
         android:textColor="@color/black"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/rv_userImage"
         app:layout_constraintStart_toEndOf="@+id/rv_userImage"
         app:layout_constraintTop_toTopOf="@+id/rv_userImage" />

@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setItemIconTintList(null);
+        navView.setItemBackgroundResource(android.R.color.transparent);
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
