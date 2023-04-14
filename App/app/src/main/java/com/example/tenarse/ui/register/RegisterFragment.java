@@ -2,7 +2,11 @@ package com.example.tenarse.ui.register;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +19,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -33,6 +39,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
+
+import okhttp3.OkHttpClient;
 
 public class RegisterFragment extends Fragment {
 
@@ -41,6 +55,10 @@ public class RegisterFragment extends Fragment {
     private FragmentRegisterBinding binding;
 
     EditText etPlannedDate;
+
+    private Object resultRegister;
+
+    private String data_usuari = "";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +69,9 @@ public class RegisterFragment extends Fragment {
         iniciarSesionBtn = binding.IniciarSesionBtn;
 
         etPlannedDate = binding.etPlannedDate;
+
+        OkHttpClient clientNode = new OkHttpClient();
+        String url_register = "http://10.0.2.2:3000/addNewUser";
 
         etPlannedDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +91,99 @@ public class RegisterFragment extends Fragment {
             }
         });
 
+
+        /* REGISTRO USER */
+        binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = binding.RegisterEditTextEmail.getText().toString().trim();
+                String passwd = binding.RegisterEditTextPassword.getText().toString().trim();
+                String passwd_repeat = binding.editTextRepeatPassword.getText().toString().trim();
+                String username = binding.editTextUser.getText().toString().trim();
+                String name = binding.editTextNombre.getText().toString().trim();
+                String surname = binding.editTextApellidos.getText().toString().trim();
+                String date = data_usuari;
+
+                boolean infoValida = true;
+
+                // Verificar que no hay campos vacíos
+                if (email.isEmpty() || passwd.isEmpty() || passwd_repeat.isEmpty() || username.isEmpty() || name.isEmpty() || surname.isEmpty() || date.isEmpty()) {
+                    infoValida = false;
+                }
+                if (!passwd.equals(passwd_repeat)) {
+                    infoValida = false;
+                }
+                if (!email.contains("@") || email.split("@").length != 2) {
+                    infoValida = false;
+                }
+                if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}") || !username.matches("[a-zA-Z0-9]+") || !name.matches("[a-zA-Z]+") || !surname.matches("[a-zA-Z]+( [a-zA-Z]+)?") || !date.matches("[0-9/]+")) {
+                    infoValida = false;
+                }
+                if (infoValida){
+                    // Todos los campos son válidos
+                    JSONObject body = new JSONObject();
+
+                    try {
+                        body.put("email", email);
+                        body.put("passwd", passwd);
+                        body.put("passwd_repeat", passwd_repeat);
+                        body.put("username", username);
+                        body.put("name", name);
+                        body.put("surname", surname);
+                        body.put("date", date);
+                    } catch (JSONException e){
+                        e.printStackTrace();
+                    }
+
+                    MyAsyncTaskRegister registerUser = new MyAsyncTaskRegister(url_register, body);
+                    registerUser.execute();
+                    String resultRegister = null;
+                    try {
+                        resultRegister = registerUser.get();
+                    } catch (ExecutionException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println(resultRegister);
+                    binding.errorTextRegister.setVisibility(View.GONE);
+                    if (resultRegister.contains("true")){
+                        binding.userExisteRegister.setVisibility(View.GONE);
+                        Snackbar snackbar = Snackbar.make(binding.getRoot(), "Registro completado exitosamente.", Snackbar.LENGTH_LONG);
+
+                        // Cambiar el color de fondo
+                        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
+
+                        // Cambiar el color del texto
+                        TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                        textView.setTextColor(Color.WHITE);
+
+                        // Obtener el TextView dentro de Snackbar
+                        TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                        textoSnackbar.setGravity(Gravity.CENTER);
+
+                        snackbar.addCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                super.onDismissed(snackbar, event);
+                                startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                getActivity().finish();
+                            }
+                        });
+
+                        // Mostrar Snackbar personalizado
+                        snackbar.show();
+
+                    } else {
+                        //Este usuario ya existe
+                        binding.userExisteRegister.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    binding.userExisteRegister.setVisibility(View.GONE);
+                    binding.errorTextRegister.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
         return root;
     }
 
@@ -78,7 +192,8 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 // +1 because January is zero
-                final String selectedDate = day + " / " + (month+1) + " / " + year;
+                final String selectedDate = day + "/" + (month+1) + "/" + year;
+                data_usuari = selectedDate;
                 etPlannedDate.setText(selectedDate);
             }
         });
@@ -104,5 +219,9 @@ public class RegisterFragment extends Fragment {
         }
 
         binding = null;
+    }
+
+    public void setResultRegister(Object result){
+        resultRegister = result;
     }
 }

@@ -33,14 +33,13 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
                 android:layout_marginTop="50dp"
                 android:paddingStart="2dp"
                 android:text="Email"
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/registerTitle"
                 app:layout_constraintTop_toBottomOf="@+id/registerTitle" />
 
             <EditText
@@ -219,7 +218,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="35dp"
                 android:layout_marginEnd="50dp"
                 android:backgroundTint="@color/black"
                 android:text="Registrarse"
@@ -231,17 +230,49 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etPlannedDate" />
 
+            <TextView
+                android:id="@+id/errorTextRegister"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="30dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:visibility="gone"
+                android:text="La información que nos has dado no cumple los requisitos."
+                app:layout_constraintEnd_toEndOf="@+id/button_login"
+                app:layout_constraintStart_toStartOf="@+id/button_login"
+                app:layout_constraintTop_toBottomOf="@+id/button_login" />
+
+            <TextView
+                android:id="@+id/userExisteRegister"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="30dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:gravity="center_horizontal"
+                android:text="Este usuario i/o correo electronico ya esta registrado"
+                app:layout_constraintEnd_toEndOf="@+id/button_login"
+                app:layout_constraintStart_toStartOf="@+id/button_login"
+                app:layout_constraintTop_toBottomOf="@+id/errorTextRegister" />
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button_login">
+                app:layout_constraintTop_toBottomOf="@+id/userExisteRegister">
 
                 <TextView
                     android:id="@+id/textView7"

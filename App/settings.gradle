@@ -2,6 +2,9 @@ pluginManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url "https://repo.mongodb.org/maven2/"
+        }
         gradlePluginPortal()
     }
 }

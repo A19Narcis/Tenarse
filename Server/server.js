@@ -7,9 +7,13 @@ const updateDB = require('./database/update')
 const deleteDB = require('./database/delete')
 const CryptoJS = require('crypto-js');
 const app = express();
+const bodyParser = require('body-parser');
 
 const PORT = 3000
 
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors({
     credentials: true,
@@ -22,8 +26,17 @@ app.use(cors({
 
 /* INSERT USUARI */
 app.post('/addNewUser', (req, res) => {
-    var noHashedPassword = "ausias2003";
 
+    const usuari = {
+        email: req.body.email,
+        username: req.body.username,
+        password: CryptoJS.SHA256(req.body.passwd).toString(),
+        url_img: 'https://cdn-icons-png.flaticon.com/512/16/16363.png?w=826&t=st=1681465350~exp=1681465950~hmac=0e38b24ce3849b1254189388807c42637e43a349253c367c602ba64101e9e81f',
+        nombre: req.body.name,
+        apellidos: req.body.surname,
+        fecha_nac: req.body.date
+    }
+/*
     const usuari = {
         username: 'A19Narcis',
         password: CryptoJS.SHA256(noHashedPassword).toString(),
@@ -32,12 +45,35 @@ app.post('/addNewUser', (req, res) => {
         apellidos: 'Gomez Carretero',
         fecha_nac: '28/08/2003'
     }
-    console.log(usuari);
+*/
     insertDB.insertUsuari(usuari, function (status) {
         res.send({ result: status });
     })
 })
 
+app.post('/getUser', (req, res) => {
+    var email_username = req.body.email_username
+    var passwd = req.body.password
+
+    /*var username = "A19Narcis"
+    var passwd = "ausias2003"*/
+
+    var cryptedPasswd = CryptoJS.SHA256(passwd).toString()
+
+    readDB.getUser(email_username, (dades_user_valides) => {
+        if (dades_user_valides === null){
+            res.send({ login: false })
+        } else {
+            if (dades_user_valides.password === cryptedPasswd) {
+                /* Login successful */
+                res.send({ login: true })
+            } else {
+                res.send({ login: false })
+            }
+        }
+        
+    })
+})
 
 /* FOLLOWERS & FOLLOWING */
 app.post('/newFollowing', (req, res) => {
@@ -86,7 +122,7 @@ app.post('/addNewPost', (req, res) => {
         url_img: '',
         url_video: '',
         comentaris: [],
-        owner: '_DevOps_'
+        owner: 'A19Narcis'
     }
     insertDB.insertPost(post, function () {
         res.send({ success: true });
