@@ -88,7 +88,7 @@ public class LoginFragment extends Fragment {
                 }
                 System.out.println(resultLogin);
 
-                if (resultLogin.contains("true") || (email_username.equals("") && passwd.equals(""))){
+                if (/*resultLogin.contains("true") ||*/ (email_username.equals("") && passwd.equals(""))){
                     binding.errorLoginText.setVisibility(View.GONE);
                     startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                     getActivity().finish();
