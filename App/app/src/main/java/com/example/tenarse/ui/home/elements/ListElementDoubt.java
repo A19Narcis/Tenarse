@@ -6,10 +6,11 @@ public class ListElementDoubt {
     public String title;
     public String description;
 
-    public ListElementDoubt(String username, String title, String descr){
+    public ListElementDoubt(String username, String title, String descr, String userImg){
         this.username = username;
         this.title = title;
         this.description = descr;
+        this.user_img_url = userImg;
     }
 
     public String getUser_img_url() {

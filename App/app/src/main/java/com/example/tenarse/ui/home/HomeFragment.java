@@ -25,15 +25,22 @@ import com.example.tenarse.databinding.FragmentHomeBinding;
 import com.example.tenarse.ui.home.adapters.MultiAdapter;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
+import com.google.android.gms.common.util.JsonUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     // Establece una demora de 1 segundo antes de cancelar la animación de desplazamiento suave
     private static final int DELAY_MILLIS = 500;
+    private static final String URL = "http://10.0.2.2:3000/getPosts";
 
     private Handler mHandler = new Handler();
 
@@ -47,6 +54,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
     RecyclerView recyclerView;
+
+    private Object resultNewPosts;
+    private int resultLengthPost;
 
     private Runnable mRunnable = new Runnable() {
         @Override
@@ -71,7 +81,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         dataList = new ArrayList<>();
-        multiAdapter = new MultiAdapter(dataList);
+        multiAdapter = new MultiAdapter(dataList, getContext());
 
         recyclerView = binding.rvHome;
 
@@ -139,13 +149,40 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void chechIfNewPost() {
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementDoubt("Xx_tEo_xX", "Duda real", "Como voy a la pagina web desde un socket en NodeJS?"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Este es un ejemplo de post de imagen con texto"));
+        MyAsyncTaskHomePosts getPosts = new MyAsyncTaskHomePosts(URL);
+        getPosts.execute();
+        String resultGetPosts = null;
+        try {
+            resultGetPosts = getPosts.get();
+            JSONArray jsonArray = new JSONArray(resultGetPosts);
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(multiAdapter);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject post = jsonArray.getJSONObject(i);
+                if (post.getString("tipus").equals("image")){
+                    dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("user_img")));
+                    multiAdapter.notifyItemInserted(0);
+                } else if (post.getString("tipus").equals("doubt")){
+                    dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"),  post.getString("user_img")));
+                    multiAdapter.notifyItemInserted(0);
+                } else if (post.getString("tipus").equals("video")){
+                    /*Falta saber como subir un video*/
+                }
+            }
+
+            System.out.println(dataList);
+
+            /*dataList.add(new ListElementImg("_A19Narcis_", ""));
+            dataList.add(new ListElementDoubt("Xx_tEo_xX", "Duda real", "Como voy a la pagina web desde un socket en NodeJS?"));
+            dataList.add(new ListElementImg("_A19Narcis_", "Este es un ejemplo de post de imagen con texto"));*/
+
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(multiAdapter);
+
+
+        } catch (ExecutionException | InterruptedException | JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -158,5 +195,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onRefresh() {
         SwipeRefreshLayout swipeRefreshLayout = binding.swipeRefreshLayout;
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    public void loadNewPosts(Object nuevosPostsBD){
+        resultNewPosts = nuevosPostsBD;
     }
 }
