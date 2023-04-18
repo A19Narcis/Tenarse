@@ -5,6 +5,9 @@ pluginManagement {
         maven {
             url "https://repo.mongodb.org/maven2/"
         }
+        maven {
+            url 'https://jitpack.io'
+        }
         gradlePluginPortal()
     }
 }

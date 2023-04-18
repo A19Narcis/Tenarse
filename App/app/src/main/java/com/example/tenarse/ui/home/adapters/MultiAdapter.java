@@ -1,11 +1,14 @@
 package com.example.tenarse.ui.home.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +16,7 @@ import com.example.tenarse.R;
 import com.example.tenarse.ui.home.HomeViewModel;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
+import com.example.tenarse.ui.home.elements.ListElementVideo;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -37,6 +41,8 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return TYPE_IMAGE;
         } else if (dataList.get(position) instanceof ListElementDoubt) {
             return TYPE_DOUBT;
+        } else if (dataList.get(position) instanceof  ListElementVideo){
+            return TYPE_VIDEO;
         }
         return -1;
     }
@@ -52,6 +58,9 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case TYPE_DOUBT:
                 view = inflater.inflate(R.layout.list_element_home_doubt, parent, false);
                 return new DoubtViewHolder(view);
+            case TYPE_VIDEO:
+                view = inflater.inflate(R.layout.list_element_home_video, parent, false);
+                return new VideoViewHolder(view);
             default:
                 return null;
         }
@@ -92,6 +101,29 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 ImageView userImageViewDoubt = doubtViewHolder.userImageView;
                 new HomeViewModel.DownloadImageTask(userImageViewDoubt).execute(urlUserDoubt);
                 break;
+
+            case TYPE_VIDEO:
+                ListElementVideo videoElement = (ListElementVideo) dataList.get(position);
+                VideoViewHolder videoViewHolder = (VideoViewHolder) holder;
+                videoViewHolder.username.setText(videoElement.getUsername());
+                if (videoElement.getPost_text().equals("")){
+                    videoViewHolder.post_text.setVisibility(View.GONE);
+                } else {
+                    videoViewHolder.post_text.setText(videoElement.getPost_text());
+                }
+
+                /* Cargar USER IMAGE Bitmat hilo */
+                String urlUserVideo = videoElement.getUser_img_url().replace("localhost", "10.0.2.2");
+                ImageView userImageViewVideo = videoViewHolder.userImageView;
+                new HomeViewModel.DownloadImageTask(userImageViewVideo).execute(urlUserVideo);
+
+                /* Cargar VIDEO */
+                Uri uri = Uri.parse(videoElement.getPost_video_url());
+                videoViewHolder.post_video.setMediaController(new MediaController(context));
+                videoViewHolder.post_video.setVideoURI(uri);
+                videoViewHolder.post_video.start();
+
+                break;
         }
     }
 
@@ -127,6 +159,21 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             title = itemView.findViewById(R.id.rv_title);
             description = itemView.findViewById(R.id.rv_description);
             userImageView = itemView.findViewById(R.id.rv_userImage);
+        }
+    }
+
+    public static class VideoViewHolder extends RecyclerView.ViewHolder {
+        TextView username;
+        TextView post_text;
+        ImageView userImageView;
+        VideoView post_video;
+
+        public VideoViewHolder(View itemView){
+            super(itemView);
+            username = itemView.findViewById(R.id.rv_username);
+            post_text = itemView.findViewById(R.id.rv_post_text);
+            userImageView = itemView.findViewById(R.id.rv_userImage);
+            post_video = itemView.findViewById(R.id.rv_post_video);
         }
     }
 }

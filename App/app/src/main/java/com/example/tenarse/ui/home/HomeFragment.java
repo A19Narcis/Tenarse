@@ -25,6 +25,7 @@ import com.example.tenarse.databinding.FragmentHomeBinding;
 import com.example.tenarse.ui.home.adapters.MultiAdapter;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
+import com.example.tenarse.ui.home.elements.ListElementVideo;
 import com.google.android.gms.common.util.JsonUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -164,12 +165,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 } else if (post.getString("tipus").equals("doubt")){
                     dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"),  post.getString("user_img")));
                     multiAdapter.notifyItemInserted(0);
-                } else if (post.getString("tipus").equals("video")){
-                    /*Falta saber como subir un video*/
+                } else if (post.getString("tipus").equals("video1")){
+                    dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("user_img"), post.getString("url_video"), post.getString("text")));
+                    multiAdapter.notifyItemInserted(0);
                 }
             }
-
-            System.out.println(dataList);
 
             /*dataList.add(new ListElementImg("_A19Narcis_", ""));
             dataList.add(new ListElementDoubt("Xx_tEo_xX", "Duda real", "Como voy a la pagina web desde un socket en NodeJS?"));
@@ -178,6 +178,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setAdapter(multiAdapter);
+
 
 
         } catch (ExecutionException | InterruptedException | JSONException e) {

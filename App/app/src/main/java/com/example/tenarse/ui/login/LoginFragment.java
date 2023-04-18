@@ -1,6 +1,8 @@
 package com.example.tenarse.ui.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,7 +90,7 @@ public class LoginFragment extends Fragment {
                 }
                 System.out.println(resultLogin);
 
-                if (resultLogin.contains("true") || (email_username.equals("") && passwd.equals(""))){
+                if (!resultLogin.contains("false") || (email_username.equals("") && passwd.equals(""))){
                     binding.errorLoginText.setVisibility(View.GONE);
                     startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                     getActivity().finish();
@@ -103,7 +105,6 @@ public class LoginFragment extends Fragment {
         registrarseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("REGISTER CLIKED");
                 Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment);
             }
         });

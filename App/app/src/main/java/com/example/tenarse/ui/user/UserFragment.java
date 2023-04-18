@@ -18,9 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentUserBinding;
+import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 import com.example.tenarse.ui.user.adapters.MultiAdapter;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +49,17 @@ public class UserFragment extends Fragment {
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+        JSONObject dadesUsuari = globalDadesUser.getDadesUser();
+
+
+        try {
+            if (!dadesUsuari.getString("username").equals("false")){
+                Picasso.with(getContext()).load(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
         binding.settingsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,8 +81,6 @@ public class UserFragment extends Fragment {
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", ""));
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
@@ -80,8 +94,6 @@ public class UserFragment extends Fragment {
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", ""));
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
@@ -95,8 +107,6 @@ public class UserFragment extends Fragment {
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", ""));
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
@@ -110,112 +120,6 @@ public class UserFragment extends Fragment {
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
         dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
-        dataList.add(new ListElementImg("_A19Narcis_", ""));
-        dataList.add(new ListElementImg("_A19Narcis_", "Me encanta el juego que estoy haciendo"));
 
 
         recyclerView = binding.recyclerViewFeed;
