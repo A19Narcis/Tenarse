@@ -28,6 +28,7 @@ public class FragmentAddImages extends Fragment{
 
     ScrollView scrollView;
     private float multiplicadorScaleFactor = 1.0f;
+    private float lastTouchX, lastTouchY; // Últimas coordenadas de toque
 
     private ScaleGestureDetector scaleGestureDetector;
 
@@ -50,10 +51,42 @@ public class FragmentAddImages extends Fragment{
         image.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                // Pasar el evento onTouch a ScaleGestureDetector
-                System.out.println("Entra touch");
+                // Obtén las coordenadas del toque
+                float touchX = event.getX();
+                float touchY = event.getY();
+
+                // Procesa el evento del gesto de zoom (pinch)
                 scaleGestureDetector.onTouchEvent(event);
-                return true;
+
+                // Procesa el evento de movimiento (drag)
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Guarda las coordenadas del toque inicial
+                        lastTouchX = touchX;
+                        lastTouchY = touchY;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        // Calcula la diferencia de desplazamiento desde el toque inicial
+                        float dx = touchX - lastTouchX;
+                        float dy = touchY - lastTouchY;
+
+                        // Mueve la imagen en consecuencia
+                        image.setX(image.getX() + dx);
+                        image.setY(image.getY() + dy);
+
+                        // Actualiza las últimas coordenadas de toque
+                        lastTouchX = touchX;
+                        lastTouchY = touchY;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        // Reinicia las coordenadas de toque
+                        lastTouchX = 0;
+                        lastTouchY = 0;
+                        break;
+                }
+
+                return true; // Devuelve true para indicar que has manejado el evento
             }
         });
 
