@@ -104,20 +104,36 @@ public class RegisterFragment extends Fragment {
                 String surname = binding.editTextApellidos.getText().toString().trim();
                 String date = data_usuari;
 
+                //Miniscula -> (?=.*[a-z])(?=.*[A-Z])
+                //Mayuscula -> (?=.*[A-Z])
+                //Digito -> (?=.*\d)
+                //Caracter especial -> (?=.*[@#$%^&+=_\-()\[\]{}|:;,.<>/?!"\\])
+                //Ha de ser como minimo de 8 de longitud i cumplir las condiciones -> [A-Za-z\d@#$%^&+=_\-()\[\]{}|:;,.<>/?!"\\]{8,}$
+                String regexPassword = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=_\\-()\\[\\]{}|:;,.<>/?!\"\\\\])[A-Za-z\\d@#$%^&+=_\\-()\\[\\]{}|:;,.<>/?!\"\\\\]{8,}$";
+                //No permitir EMOJIS
+                String regexEmoticionos = "[\\p{InEmoticons}]";
                 boolean infoValida = true;
 
-                // Verificar que no hay campos vacíos
-                if (email.isEmpty() || passwd.isEmpty() || passwd_repeat.isEmpty() || username.isEmpty() || name.isEmpty() || surname.isEmpty() || date.isEmpty()) {
+                // Verificar que no hay campos vacíos o com emoticonos
+                if ((email.isEmpty() || email.matches(regexEmoticionos)) || (passwd.isEmpty() || passwd.matches(regexEmoticionos)) || (passwd_repeat.isEmpty() || passwd_repeat.matches(regexEmoticionos)) || (username.isEmpty() || username.matches(regexEmoticionos)) || (name.isEmpty() || name.matches(regexEmoticionos)) || (surname.isEmpty() || surname.matches(regexEmoticionos)) || date.isEmpty()) {
+                    infoValida = false;
+                    System.out.println("Vacio o Emojis");
+                }
+                if (!passwd.matches(regexPassword)){
+                    System.out.println("La passwd no cumple requisitos");
                     infoValida = false;
                 }
                 if (!passwd.equals(passwd_repeat)) {
+                    System.out.println("Las passwd no son iguales");
                     infoValida = false;
                 }
                 if (!email.contains("@") || email.split("@").length != 2) {
+                    System.out.println("Error email");
                     infoValida = false;
                 }
                 if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}") || !username.matches("[a-zA-Z0-9]+") || !name.matches("[a-zA-Z]+") || !surname.matches("[a-zA-Z]+( [a-zA-Z]+)?") || !date.matches("[0-9/]+")) {
                     infoValida = false;
+                    System.out.println("Caracteres especiales");
                 }
                 if (infoValida){
                     // Todos los campos son válidos
@@ -143,7 +159,6 @@ public class RegisterFragment extends Fragment {
                     } catch (ExecutionException | InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    System.out.println(resultRegister);
                     binding.errorTextRegister.setVisibility(View.GONE);
                     if (resultRegister.contains("true")){
                         binding.userExisteRegister.setVisibility(View.GONE);

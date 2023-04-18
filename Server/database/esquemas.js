@@ -49,6 +49,14 @@ const publiSchema = new mongoose.Schema({
     owner: {
         type: String,
         required: true
+    },
+    user_img: {
+        type: String,
+        required: true
+    },
+    hora: {
+        type: String,
+        required: true
     }
 });
 

@@ -23,10 +23,16 @@ const getPublicacio = async (id_publi, callback) => {
     callback(postSelected)
 }
 
+const getPosts = async (callback) => {
+    const posts = await Post.find()
+    callback(posts)
+}
+
 
 
 module.exports = {
     getUser,
     getChat,
-    getPublicacio
+    getPublicacio,
+    getPosts
 }

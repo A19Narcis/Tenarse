@@ -6,9 +6,11 @@ public class ListElementImg {
     public String post_img_url;
     public String post_img_text;
 
-    public ListElementImg(String username, String text){
+    public ListElementImg(String username, String text, String urlImg, String userImg){
         this.username = username;
         this.post_img_text = text;
+        this.post_img_url = urlImg;
+        this.user_img_url = userImg;
     }
 
     public String getUser_img_url() {
