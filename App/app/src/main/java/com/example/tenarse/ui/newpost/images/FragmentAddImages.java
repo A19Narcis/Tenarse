@@ -3,6 +3,8 @@ package com.example.tenarse.ui.newpost.images;
 import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,7 +21,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
+import com.example.tenarse.widgets.CropperActivity;
 
 public class FragmentAddImages extends Fragment{
 
@@ -27,10 +31,6 @@ public class FragmentAddImages extends Fragment{
     CardView cardView;
 
     ScrollView scrollView;
-    private float multiplicadorScaleFactor = 1.0f;
-    private float lastTouchX, lastTouchY; // Últimas coordenadas de toque
-
-    private ScaleGestureDetector scaleGestureDetector;
 
     private static final int GALLERY_REQUEST_CODE = 1;
 
@@ -45,51 +45,6 @@ public class FragmentAddImages extends Fragment{
         image.setFocusable(true);
         cardView = rootView.findViewById(R.id.card_view_rv_image);
         scrollView = rootView.findViewById(R.id.scrollV_add_images);
-
-        scaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleGestureListener());
-
-        image.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // Obtén las coordenadas del toque
-                float touchX = event.getX();
-                float touchY = event.getY();
-
-                // Procesa el evento del gesto de zoom (pinch)
-                scaleGestureDetector.onTouchEvent(event);
-
-                // Procesa el evento de movimiento (drag)
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // Guarda las coordenadas del toque inicial
-                        lastTouchX = touchX;
-                        lastTouchY = touchY;
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        // Calcula la diferencia de desplazamiento desde el toque inicial
-                        float dx = touchX - lastTouchX;
-                        float dy = touchY - lastTouchY;
-
-                        // Mueve la imagen en consecuencia
-                        image.setX(image.getX() + dx);
-                        image.setY(image.getY() + dy);
-
-                        // Actualiza las últimas coordenadas de toque
-                        lastTouchX = touchX;
-                        lastTouchY = touchY;
-                        break;
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_CANCEL:
-                        // Reinicia las coordenadas de toque
-                        lastTouchX = 0;
-                        lastTouchY = 0;
-                        break;
-                }
-
-                return true; // Devuelve true para indicar que has manejado el evento
-            }
-        });
-
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,25 +72,30 @@ public class FragmentAddImages extends Fragment{
             image.setLayoutParams(layoutParams);
 
             image.setImageURI(selectedImage);
-        }
-    }
-
-    private class ScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            // Obtener el factor de escala del detector
-            float scaleFactor = detector.getScaleFactor();
-
-            // Aplicar la escala solo si está dentro de un rango específico
-            if (scaleFactor > 0.8 && scaleFactor < 1.2) {
-                multiplicadorScaleFactor *= scaleFactor; // Actualizar el factor de escala global
-                image.setScaleX(multiplicadorScaleFactor);
-                image.setScaleY(multiplicadorScaleFactor);
+            Intent intent = new Intent(getActivity(), CropperActivity.class);
+            intent.putExtra("DATA", selectedImage.toString());
+            startActivityForResult(intent, 101);
+        } else if (resultCode == -1 && requestCode == 101) {
+            String result = data.getStringExtra("RESULT");
+            Uri resultUri=null;
+            if(result!=null){
+                resultUri=Uri.parse(result);
             }
+            image.setImageURI(resultUri);
+            Bitmap imagenBitmap = BitmapFactory.decodeFile(resultUri.getPath());
 
-            return true; // Devuelve true para indicar que has manejado el evento
+            // Obtén la altura de la imagen en píxeles
+            int alturaImagen = imagenBitmap.getHeight();
+            int anchuraImagen = imagenBitmap.getWidth();
+            if(anchuraImagen > alturaImagen){
+
+            }
+            ViewGroup.LayoutParams layoutParams = cardView.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            cardView.setLayoutParams(layoutParams);
         }
     }
+
 
 }
