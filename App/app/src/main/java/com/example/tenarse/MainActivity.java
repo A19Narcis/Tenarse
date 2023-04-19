@@ -20,6 +20,7 @@ import com.example.tenarse.threads.LoadImageBottomNavBar;
 import com.example.tenarse.ui.home.HomeFragment;
 import com.example.tenarse.ui.login.LoginFragment;
 import com.example.tenarse.ui.notificaciones.NotificacionesFragment;
+import com.example.tenarse.ui.user.UserFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -53,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean isLogged = false;
 
+    GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+    JSONObject dadesUsuari = globalDadesUser.getDadesUser();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +70,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         toolbar = findViewById(R.id.toolbar);
-
-        GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-        JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setItemIconTintList(null);
@@ -89,8 +90,14 @@ public class MainActivity extends AppCompatActivity {
 
         mobileNavigation = findViewById(R.id.mobile_navigation);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String lastActivity = sharedPreferences.getString("infoUser", "");
+
         try {
-            if (!dadesUsuari.getString("username").equals("false")){
+            if (dadesUsuari == null){
+                JSONObject jsonObject = new JSONObject(lastActivity);
+                globalDadesUser.setDadesUser(jsonObject);
+                dadesUsuari = globalDadesUser.getDadesUser();
                 Menu menu = navView.getMenu();
                 MenuItem menuItem = menu.findItem(R.id.navigation_user);
                 LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
@@ -99,11 +106,21 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+            } else {
+                if (!dadesUsuari.getString("username").equals("false")){
+                    Menu menu = navView.getMenu();
+                    MenuItem menuItem = menu.findItem(R.id.navigation_user);
+                    LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
+                    try {
+                        loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
@@ -114,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("lastActivity", "Menu");
+        editor.putString("infoUser", dadesUsuari.toString());
         editor.apply();
     }
 }

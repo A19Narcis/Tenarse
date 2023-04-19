@@ -160,7 +160,7 @@ public class RegisterFragment extends Fragment {
                         throw new RuntimeException(e);
                     }
                     binding.errorTextRegister.setVisibility(View.GONE);
-                    if (resultRegister.contains("true")){
+                    if (!resultRegister.contains("false")){
                         binding.userExisteRegister.setVisibility(View.GONE);
                         Snackbar snackbar = Snackbar.make(binding.getRoot(), "Registro completado exitosamente.", Snackbar.LENGTH_LONG);
 

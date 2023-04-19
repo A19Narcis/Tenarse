@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         recyclerView = binding.rvHome;
 
-        //chechIfNewPost();
+        chechIfNewPost();
 
 
         // Obtener la referencia a la Toolbar de la MainActivity
@@ -122,8 +122,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 // Inicia la animación en la ImageView
                 v.startAnimation(rotateAnimation);
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                layoutManager.smoothScrollToPosition(recyclerView, new RecyclerView.State(), 0);
-
+                if (recyclerView != null){
+                    layoutManager.smoothScrollToPosition(recyclerView, new RecyclerView.State(), 0);
+                }
                 // Programa la ejecución del Runnable después de una demora de 1 segundo
                 mHandler.postDelayed(mRunnable, DELAY_MILLIS);
             }
@@ -132,7 +133,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                    //chechIfNewPost();
+                    chechIfNewPost();
                     binding.swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -170,10 +171,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     multiAdapter.notifyItemInserted(0);
                 }
             }
-
-            /*dataList.add(new ListElementImg("_A19Narcis_", ""));
-            dataList.add(new ListElementDoubt("Xx_tEo_xX", "Duda real", "Como voy a la pagina web desde un socket en NodeJS?"));
-            dataList.add(new ListElementImg("_A19Narcis_", "Este es un ejemplo de post de imagen con texto"));*/
 
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

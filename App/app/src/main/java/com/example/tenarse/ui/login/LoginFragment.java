@@ -75,7 +75,6 @@ public class LoginFragment extends Fragment {
                 try {
                     jsonBody.put("email_username", email_username);
                     jsonBody.put("password", passwd);
-                    System.out.println(jsonBody);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -88,10 +87,8 @@ public class LoginFragment extends Fragment {
                 } catch (ExecutionException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                System.out.println(resultLogin);
 
-
-                if (resultLogin.contains("true") || (email_username.equals("") && passwd.equals(""))){
+                if (!resultLogin.contains("false") || (email_username.equals("") && passwd.equals(""))){
                     binding.errorLoginText.setVisibility(View.GONE);
                     startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                     getActivity().finish();

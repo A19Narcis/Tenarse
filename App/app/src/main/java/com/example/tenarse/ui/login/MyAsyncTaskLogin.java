@@ -51,13 +51,14 @@ public class MyAsyncTaskLogin extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String result) {
         // Aquí puedes procesar la respuesta de la solicitud HTTP
         loginFragment.setResultLogin(result);
-        try {
-            JSONObject dadesLogin = new JSONObject(result);
-            GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-            globalDadesUser.setDadesUser(dadesLogin);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+        if (!result.contains("false")){
+            try {
+                JSONObject dadesLogin = new JSONObject(result);
+                GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+                globalDadesUser.setDadesUser(dadesLogin);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
         }
-
     }
 }

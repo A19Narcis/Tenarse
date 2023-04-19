@@ -14,7 +14,7 @@ const insertUsuari = function (user, callback) {
             console.log(err);
             callback(false)
         } else {
-            callback(true)
+            callback(newUser)
         }
     })
 }

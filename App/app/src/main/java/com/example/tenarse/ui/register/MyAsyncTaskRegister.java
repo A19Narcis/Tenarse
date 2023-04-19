@@ -2,6 +2,9 @@ package com.example.tenarse.ui.register;
 
 import android.os.AsyncTask;
 
+import com.example.tenarse.globals.GlobalDadesUser;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -48,5 +51,15 @@ public class MyAsyncTaskRegister extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String result) {
         // Aquí puedes procesar la respuesta de la solicitud HTTP
         registerFragment.setResultRegister(result);
+        if (!result.contains("false")){
+            System.out.println("Escribiendo datos globales del usuario...");
+            try {
+                JSONObject dadesUsuariNou = new JSONObject(result);
+                GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+                globalDadesUser.setDadesUser(dadesUsuariNou);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
