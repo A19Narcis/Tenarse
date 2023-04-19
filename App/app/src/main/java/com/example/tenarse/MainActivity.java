@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         mobileNavigation = findViewById(R.id.mobile_navigation);
 
-        try {
+        /*try {
             if (!dadesUsuari.getString("username").equals("false")){
                 Menu menu = navView.getMenu();
                 MenuItem menuItem = menu.findItem(R.id.navigation_user);
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
     }
 

@@ -14,6 +14,9 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
@@ -25,12 +28,18 @@ import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.widgets.CropperActivity;
 
+import java.util.ArrayList;
+
 public class FragmentAddImages extends Fragment{
 
     ImageView image;
     CardView cardView;
 
     ScrollView scrollView;
+
+    AutoCompleteTextView autoCompleteTextView;
+
+    ArrayList<String> arrayRecycler = new ArrayList<>();
 
     private static final int GALLERY_REQUEST_CODE = 1;
 
@@ -45,6 +54,23 @@ public class FragmentAddImages extends Fragment{
         image.setFocusable(true);
         cardView = rootView.findViewById(R.id.card_view_rv_image);
         scrollView = rootView.findViewById(R.id.scrollV_add_images);
+
+        autoCompleteTextView = rootView.findViewById(R.id.autoCompleteImg);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.opciones_autocompletado));
+        autoCompleteTextView.setAdapter(adapter);
+
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String seleccion = (String) parent.getItemAtPosition(position);
+                arrayRecycler.add(seleccion);
+                System.out.println(arrayRecycler);
+                // Guarda la opción seleccionada en tu arreglo o realiza la acción deseada
+                // Ejemplo: arreglo.add(seleccion);
+            }
+        });
+
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

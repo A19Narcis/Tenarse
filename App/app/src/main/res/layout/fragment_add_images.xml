@@ -82,15 +82,15 @@
             </androidx.recyclerview.widget.RecyclerView>
 
             <AutoCompleteTextView
-                android:id="@+id/autoCompleteTextView2"
+                android:id="@+id/autoCompleteImg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
-                android:text="#mobile #artificialIntelligence #java"
-                android:textColor="#A8A8A8"
+                android:hint="#mobile #artificialIntelligence #java"
+                android:textColorHint="#A8A8A8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
@@ -108,7 +108,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView2" />
+                app:layout_constraintTop_toBottomOf="@+id/autoCompleteImg" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
