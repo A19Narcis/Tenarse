@@ -15,10 +15,12 @@ const PORT = 3000
 // Carpeta imagenes
 const publicDirPosts = path.join(__dirname, 'uploads', 'images');
 const publicDirUsers = path.join(__dirname, 'uploads', 'user_img');
+const publicDirVideos = path.join(__dirname, 'uploads', 'videos');
 
 // Ruta de la carpeta
 app.use('/uploads/images', express.static(publicDirPosts));
 app.use('/uploads/user_img', express.static(publicDirUsers));
+app.use('/uploads/videos', express.static(publicDirVideos));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -63,20 +65,20 @@ app.post('/getUser', (req, res) => {
     var email_username = req.body.email_username
     var passwd = req.body.password
 
-    /*var username = "A19Narcis"
-    var passwd = "ausias2003"*/
+    /*var email_username = "A19Narcis"
+    var passwd = "Ausias_2003"*/
 
     var cryptedPasswd = CryptoJS.SHA256(passwd).toString()
 
     readDB.getUser(email_username, (dades_user_valides) => {
         if (dades_user_valides === null) {
-            res.send({ login: false })
+            res.send({ username: false })
         } else {
             if (dades_user_valides.password === cryptedPasswd) {
                 /* Login successful */
-                res.send({ login: true })
+                res.send(dades_user_valides)
             } else {
-                res.send({ login: false })
+                res.send({ username: false })
             }
         }
 
@@ -139,7 +141,7 @@ app.post('/addNewPost', (req, res) => {
     let tiempoActual = hora + ':' + minutos + ':' + segundos
 
     //Llamnar a las imagenes de los posts -> user + hora.png EX: A19Narcis_091232.png
-    const post = {
+    /*const post = {
         tipus: 'doubt',
         titol: 'How to substract numeric and alphanumeric value in python?',
         text: 'I have 2 column with numeric and alphanumeric value. I want to apply substraction on numeric value in third column and keep aplhanumeric value as "Canadian". Please help',
@@ -149,7 +151,7 @@ app.post('/addNewPost', (req, res) => {
         owner: 'A19Narcis',
         user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
         hora: tiempoActual
-    }
+    }*/
     /*const post = {
         tipus: 'image',
         titol: '',
@@ -161,6 +163,17 @@ app.post('/addNewPost', (req, res) => {
         user_img: 'http://localhost:3000/uploads/user_img/TeoX.png',
         hora: tiempoActual
     }*/
+    const post = {
+        tipus: 'video',
+        titol: '',
+        text: 'Se viene...',
+        url_img: '',
+        url_video: 'http://localhost:3000/uploads/videos/videoTest.mp4',
+        comentaris: [],
+        owner: 'A19Narcis',
+        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
+        hora: tiempoActual
+    }
 
     insertDB.insertPost(post, function () {
         res.send({ success: true });

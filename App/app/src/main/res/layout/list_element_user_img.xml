@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayoutImgUserPost"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="5dp"
     android:layout_width="350px"
-    android:layout_height="350px"
-    android:layout_margin="6px">
+    android:layout_height="350px">
 
     <androidx.cardview.widget.CardView
         android:layout_width="350px"
@@ -20,6 +21,7 @@
             android:id="@+id/userFeedPost"
             android:layout_width="350px"
             android:layout_height="350px"
+            android:layout_gravity="center_horizontal"
             android:scaleType="centerCrop"
             android:src="@drawable/image_post_test" />
     </androidx.cardview.widget.CardView>

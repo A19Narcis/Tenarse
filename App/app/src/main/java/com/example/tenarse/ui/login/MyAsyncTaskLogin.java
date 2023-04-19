@@ -2,6 +2,9 @@ package com.example.tenarse.ui.login;
 
 import android.os.AsyncTask;
 
+import com.example.tenarse.globals.GlobalDadesUser;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -48,6 +51,13 @@ public class MyAsyncTaskLogin extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String result) {
         // Aquí puedes procesar la respuesta de la solicitud HTTP
         loginFragment.setResultLogin(result);
+        try {
+            JSONObject dadesLogin = new JSONObject(result);
+            GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+            globalDadesUser.setDadesUser(dadesLogin);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }

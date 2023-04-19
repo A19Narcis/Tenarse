@@ -2,8 +2,12 @@ package com.example.tenarse;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -11,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.tenarse.databinding.FragmentUserBinding;
+import com.example.tenarse.globals.GlobalDadesUser;
+import com.example.tenarse.threads.LoadImageBottomNavBar;
 import com.example.tenarse.ui.home.HomeFragment;
 import com.example.tenarse.ui.login.LoginFragment;
 import com.example.tenarse.ui.notificaciones.NotificacionesFragment;
@@ -31,6 +37,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.tenarse.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationBarView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Objects;
 
@@ -58,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
 
+        GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+        JSONObject dadesUsuari = globalDadesUser.getDadesUser();
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setItemIconTintList(null);
         navView.setItemBackgroundResource(android.R.color.transparent);
@@ -76,6 +88,22 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         mobileNavigation = findViewById(R.id.mobile_navigation);
+
+        try {
+            if (!dadesUsuari.getString("username").equals("false")){
+                Menu menu = navView.getMenu();
+                MenuItem menuItem = menu.findItem(R.id.navigation_user);
+                LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
+                try {
+                    loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
