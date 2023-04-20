@@ -13,8 +13,13 @@ import android.widget.Toast;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentSearchUsersBinding;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class SearchUsersFragment extends Fragment {
 
@@ -23,6 +28,8 @@ public class SearchUsersFragment extends Fragment {
     /*Adapter and List*/
     List<Object> dataSearchList;
     AdapterSearchUers myAdpater;
+
+    private final String URL = "http://10.0.2.2:3000/searchUsers";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,10 +48,39 @@ public class SearchUsersFragment extends Fragment {
         dataSearchList = new ArrayList<>();
         myAdpater = new AdapterSearchUers(dataSearchList, getContext());
 
+        JSONObject body = new JSONObject();
+
+        try {
+            body.put("username", query);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
 
+        MyAsyncTaskSearchUsers searchUsers = new MyAsyncTaskSearchUsers(URL, body);
+        searchUsers.execute();
 
-        dataSearchList.add(new ListElementUser("http://localhost:3000/uploads/user_img/default_user_img.png", "A19Narcis", "Narcis Gomez Carretero"));
+        String resultSearchUser = null;
+        try {
+            resultSearchUser = searchUsers.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        try {
+            JSONArray resultSearchJSONArray = new JSONArray(resultSearchUser);
+            for (int i = 0; i < resultSearchJSONArray.length(); i++) {
+                try {
+                    JSONObject user = resultSearchJSONArray.getJSONObject(i);
+                    dataSearchList.add(new ListElementUser(user.getString("url_img"), user.getString("username"), user.getString("nombre") + " " + user.getString("apellidos")));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
 
         binding.rvSearchUsers.setHasFixedSize(true);
