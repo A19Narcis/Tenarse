@@ -38,6 +38,12 @@ public class SearchUsersFragment extends Fragment {
 
     public void buscarQuery(String query) {
         /* AÑADIR LOS USUARIOS A LA RECYCLER VIEW */
+        dataSearchList = new ArrayList<>();
+        myAdpater = new AdapterSearchUers(dataSearchList, getContext());
+
+
+
+
         dataSearchList.add(new ListElementUser("http://localhost:3000/uploads/user_img/default_user_img.png", "A19Narcis", "Narcis Gomez Carretero"));
 
 

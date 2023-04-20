@@ -16,7 +16,11 @@ public class FragmentAddQuestions extends Fragment {
         // Infla el layout para este fragmento
         View rootView = inflater.inflate(R.layout.fragment_add_questions, container, false);
 
-        // Aquí puedes inicializar cualquier vista o componente que necesites
+
+
+
+
+
 
         return rootView;
     }
