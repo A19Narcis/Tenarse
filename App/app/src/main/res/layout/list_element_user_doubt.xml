@@ -19,14 +19,14 @@
 
         <TextView
             android:gravity="center_vertical"
-            android:paddingStart="5dp"
+            android:padding="5dp"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:id="@+id/userFeedPost"
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:background="#F8F8F8"
             android:text="Esto poder un ejemplo de pregunta :) Esto poder un ejemplo de pregunta" />
 

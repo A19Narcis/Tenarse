@@ -82,9 +82,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="\@tenarse"
                         android:textColor="@color/black"
-                        android:textSize="17dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/userSpecialization"
@@ -97,17 +96,17 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:layout_marginTop="20dp">
 
                         <TextView
                             android:id="@+id/userFollowers"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="70dp"
+                            android:layout_marginStart="90dp"
                             android:gravity="center"
                             android:text="100M"
                             android:textColor="@color/black"
-                            android:textSize="30dp"
+                            android:textSize="23sp"
                             android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -116,11 +115,11 @@
                             android:id="@+id/userFolloweds"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="70dp"
+                            android:layout_marginEnd="90dp"
                             android:gravity="center"
                             android:text="100M"
                             android:textColor="@color/black"
-                            android:textSize="30dp"
+                            android:textSize="23sp"
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />

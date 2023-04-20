@@ -66,7 +66,7 @@ public class UserFragment extends Fragment {
         }
     };
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         UserViewModel userViewModel =
@@ -114,29 +114,29 @@ public class UserFragment extends Fragment {
         JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
         try {
-            binding.userName.setText(dadesUsuari.getString("username"));
+            binding.userName.setText("@" + dadesUsuari.getString("username"));
             JSONArray followings = new JSONArray(dadesUsuari.getString("followings"));
-            int numero = 75;
-            if (numero >= 10000 && numero < 999950) {
-                String followingsString = formatFollowers10(numero);
+            int numero_followings = followings.length();
+            if (numero_followings >= 10000 && numero_followings < 999950) {
+                String followingsString = formatFollowers10(numero_followings);
                 binding.userFolloweds.setText(followingsString); // 10.0 k
-            } else if (numero >= 999950){
-                String followingsString = formatFollowers100(numero);
+            } else if (numero_followings >= 999950){
+                String followingsString = formatFollowers100(numero_followings);
                 binding.userFolloweds.setText(followingsString); // 10.0 M
             } else {
-                binding.userFolloweds.setText(Integer.toString(numero));
+                binding.userFolloweds.setText(Integer.toString(numero_followings));
             }
 
             JSONArray followers = new JSONArray(dadesUsuari.getString("followers"));
-            int numero2 = 1512;
-            if (numero2 >= 10000 && numero2 < 999950) {
-                String followingsString = formatFollowers10(numero2);
+            int numero_followers = followers.length();
+            if (numero_followers >= 10000 && numero_followers < 999950) {
+                String followingsString = formatFollowers10(numero_followers);
                 binding.userFollowers.setText(followingsString); // 10.0 k
-            } else if (numero2 >= 999950){
-                String followingsString = formatFollowers100(numero2);
+            } else if (numero_followers >= 999950){
+                String followingsString = formatFollowers100(numero_followers);
                 binding.userFollowers.setText(followingsString); // 10.0 M
             } else {
-                binding.userFollowers.setText(Integer.toString(numero2));
+                binding.userFollowers.setText(Integer.toString(numero_followers));
             }
 
         } catch (JSONException e) {
