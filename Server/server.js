@@ -144,6 +144,18 @@ app.post('/addNewPost', (req, res) => {
     //Llamnar a las imagenes de los posts -> user + hora.png EX: A19Narcis_091232.png
     const post = {
         tipus: 'doubt',
+        titol: req.body.title,
+        text: req.body.description,
+        hastags: [],
+        url_img: '',
+        url_video: '',
+        comentaris: [],
+        owner: "A19NarcisX",
+        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
+        hora: tiempoActual
+    }
+    /*const post = {
+        tipus: 'doubt',
         titol: 'How to substract numeric and alphanumeric value in python?',
         text: 'I have 2 column with numeric and alphanumeric value. I want to apply substraction on numeric value in third column and keep aplhanumeric value as "Canadian". Please help',
         url_img: '',
@@ -152,7 +164,7 @@ app.post('/addNewPost', (req, res) => {
         owner: 'A19Narcis',
         user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
         hora: tiempoActual
-    }
+    }*/
     /*const post = {
         tipus: 'image',
         titol: '',
@@ -247,6 +259,14 @@ app.post('/newMessage', (req, res) => {
 })
 
 
+/* BUSCADOR Usuarios - Publicaciones - Dudas */
+
+app.post('/searchUsers', (req, res) => {
+    const resultText = req.body.username;
+    readDB.getUsers(resultText, (users) => {
+        res.send(users);
+    })
+})
 
 app.listen(PORT, () => {
     console.log("Server Running [" + PORT + "]");

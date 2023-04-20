@@ -13,6 +13,11 @@ const getUser = async (email_username, callback) => {
     callback(userSelected);
 }
 
+const getUsers = async (text, callback) => {
+    const usersFound = await User.find({ username: { $regex: text, $options: 'i' } })
+    callback(usersFound);
+}
+
 const getChat = async (chat_id, callback) => {
     const chatSelected = await Chat.findOne({ _id: chat_id })
     callback(chatSelected);
@@ -32,6 +37,7 @@ const getPosts = async (callback) => {
 
 module.exports = {
     getUser,
+    getUsers,
     getChat,
     getPublicacio,
     getPosts
