@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean isLogged = false;
 
-    GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-    JSONObject dadesUsuari = globalDadesUser.getDadesUser();
+    //GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+    //JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
         mobileNavigation = findViewById(R.id.mobile_navigation);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        String lastActivity = sharedPreferences.getString("infoUser", "");
+        //SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        //String lastActivity = sharedPreferences.getString("infoUser", "");
 
         /*try {
             if (dadesUsuari == null){
