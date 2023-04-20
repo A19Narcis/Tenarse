@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String lastActivity = sharedPreferences.getString("infoUser", "");
 
-        try {
+        /*try {
             if (dadesUsuari == null){
                 JSONObject jsonObject = new JSONObject(lastActivity);
                 globalDadesUser.setDadesUser(jsonObject);
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     @Override
@@ -128,10 +128,10 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         // Guardar el nombre de la actividad actual en la preferencia compartida
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        /*SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("lastActivity", "Menu");
         editor.putString("infoUser", dadesUsuari.toString());
-        editor.apply();
+        editor.apply();*/
     }
 }

@@ -67,7 +67,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/card_view_rv_image" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/add_recyclerView_img"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -93,7 +93,7 @@
                 android:textColorHint="#A8A8A8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+                app:layout_constraintTop_toBottomOf="@+id/add_recyclerView_img" />
 
             <Button
                 android:id="@+id/button"

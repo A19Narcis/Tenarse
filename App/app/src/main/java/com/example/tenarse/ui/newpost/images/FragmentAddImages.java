@@ -23,9 +23,13 @@ import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
+import com.example.tenarse.ui.home.adapters.MultiAdapter;
+import com.example.tenarse.ui.newpost.adapters.HashtagAdapter;
 import com.example.tenarse.widgets.CropperActivity;
 
 import java.util.ArrayList;
@@ -38,6 +42,12 @@ public class FragmentAddImages extends Fragment{
     ScrollView scrollView;
 
     AutoCompleteTextView autoCompleteTextView;
+
+    ArrayAdapter<String> adapter;
+
+    RecyclerView recyclerView;
+
+    HashtagAdapter hashtagAdapter;
 
     ArrayList<String> arrayRecycler = new ArrayList<>();
 
@@ -56,18 +66,29 @@ public class FragmentAddImages extends Fragment{
         scrollView = rootView.findViewById(R.id.scrollV_add_images);
 
         autoCompleteTextView = rootView.findViewById(R.id.autoCompleteImg);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+        adapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.opciones_autocompletado));
         autoCompleteTextView.setAdapter(adapter);
+
+        hashtagAdapter = new HashtagAdapter(arrayRecycler, adapter, getContext());
+        recyclerView = rootView.findViewById(R.id.add_recyclerView_img);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(hashtagAdapter);
 
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String seleccion = (String) parent.getItemAtPosition(position);
                 arrayRecycler.add(seleccion);
+                hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
+                adapter.remove(seleccion);
+                adapter.notifyDataSetChanged();
                 System.out.println(arrayRecycler);
-                // Guarda la opción seleccionada en tu arreglo o realiza la acción deseada
-                // Ejemplo: arreglo.add(seleccion);
+                autoCompleteTextView.setText("");
+                autoCompleteTextView.setHint(autoCompleteTextView.getHint());
+                // Cierra la lista de autocompletado
+                autoCompleteTextView.dismissDropDown();
             }
         });
 
@@ -80,6 +101,8 @@ public class FragmentAddImages extends Fragment{
                 startActivityForResult(intent, GALLERY_REQUEST_CODE);
             }
         });
+
+
 
         return rootView;
     }
