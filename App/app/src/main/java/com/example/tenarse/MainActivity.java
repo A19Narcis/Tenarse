@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         //SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         //String lastActivity = sharedPreferences.getString("infoUser", "");
 
-        try {
+        /*try {
             if (dadesUsuari == null){
                 JSONObject jsonObject = new JSONObject(lastActivity);
                 globalDadesUser.setDadesUser(jsonObject);
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     @Override

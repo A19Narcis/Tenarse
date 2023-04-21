@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,18 +15,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tenarse.R;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
-public class AdapterSearchUers extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AdapterSearchUsers extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Object> dataSearchList;
     private Context context;
 
-    public AdapterSearchUers(List<Object> dataSearchList, Context context){
+    final AdapterSearchUsers.OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(ListElementUser userClick);
+    }
+
+    public AdapterSearchUsers(List<Object> dataSearchList, Context context, AdapterSearchUsers.OnItemClickListener listener){
         this.dataSearchList = dataSearchList;
         this.context = context;
+        this.listener = listener;
     }
 
 
@@ -38,15 +45,22 @@ public class AdapterSearchUers extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
         ListElementUser listElementUser = (ListElementUser) dataSearchList.get(position);
         UserViewHolder userViewHolder = (UserViewHolder) holder;
 
-        String urlImagen = listElementUser.getUser_url_img().replace("localhost", "10.0.2.2.");
+        String urlImagen = listElementUser.getUser_url_img().replace("localhost", "10.0.2.2");
         Picasso.with(context).load(urlImagen).into(userViewHolder.userImg);
 
         userViewHolder.username.setText("@" + listElementUser.getSearch_username());
-
         userViewHolder.fullname.setText(listElementUser.getFullname());
+
+        userViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(listElementUser);
+            }
+        });
     }
 
     @Override
@@ -65,5 +79,6 @@ public class AdapterSearchUers extends RecyclerView.Adapter<RecyclerView.ViewHol
             username = itemView.findViewById(R.id.rv_search_username);
             fullname = itemView.findViewById(R.id.rv_sarch_name);
         }
+
     }
 }

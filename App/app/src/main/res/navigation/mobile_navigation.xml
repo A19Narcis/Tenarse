@@ -20,7 +20,11 @@
         android:id="@+id/navigation_search"
         android:name="com.example.tenarse.ui.search.SearchFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_addpost" />
+        tools:layout="@layout/fragment_addpost" >
+        <action
+            android:id="@+id/action_navigation_search_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_add"
@@ -57,5 +61,19 @@
         android:name="com.example.tenarse.ui.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/searchUsersFragment"
+        android:name="com.example.tenarse.ui.search.users.SearchUsersFragment"
+        android:label="fragment_search_users"
+        tools:layout="@layout/fragment_search_users" >
+        <action
+            android:id="@+id/action_searchUsersFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.tenarse.ui.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 
 </navigation>

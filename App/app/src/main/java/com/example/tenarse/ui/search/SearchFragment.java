@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,15 +14,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentSearchBinding;
-import com.example.tenarse.ui.message.chat.FragmentChat;
-import com.example.tenarse.ui.search.posts.AdapterSearchPost;
+import com.example.tenarse.ui.profile.ProfileFragment;
 import com.example.tenarse.ui.search.posts.SearchPostFragment;
 import com.example.tenarse.ui.search.questions.SearchQuestionsFragment;
-import com.example.tenarse.ui.search.users.AdapterSearchUers;
+import com.example.tenarse.ui.search.users.ListElementUser;
 import com.example.tenarse.ui.search.users.SearchUsersFragment;
-import com.example.tenarse.ui.user.UserFragment;
-
-import java.util.List;
 
 public class SearchFragment extends Fragment {
 
@@ -148,5 +143,18 @@ public class SearchFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void seeProfileUser(ListElementUser userClick) {
+        System.out.println("BUENAS");
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        ProfileFragment profileFragment = new ProfileFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userInfo", userClick);
+        profileFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.viewFragment, profileFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
