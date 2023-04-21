@@ -2,6 +2,7 @@ package com.example.tenarse.ui.home.adapters;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +11,21 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
+import com.example.tenarse.ui.home.HomeFragment;
 import com.example.tenarse.ui.home.HomeViewModel;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
+import com.example.tenarse.ui.profile.ProfileFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -25,14 +34,16 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private List<Object> dataList;
     private Context context;
+    private HomeFragment mHomeFragment;
 
     private final int TYPE_IMAGE = 1;
     private final int TYPE_DOUBT = 2;
     private final int TYPE_VIDEO = 3;
 
-    public MultiAdapter(List<Object> dataList, Context context) {
+    public MultiAdapter(List<Object> dataList, Context context, HomeFragment mHomeFragment) {
         this.dataList = dataList;
         this.context = context;
+        this.mHomeFragment = mHomeFragment;
     }
 
     @Override
@@ -73,6 +84,15 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 ListElementImg imgElement = (ListElementImg) dataList.get(position);
                 ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
                 imageViewHolder.username.setText(imgElement.getUsername());
+
+                imageViewHolder.username.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Aquí
+                        mHomeFragment.selectUser(imageViewHolder.username.getText().toString());
+                    }
+                });
+
                 if (imgElement.getPost_img_text().equals("")){
                     imageViewHolder.post_text.setVisibility(View.GONE);
                 } else {

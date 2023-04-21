@@ -146,14 +146,15 @@ public class SearchFragment extends Fragment {
     }
 
     public void seeProfileUser(ListElementUser userClick) {
-        System.out.println("BUENAS");
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         ProfileFragment profileFragment = new ProfileFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("userInfo", userClick);
+        bundle.putSerializable("fragment", "search");
         profileFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.viewFragment, profileFragment);
+        fragmentTransaction.setReorderingAllowed(true);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }

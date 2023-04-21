@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -27,6 +29,8 @@ import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentProfileBinding;
 import com.example.tenarse.databinding.FragmentUserBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
+import com.example.tenarse.ui.home.HomeFragment;
+import com.example.tenarse.ui.search.SearchFragment;
 import com.example.tenarse.ui.search.users.ListElementUser;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
@@ -54,6 +58,8 @@ public class ProfileFragment extends Fragment {
 
     MultiAdapter multiAdapter;
 
+    String fragmentAnterior = "";
+
     private Runnable mRunnable = new Runnable() {
         private int mPreviousScrollPosition = -1;
 
@@ -78,6 +84,29 @@ public class ProfileFragment extends Fragment {
         multiAdapter = new MultiAdapter(dataList);
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        binding.backToMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fragmentAnterior.equals("home")){
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    HomeFragment homeFragment = new HomeFragment();
+                    fragmentTransaction.replace(R.id.viewFragment, homeFragment);
+                    fragmentTransaction.setReorderingAllowed(true);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                } else if (fragmentAnterior.equals("search")){
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    SearchFragment searchFragment = new SearchFragment();
+                    fragmentTransaction.replace(R.id.viewFragment, searchFragment);
+                    fragmentTransaction.setReorderingAllowed(true);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                }
+            }
+        });
 
         binding.logoHomeToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +146,8 @@ public class ProfileFragment extends Fragment {
         if (args != null) {
             userInfo = (ListElementUser) args.getSerializable("userInfo");
             System.out.println("USER: " + userInfo.toString());
+            fragmentAnterior = args.getString("fragment");
+            System.out.println(fragmentAnterior);
         }
 
 

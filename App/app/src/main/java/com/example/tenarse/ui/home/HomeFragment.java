@@ -13,6 +13,8 @@ import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,10 +25,13 @@ import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentHomeBinding;
 import com.example.tenarse.ui.home.adapters.MultiAdapter;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskHomePosts;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
-import com.google.android.gms.common.util.JsonUtils;
+import com.example.tenarse.ui.profile.ProfileFragment;
+import com.example.tenarse.ui.search.users.ListElementUser;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
@@ -82,7 +87,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
         dataList = new ArrayList<>();
-        multiAdapter = new MultiAdapter(dataList, getContext());
+        multiAdapter = new MultiAdapter(dataList, getContext(), HomeFragment.this);
 
         recyclerView = binding.rvHome;
 
@@ -197,5 +202,50 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void loadNewPosts(Object nuevosPostsBD){
         resultNewPosts = nuevosPostsBD;
+    }
+
+    public void selectUser(String username){
+        //Recoger todos los datos del usuario que tiene ese `username` y luego cambiar de fragment para ver su perfil
+        String url_login = "http://10.0.2.2:3000/getSelectedUser";
+        JSONObject jsonBody = new JSONObject();
+
+        System.out.println("USERNAME: " + username);
+
+        try {
+            jsonBody.put("username", username);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTaskGetUser loginUser = new MyAsyncTaskGetUser(url_login, jsonBody);
+        loginUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = loginUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            JSONObject dadesLogin = new JSONObject(resultSearch);
+            ListElementUser userSelected = new ListElementUser(dadesLogin.getString("url_img"), dadesLogin.getString("username"), dadesLogin.getString("nombre") + " " + dadesLogin.getString("apellidos"), dadesLogin.getString("followers").length(), dadesLogin.getString("followings").length(), dadesLogin.getJSONArray("publicacions"));
+            viewSelectedUser(userSelected);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void viewSelectedUser(ListElementUser userSelected) {
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        ProfileFragment profileFragment = new ProfileFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userInfo", userSelected);
+        bundle.putSerializable("fragment", "home");
+        profileFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.viewFragment, profileFragment);
+        fragmentTransaction.setReorderingAllowed(true);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

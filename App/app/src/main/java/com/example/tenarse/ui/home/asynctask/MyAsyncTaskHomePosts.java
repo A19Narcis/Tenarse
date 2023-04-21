@@ -1,6 +1,8 @@
-package com.example.tenarse.ui.home;
+package com.example.tenarse.ui.home.asynctask;
 
 import android.os.AsyncTask;
+
+import com.example.tenarse.ui.home.HomeFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
