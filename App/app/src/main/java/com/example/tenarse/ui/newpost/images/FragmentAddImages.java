@@ -150,7 +150,7 @@ public class FragmentAddImages extends Fragment{
                     }
                 };
 
-// Añade la solicitud a la cola de solicitudes
+                // Añade la solicitud a la cola de solicitudes
                 colaSolicitudes.add(solicitud);
             }
         });

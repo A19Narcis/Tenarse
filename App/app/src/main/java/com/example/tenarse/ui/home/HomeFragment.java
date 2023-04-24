@@ -31,6 +31,7 @@ import com.example.tenarse.ui.home.asynctask.MyAsyncTaskHomePosts;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
+import com.example.tenarse.ui.post.ViewPostFragment;
 import com.example.tenarse.ui.profile.ProfileFragment;
 import com.example.tenarse.ui.search.users.ListElementUser;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -266,6 +267,17 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void viewSelectedPost(String infoPost) {
         //Carregar el nou fragment amb les seves dades
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        ViewPostFragment viewPostFragment = new ViewPostFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("infoPost", infoPost);
+        bundle.putSerializable("fragment", "home");
+        viewPostFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.viewFragment, viewPostFragment);
+        fragmentTransaction.setReorderingAllowed(true);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
 }
