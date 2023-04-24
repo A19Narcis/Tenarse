@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         recyclerView = binding.rvHome;
 
-        chechIfNewPost();
+        //chechIfNewPost();
 
 
         // Obtener la referencia a la Toolbar de la MainActivity
@@ -138,7 +138,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                    chechIfNewPost();
+                    //chechIfNewPost();
                     binding.swipeRefreshLayout.setRefreshing(false);
             }
         });
