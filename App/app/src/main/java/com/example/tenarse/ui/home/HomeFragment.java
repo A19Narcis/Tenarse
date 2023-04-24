@@ -94,7 +94,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
          chechIfNewPost();
 
-
         // Obtener la referencia a la Toolbar de la MainActivity
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
 
@@ -139,7 +138,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                    chechIfNewPost();
+                    //chechIfNewPost();
                     binding.swipeRefreshLayout.setRefreshing(false);
             }
         });
