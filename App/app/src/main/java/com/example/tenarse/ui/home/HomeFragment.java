@@ -25,6 +25,7 @@ import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentHomeBinding;
 import com.example.tenarse.ui.home.adapters.MultiAdapter;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskHomePosts;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
@@ -91,7 +92,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         recyclerView = binding.rvHome;
 
-        chechIfNewPost();
+         chechIfNewPost();
 
 
         // Obtener la referencia a la Toolbar de la MainActivity
@@ -166,13 +167,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject post = jsonArray.getJSONObject(i);
                 if (post.getString("tipus").equals("image")){
-                    dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("user_img")));
+                    dataList.add(0, new ListElementImg(post.getString("_id"), post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("user_img")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
-                    dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"),  post.getString("user_img")));
+                    dataList.add(0, new ListElementDoubt(post.getString("_id"), post.getString("owner"), post.getString("titol"), post.getString("text"),  post.getString("user_img")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video1")){
-                    dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("user_img"), post.getString("url_video"), post.getString("text")));
+                    dataList.add(0, new ListElementVideo(post.getString("_id"), post.getString("owner"), post.getString("user_img"), post.getString("url_video"), post.getString("text")));
                     multiAdapter.notifyItemInserted(0);
                 }
             }
@@ -206,10 +207,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void selectUser(String username){
         //Recoger todos los datos del usuario que tiene ese `username` y luego cambiar de fragment para ver su perfil
-        String url_login = "http://10.0.2.2:3000/getSelectedUser";
+        String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
         JSONObject jsonBody = new JSONObject();
 
-        System.out.println("USERNAME: " + username);
 
         try {
             jsonBody.put("username", username);
@@ -217,11 +217,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             e.printStackTrace();
         }
 
-        MyAsyncTaskGetUser loginUser = new MyAsyncTaskGetUser(url_login, jsonBody);
-        loginUser.execute();
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
         String resultSearch = null;
         try {
-            resultSearch = loginUser.get();
+            resultSearch = selectedUser.get();
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -248,4 +248,25 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
+    public void selectPost(String idPost){
+        //Recoger todos los datos de un post y verlos en un fragment nuevo
+        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + idPost;
+        MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
+        getSinglePost.execute();
+        String resultSinglePost = null;
+        try {
+            resultSinglePost = getSinglePost.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        viewSelectedPost(resultSinglePost);
+
+    }
+
+    public void viewSelectedPost(String infoPost) {
+        //Carregar el nou fragment amb les seves dades
+    }
+
 }

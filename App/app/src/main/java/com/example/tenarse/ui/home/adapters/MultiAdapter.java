@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 
@@ -108,11 +109,27 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 ImageView userImageView = imageViewHolder.userImageView;
                 new HomeViewModel.DownloadImageTask(userImageView).execute(urlUserImg);
 
+                imageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mHomeFragment.selectPost(imgElement.getId());
+                    }
+                });
+
                 break;
             case TYPE_DOUBT:
                 ListElementDoubt doubtElement = (ListElementDoubt) dataList.get(position);
                 DoubtViewHolder doubtViewHolder = (DoubtViewHolder) holder;
                 doubtViewHolder.username.setText(doubtElement.getUsername());
+
+                doubtViewHolder.username.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Aquí
+                        mHomeFragment.selectUser(doubtViewHolder.username.getText().toString());
+                    }
+                });
+
                 doubtViewHolder.title.setText(doubtElement.getTitle());
                 doubtViewHolder.description.setText(doubtElement.getDescription());
 
@@ -120,12 +137,29 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 String urlUserDoubt = doubtElement.getUser_img_url().replace("localhost", "10.0.2.2");
                 ImageView userImageViewDoubt = doubtViewHolder.userImageView;
                 new HomeViewModel.DownloadImageTask(userImageViewDoubt).execute(urlUserDoubt);
+
+                doubtViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mHomeFragment.selectPost(doubtElement.getId());
+                    }
+                });
+
                 break;
 
             case TYPE_VIDEO:
                 ListElementVideo videoElement = (ListElementVideo) dataList.get(position);
                 VideoViewHolder videoViewHolder = (VideoViewHolder) holder;
                 videoViewHolder.username.setText(videoElement.getUsername());
+
+                videoViewHolder.username.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Aquí
+                        mHomeFragment.selectUser(videoViewHolder.username.getText().toString());
+                    }
+                });
+
                 if (videoElement.getPost_text().equals("")){
                     videoViewHolder.post_text.setVisibility(View.GONE);
                 } else {
