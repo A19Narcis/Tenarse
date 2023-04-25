@@ -37,25 +37,27 @@ app.use(cors({
 /* INSERT USUARI */
 app.post('/addNewUser', (req, res) => {
 
-    /*const usuari = {
+    const usuari = {
         email: req.body.email,
         username: req.body.username,
         password: CryptoJS.SHA256(req.body.passwd).toString(),
         url_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
         nombre: req.body.name,
         apellidos: req.body.surname,
-        fecha_nac: req.body.date
-    }*/
+        fecha_nac: req.body.date,
+        followers: [],
+        followings: []
+    }
 
-    const usuari = {
-        email: "email@gmail.com",
+    /*const usuari = {
+        email: "1email@1gmail.com",
         username: 'A19Narcis',
         password: CryptoJS.SHA256("Ausias_2003").toString(),
         url_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
         nombre: 'Narcis',
         apellidos: 'Gomez Carretero',
         fecha_nac: '28/08/2003'
-    }
+    }*/
 
     insertDB.insertUsuari(usuari, function (resultInsert) {
         res.send(resultInsert);
@@ -88,9 +90,9 @@ app.post('/getUser', (req, res) => {
 
 
 app.post('/getSelectedUser', (req, res) => {
-    var username = req.body.username
+    var email_username_id = req.body.username
 
-    readDB.getUser(username, (dades_user) => {
+    readDB.getUser(email_username_id, (dades_user) => {
         res.send(dades_user)
     })
 })
@@ -100,9 +102,12 @@ app.post('/newFollowing', (req, res) => {
 
     var followingSchema = {};
 
-    //_DevOps_ sigue a A19Narcis
-    var user_following = '_DevOps_'
-    var user_followed = 'A19Narcis'
+    //user_following sigue a user_followed
+    var user_following = req.body.user_following
+    var user_followed = req.body.user_followed
+
+    /*var user_following = 'A19Narcis'
+    var user_followed = 'UserTest'*/
 
     var userFollowedDades = ''
 
@@ -122,9 +127,12 @@ app.post('/newFollowing', (req, res) => {
 
 app.post('/deleteFollowing', (req, res) => {
 
-    //_DevOps_ deja de seguir a A19Narcis
-    var user_following = 'A19Narcis'
-    var user_removed = '_DevOps_'
+    //user_following deja de seguir a user_removed
+    var user_following = req.body.user_following
+    var user_removed = req.body.user_removed
+
+    /*var user_following = 'A19Narcis'
+    var user_removed = 'UserTest'*/
 
     updateDB.remFollowingUser(user_following, user_removed, () => {
         res.send({ stop_following: user_removed })
@@ -149,19 +157,19 @@ app.post('/addNewPost', (req, res) => {
     let tiempoActual = hora + ':' + minutos + ':' + segundos
 
     //Llamnar a las imagenes de los posts -> user + hora.png EX: A19Narcis_091232.png
-    /*const post = {
-        tipus: 'doubt',
+    const post = {
+        tipus: req.body.tipus,
         titol: req.body.title,
         text: req.body.description,
-        hastags: [],
-        url_img: '',
-        url_video: '',
+        hastags: req.body.hashtags,
+        url_img: req.body.imagen,
+        url_video: req.body.video,
         comentaris: [],
-        owner: "A19NarcisX",
-        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
+        owner: req.body.owner,
+        user_img: req.body.user_img,
         hora: tiempoActual
-    }*/
-    const post = {
+    }
+    /*const post = {
         tipus: 'doubt',
         titol: 'How to substract numeric and alphanumeric value in python?',
         text: 'I have 2 column with numeric and alphanumeric value. I want to apply substraction on numeric value in third column and keep aplhanumeric value as "Canadian". Please help',
@@ -171,7 +179,7 @@ app.post('/addNewPost', (req, res) => {
         owner: 'A19Narcis',
         user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
         hora: tiempoActual
-    }
+    }*/
     /*const post = {
         tipus: 'image',
         titol: '',

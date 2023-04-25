@@ -20,6 +20,8 @@ import com.example.tenarse.ui.search.questions.SearchQuestionsFragment;
 import com.example.tenarse.ui.search.users.ListElementUser;
 import com.example.tenarse.ui.search.users.SearchUsersFragment;
 
+import java.io.Serializable;
+
 public class SearchFragment extends Fragment {
 
     private FragmentSearchBinding binding;

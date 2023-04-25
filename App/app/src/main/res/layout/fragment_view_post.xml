@@ -229,7 +229,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_comentarios"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="300dp"
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="15dp"
                 app:layout_constraintEnd_toEndOf="@+id/card_view_rv_image"

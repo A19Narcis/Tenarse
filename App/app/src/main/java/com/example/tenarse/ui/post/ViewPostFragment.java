@@ -18,11 +18,13 @@ import android.view.ViewGroup;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentProfileBinding;
 import com.example.tenarse.databinding.FragmentViewPostBinding;
+import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.HomeFragment;
 import com.example.tenarse.ui.post.adapters.AdapterComentarios;
 import com.example.tenarse.ui.post.asynctask.MyAsyncTaskComment;
 import com.example.tenarse.ui.post.elements.Comentario;
 import com.example.tenarse.ui.search.SearchFragment;
+import com.example.tenarse.ui.user.UserFragment;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -43,6 +45,9 @@ public class ViewPostFragment extends Fragment {
     private AdapterComentarios adapterComentarios;
     private int numeroComentarios = 0;
 
+    GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+    JSONObject dadesUsuari = globalDadesUser.getDadesUser();
+
     String fragmentAnterior = "";
 
     @SuppressLint("SetTextI18n")
@@ -59,25 +64,7 @@ public class ViewPostFragment extends Fragment {
         binding.backToMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (fragmentAnterior.equals("home")){
-                    FragmentManager fragmentManager = getParentFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    HomeFragment homeFragment = new HomeFragment();
-                    fragmentTransaction.replace(R.id.viewFragment, homeFragment);
-                    fragmentTransaction.setReorderingAllowed(true);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-                } else if (fragmentAnterior.equals("perfil")){
-                    FragmentManager fragmentManager = getParentFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    SearchFragment searchFragment = new SearchFragment();
-                    fragmentTransaction.replace(R.id.viewFragment, searchFragment);
-                    fragmentTransaction.setReorderingAllowed(true);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-                } else if (fragmentAnterior.equals("personal")){
-                    System.out.println("Personal");
-                }
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
@@ -86,7 +73,6 @@ public class ViewPostFragment extends Fragment {
         if (args != null){
             infoPost = args.getString("infoPost");
             fragmentAnterior = args.getString("fragment");
-            System.out.println(infoPost);
         }
 
         try {
@@ -138,8 +124,8 @@ public class ViewPostFragment extends Fragment {
                         JSONObject commentBody = new JSONObject();
                         JSONObject innerComentari = new JSONObject();
                         try {
-                            innerComentari.put("user_img", "http://localhost:3000/uploads/user_img/default_user_img.png");
-                            innerComentari.put("user", "A19Narcis");
+                            innerComentari.put("user_img", dadesUsuari.getString("url_img"));
+                            innerComentari.put("user", dadesUsuari.getString("username"));
                             innerComentari.put("coment_text", binding.editTextComentario.getText().toString());
                             commentBody.put("id_publi", dadesPost.getString("_id"));
                             commentBody.put("comentari", innerComentari);

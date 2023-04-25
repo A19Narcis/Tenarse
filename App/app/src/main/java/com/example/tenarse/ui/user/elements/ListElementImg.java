@@ -5,11 +5,21 @@ public class ListElementImg {
     public String username;
     public String post_img_url;
     public String post_img_text;
+    public String post_img_id;
 
-    public ListElementImg(String username, String text, String post_url){
+    public ListElementImg(String username, String text, String post_url, String post_img_id){
         this.username = username;
         this.post_img_text = text;
         this.post_img_url = post_url;
+        this.post_img_id = post_img_id;
+    }
+
+    public String getPost_img_id() {
+        return post_img_id;
+    }
+
+    public void setPost_img_id(String post_img_id) {
+        this.post_img_id = post_img_id;
     }
 
     public String getUser_img_url() {

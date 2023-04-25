@@ -5,11 +5,21 @@ public class ListElementDoubt {
     public String username;
     public String title;
     public String description;
+    public String doubt_id;
 
-    public ListElementDoubt(String username, String title, String descr){
+    public ListElementDoubt(String username, String title, String descr, String doubt_id){
         this.username = username;
         this.title = title;
         this.description = descr;
+        this.doubt_id = doubt_id;
+    }
+
+    public String getDoubt_id() {
+        return doubt_id;
+    }
+
+    public void setDoubt_id(String doubt_id) {
+        this.doubt_id = doubt_id;
     }
 
     public String getUser_img_url() {

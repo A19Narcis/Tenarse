@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
+import com.example.tenarse.ui.profile.ProfileFragment;
+import com.example.tenarse.ui.user.UserFragment;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 
@@ -22,8 +24,17 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final int TYPE_DOUBT = 2;
     private final int TYPE_VIDEO = 3;
 
-    public MultiAdapter(List<Object> dataList) {
+    private UserFragment mUserFragment;
+    private ProfileFragment mProfileFragment;
+
+    public MultiAdapter(List<Object> dataList, UserFragment mUserFragment) {
         this.dataList = dataList;
+        this.mUserFragment = mUserFragment;
+    }
+
+    public MultiAdapter(List<Object> dataList, ProfileFragment mProfileFragment) {
+        this.dataList = dataList;
+        this.mProfileFragment = mProfileFragment;
     }
 
     @Override
@@ -58,10 +69,36 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case TYPE_IMAGE:
                 ListElementImg imgElement = (ListElementImg) dataList.get(position);
                 ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
+                imageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mUserFragment != null){
+                            mUserFragment.selectPost(imgElement.getPost_img_id());
+                        }
+
+                        if (mProfileFragment != null) {
+                            mProfileFragment.selectPost(imgElement.getPost_img_id());
+                        }
+                    }
+                });
                 break;
             case TYPE_DOUBT:
                 ListElementDoubt doubtElement = (ListElementDoubt) dataList.get(position);
                 DoubtViewHolder doubtViewHolder = (DoubtViewHolder) holder;
+
+                doubtViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mUserFragment != null){
+                            mUserFragment.selectPost(doubtElement.getDoubt_id());
+                        }
+
+                        if (mProfileFragment != null) {
+                            mProfileFragment.selectPost(doubtElement.getDoubt_id());
+                        }
+                    }
+                });
+
                 doubtViewHolder.title.setText(doubtElement.getTitle());
                 break;
         }

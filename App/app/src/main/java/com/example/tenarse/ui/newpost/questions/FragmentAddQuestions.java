@@ -17,8 +17,11 @@ import androidx.fragment.app.Fragment;
 
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
+import com.example.tenarse.globals.GlobalDadesUser;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.newpost.httpUploads.MyAsyncTaskQuestion;
 import com.example.tenarse.ui.register.MyAsyncTaskRegister;
+import com.example.tenarse.ui.search.users.ListElementUser;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
@@ -31,6 +34,9 @@ public class FragmentAddQuestions extends Fragment {
     EditText title;
     EditText bodyQuestion;
     Button submitBtnQuestion;
+
+    GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+    JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,23 +54,54 @@ public class FragmentAddQuestions extends Fragment {
             public void onClick(View view) {
                 JSONObject body = new JSONObject();
                 try {
+                    body.put("tipus", "doubt");
                     body.put("title", title.getText().toString());
                     body.put("description", bodyQuestion.getText().toString());
-                    body.put("hashtags", "{}");
+                    body.put("hashtags", "[]");
+                    body.put("imagen", "");
+                    body.put("video", "");
+                    body.put("owner", dadesUsuari.getString("username"));
+                    body.put("user_img", dadesUsuari.getString("url_img"));
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
 
-                MyAsyncTaskQuestion registerUser = new MyAsyncTaskQuestion(url_register, body);
-                registerUser.execute();
-                String resultRegister = null;
+                MyAsyncTaskQuestion addQuestionTask = new MyAsyncTaskQuestion(url_register, body);
+                addQuestionTask.execute();
+                String resultAddQuestion = null;
                 try {
-                    resultRegister = registerUser.get();
+                    resultAddQuestion = addQuestionTask.get();
                 } catch (ExecutionException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                if (!resultRegister.contains("false")){
-                    Toast.makeText(getContext(), "Subido!!!", Toast.LENGTH_SHORT).show();
+                if (!resultAddQuestion.contains("false")){
+                    Toast.makeText(getContext(), "¡Post subido!", Toast.LENGTH_SHORT).show();
+                    title.setText("");
+                    bodyQuestion.setText("");
+                    //Update global dades
+                    String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
+                    JSONObject jsonBody = new JSONObject();
+                    try {
+                        jsonBody.put("username", dadesUsuari.getString("username"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+                    selectedUser.execute();
+                    String resultSearch = null;
+                    try {
+                        resultSearch = selectedUser.get();
+                    } catch (ExecutionException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    try {
+                        JSONObject newDadesLogin = new JSONObject(resultSearch);
+                        GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+                        globalDadesUser.setDadesUser(newDadesLogin);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });

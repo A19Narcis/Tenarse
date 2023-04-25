@@ -1,9 +1,8 @@
-package com.example.tenarse.ui.newpost.httpUploads;
+package com.example.tenarse.ui.profile.asynctask;
 
 import android.os.AsyncTask;
 
 import com.example.tenarse.globals.GlobalDadesUser;
-import com.example.tenarse.ui.register.RegisterFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,14 +15,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MyAsyncTaskImage extends AsyncTask<Void, Void, String> {
+public class MyAsyncTaskFollowing extends AsyncTask<Void, Void, String> {
 
     private final String url;
     private final JSONObject jsonObject;
 
-    private final RegisterFragment registerFragment = new RegisterFragment();
-
-    public MyAsyncTaskImage(String url, JSONObject jsonObject) {
+    public MyAsyncTaskFollowing(String url, JSONObject jsonObject) {
         this.url = url;
         this.jsonObject = jsonObject;
     }
@@ -50,5 +47,6 @@ public class MyAsyncTaskImage extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
+
     }
 }

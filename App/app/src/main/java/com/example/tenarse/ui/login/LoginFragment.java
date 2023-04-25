@@ -79,16 +79,16 @@ public class LoginFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                /*MyAsyncTaskLogin loginUser = new MyAsyncTaskLogin(url_login, jsonBody);
+                MyAsyncTaskLogin loginUser = new MyAsyncTaskLogin(url_login, jsonBody);
                 loginUser.execute();
                 String resultLogin = null;
                 try {
                     resultLogin = loginUser.get();
                 } catch (ExecutionException | InterruptedException e) {
                     throw new RuntimeException(e);
-                }*/
+                }
 
-                if (/*!resultLogin.contains("false") ||*/ (email_username.equals("") && passwd.equals(""))){
+                if (!resultLogin.contains("false") || (email_username.equals("") && passwd.equals(""))){
                     binding.errorLoginText.setVisibility(View.GONE);
                     startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                     getActivity().finish();

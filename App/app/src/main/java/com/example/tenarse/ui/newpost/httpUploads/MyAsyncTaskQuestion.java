@@ -50,17 +50,6 @@ public class MyAsyncTaskQuestion extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        // Aquí puedes procesar la respuesta de la solicitud HTTP
-        registerFragment.setResultRegister(result);
-        if (!result.contains("false")){
-            System.out.println("Escribiendo datos globales del usuario...");
-            try {
-                JSONObject dadesUsuariNou = new JSONObject(result);
-                GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-                globalDadesUser.setDadesUser(dadesUsuariNou);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-        }
+
     }
 }

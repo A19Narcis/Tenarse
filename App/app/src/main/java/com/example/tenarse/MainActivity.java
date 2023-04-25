@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean isLogged = false;
 
-    //GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-    //JSONObject dadesUsuari = globalDadesUser.getDadesUser();
+    GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+    JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,10 +90,10 @@ public class MainActivity extends AppCompatActivity {
 
         mobileNavigation = findViewById(R.id.mobile_navigation);
 
-        //SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        //String lastActivity = sharedPreferences.getString("infoUser", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String lastActivity = sharedPreferences.getString("infoUser", "");
 
-        /*try {
+        try {
             if (dadesUsuari == null){
                 JSONObject jsonObject = new JSONObject(lastActivity);
                 globalDadesUser.setDadesUser(jsonObject);
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
-        }*/
+        }
     }
 
     @Override
@@ -128,10 +128,12 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         // Guardar el nombre de la actividad actual en la preferencia compartida
-        /*SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("lastActivity", "Menu");
-        editor.putString("infoUser", dadesUsuari.toString());
-        editor.apply();*/
+        GlobalDadesUser globalDadesExit = GlobalDadesUser.getInstance();
+        JSONObject dadesUsuariExit = globalDadesExit.getDadesUser();
+        editor.putString("infoUser", dadesUsuariExit.toString());
+        editor.apply();
     }
 }

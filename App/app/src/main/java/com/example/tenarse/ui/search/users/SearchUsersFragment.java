@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -43,7 +44,6 @@ public class SearchUsersFragment extends Fragment{
         myAdpater = new AdapterSearchUsers(dataSearchList, getContext(), new AdapterSearchUsers.OnItemClickListener() {
             @Override
             public void onItemClick(ListElementUser userClick) {
-                System.out.println("VAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMOS");
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 ProfileFragment profileFragment = new ProfileFragment();
@@ -94,12 +94,19 @@ public class SearchUsersFragment extends Fragment{
 
         try {
             JSONArray resultSearchJSONArray = new JSONArray(resultSearchUser);
-            for (int i = 0; i < resultSearchJSONArray.length(); i++) {
-                try {
-                    JSONObject user = resultSearchJSONArray.getJSONObject(i);
-                    dataSearchList.add(new ListElementUser(user.getString("url_img"), user.getString("username"), user.getString("nombre") + " " + user.getString("apellidos"), user.getString("followers").length(), user.getString("followings").length(), user.getJSONArray("publicacions")));
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
+            if (resultSearchJSONArray.length() == 0){
+                binding.rvSearchUsers.setVisibility(View.GONE);
+                binding.noUsersText.setVisibility(View.VISIBLE);
+            } else {
+                binding.rvSearchUsers.setVisibility(View.VISIBLE);
+                binding.noUsersText.setVisibility(View.GONE);
+                for (int i = 0; i < resultSearchJSONArray.length(); i++) {
+                    try {
+                        JSONObject user = resultSearchJSONArray.getJSONObject(i);
+                        dataSearchList.add(new ListElementUser(user.getString("_id"), user.getString("url_img"), user.getString("username"), user.getString("nombre") + " " + user.getString("apellidos"), user.getJSONArray("followers").length(), user.getJSONArray("followings").length(), user.getJSONArray("publicacions")));
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         } catch (JSONException e) {

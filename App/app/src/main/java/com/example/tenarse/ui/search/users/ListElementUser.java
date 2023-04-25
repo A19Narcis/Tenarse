@@ -5,6 +5,8 @@ import org.json.JSONArray;
 import java.io.Serializable;
 
 public class ListElementUser implements Serializable {
+
+    public String id_user;
     public String user_url_img;
     public String search_username;
     public String fullname;
@@ -12,13 +14,22 @@ public class ListElementUser implements Serializable {
     public int following_search;
     public JSONArray publicacions_search;
 
-    public ListElementUser(String user_url_img, String username, String fullname, int followers_search, int following_search, JSONArray posts) {
+    public ListElementUser(String id_user, String user_url_img, String username, String fullname, int followers_search, int following_search, JSONArray posts) {
+        this.id_user = id_user;
         this.user_url_img = user_url_img;
         this.search_username = username;
         this.fullname = fullname;
         this.followers_search = followers_search;
         this.following_search = following_search;
         this.publicacions_search = posts;
+    }
+
+    public String getId_user() {
+        return id_user;
+    }
+
+    public void setId_user(String id_user) {
+        this.id_user = id_user;
     }
 
     public String getUser_url_img() {

@@ -40,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -228,7 +229,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         try {
             JSONObject dadesLogin = new JSONObject(resultSearch);
-            ListElementUser userSelected = new ListElementUser(dadesLogin.getString("url_img"), dadesLogin.getString("username"), dadesLogin.getString("nombre") + " " + dadesLogin.getString("apellidos"), dadesLogin.getString("followers").length(), dadesLogin.getString("followings").length(), dadesLogin.getJSONArray("publicacions"));
+            ListElementUser userSelected = new ListElementUser(dadesLogin.getString("_id"), dadesLogin.getString("url_img"), dadesLogin.getString("username"), dadesLogin.getString("nombre") + " " + dadesLogin.getString("apellidos"), dadesLogin.getJSONArray("followers").length(), dadesLogin.getJSONArray("followings").length(), dadesLogin.getJSONArray("publicacions"));
             viewSelectedUser(userSelected);
         } catch (JSONException e) {
             throw new RuntimeException(e);
@@ -241,7 +242,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         ProfileFragment profileFragment = new ProfileFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("userInfo", userSelected);
-        bundle.putSerializable("fragment", "home");
         profileFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.viewFragment, profileFragment);
         fragmentTransaction.setReorderingAllowed(true);
@@ -268,16 +268,15 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void viewSelectedPost(String infoPost) {
         //Carregar el nou fragment amb les seves dades
         FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         ViewPostFragment viewPostFragment = new ViewPostFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
-        bundle.putSerializable("fragment", "home");
+        transaction.replace(R.id.viewFragment, viewPostFragment);
         viewPostFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.viewFragment, viewPostFragment);
-        fragmentTransaction.setReorderingAllowed(true);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        transaction.setReorderingAllowed(true);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 }

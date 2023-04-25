@@ -116,6 +116,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 });
 
+
                 break;
             case TYPE_DOUBT:
                 ListElementDoubt doubtElement = (ListElementDoubt) dataList.get(position);

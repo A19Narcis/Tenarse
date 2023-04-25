@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -26,6 +28,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentUserBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.ui.post.ViewPostFragment;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
 import com.example.tenarse.ui.user.adapters.MultiAdapter;
@@ -37,6 +42,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class UserFragment extends Fragment {
 
@@ -49,6 +55,9 @@ public class UserFragment extends Fragment {
     NestedScrollView nestedScrollView;
 
     MultiAdapter multiAdapter;
+
+    private GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+    private JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
     private Runnable mRunnable = new Runnable() {
         private int mPreviousScrollPosition = -1;
@@ -73,7 +82,7 @@ public class UserFragment extends Fragment {
                 new ViewModelProvider(this).get(UserViewModel.class);
 
         dataList = new ArrayList<>();
-        multiAdapter = new MultiAdapter(dataList);
+        multiAdapter = new MultiAdapter(dataList, UserFragment.this);
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -105,13 +114,15 @@ public class UserFragment extends Fragment {
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshUserInfo();
+                try {
+                    refreshUserInfo(dadesUsuari.getString("_id"));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
                 binding.swipeRefreshLayout.setRefreshing(false);
             }
         });
 
-        GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-        JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
         try {
             binding.userName.setText("@" + dadesUsuari.getString("username"));
@@ -163,11 +174,11 @@ public class UserFragment extends Fragment {
             for (int i = 0; i < publicacions.length(); i++) {
                 JSONObject post = publicacions.getJSONObject(i);
                 if (post.getString("tipus").equals("image")){
-                    dataList.add(new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img")));
+                    dataList.add(new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
                 } else if (post.getString("tipus").equals("video")){
                     //Añadir video
                 } else if (post.getString("tipus").equals("doubt")){
-                    dataList.add(new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text")));
+                    dataList.add(new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
                 }
             }
         } catch (JSONException e) {
@@ -207,13 +218,105 @@ public class UserFragment extends Fragment {
         }
     }
 
-    private void refreshUserInfo(){
-        Toast.makeText(getContext(), "New info", Toast.LENGTH_SHORT).show();
+    private void refreshUserInfo(String id){
+        //Actualitzar el perfil
+        //******* UPDATE DATOS USER **********
+        String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("username", id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = selectedUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            JSONObject newDadesUser = new JSONObject(resultSearch);
+            //Canviar els valors antics de l'usuari
+            binding.userName.setText("@" + newDadesUser.getString("username"));
+            Picasso.with(getContext()).load(newDadesUser.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
+            int new_numero_followings = newDadesUser.getJSONArray("followings").length();
+            if (new_numero_followings >= 10000 && new_numero_followings < 999950) {
+                String followingsString = formatFollowers10(new_numero_followings);
+                binding.userFolloweds.setText(followingsString); // 10.0 k
+            } else if (new_numero_followings >= 999950){
+                String followingsString = formatFollowers100(new_numero_followings);
+                binding.userFolloweds.setText(followingsString); // 10.0 M
+            } else {
+                binding.userFolloweds.setText(Integer.toString(new_numero_followings));
+            }
+
+            int new_numero_followers = newDadesUser.getJSONArray("followers").length();
+            if (new_numero_followers >= 10000 && new_numero_followers < 999950) {
+                String followingsString = formatFollowers10(new_numero_followers);
+                binding.userFollowers.setText(followingsString); // 10.0 k
+            } else if (new_numero_followers >= 999950){
+                String followingsString = formatFollowers100(new_numero_followers);
+                binding.userFollowers.setText(followingsString); // 10.0 M
+            } else {
+                binding.userFollowers.setText(Integer.toString(new_numero_followers));
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            JSONArray new_publicacions = new JSONArray(dadesUsuari.getString("publicacions"));
+            for (int i = 0; i < new_publicacions.length(); i++) {
+                JSONObject post = new_publicacions.getJSONObject(i);
+                if (post.getString("tipus").equals("image")){
+                    dataList.add(new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                } else if (post.getString("tipus").equals("video")){
+                    //Añadir video
+                } else if (post.getString("tipus").equals("doubt")){
+                    dataList.add(new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        //******* UPDATE DATOS USER **********
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void selectPost(String post_img_id) {
+        //Recoger todos los datos de un post y verlos en un fragment nuevo
+        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + post_img_id;
+        MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
+        getSinglePost.execute();
+        String resultSinglePost = null;
+        try {
+            resultSinglePost = getSinglePost.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        viewSelectedPost(resultSinglePost);
+    }
+
+    public void viewSelectedPost(String infoPost) {
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        ViewPostFragment viewPostFragment = new ViewPostFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("infoPost", infoPost);
+        transaction.replace(R.id.viewFragment, viewPostFragment);
+        viewPostFragment.setArguments(bundle);
+        transaction.setReorderingAllowed(true);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
