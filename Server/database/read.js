@@ -3,15 +3,19 @@ const { Post } = require('./connection')
 const { Chat } = require('./connection')
 
 
-const getUser = async (email_username_id, callback) => {
+const getUser = async (email_username, callback) => {
     const userSelected = await User.findOne({ 
         $or: [
-          { username: email_username_id },
-          { email: email_username_id },
-          { _id: email_username_id }
+          { username: email_username },
+          { email: email_username }
         ]
       });
     callback(userSelected);
+}
+
+const getUserByID = async (id, callback) => {
+    const userID = await User.findOne({ _id: id })
+    callback(userID);
 }
 
 const getUsers = async (text, callback) => {
@@ -38,6 +42,7 @@ const getPosts = async (callback) => {
 
 module.exports = {
     getUser,
+    getUserByID,
     getUsers,
     getChat,
     getPublicacio,

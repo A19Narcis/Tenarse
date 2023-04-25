@@ -157,6 +157,8 @@ public class ProfileFragment extends Fragment {
                         e.printStackTrace();
                     }
 
+                    System.out.println(body);
+
                     MyAsyncTaskFollowing startFollowing = new MyAsyncTaskFollowing(url, body);
                     startFollowing.execute();
                     String resultFollowing = null;
@@ -403,10 +405,10 @@ public class ProfileFragment extends Fragment {
     private void refreshUserInfo(String id){
         //Actualitzar el perfil
         //******* UPDATE DATOS USER **********
-        String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
+        String url_selectUser = "http://10.0.2.2:3000/getUserById";
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("username", id);
+            jsonBody.put("id_user", id);
         } catch (JSONException e) {
             e.printStackTrace();
         }

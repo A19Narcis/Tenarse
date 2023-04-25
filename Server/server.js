@@ -99,6 +99,13 @@ app.post('/getSelectedUser', (req, res) => {
     })
 })
 
+app.post('/getUserById', (req, res) => {
+    var id = req.body.id_user;
+    readDB.getUserByID(id, (dades_user) => {
+        res.send(dades_user)
+    })
+})
+
 /* FOLLOWERS & FOLLOWING */
 app.post('/newFollowing', (req, res) => {
 
@@ -143,7 +150,7 @@ app.post('/deleteFollowing', (req, res) => {
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'uploads')
+      cb(null, 'uploads/images')
     },
     filename: function (req, file, cb) {
     let fecha = new Date();
