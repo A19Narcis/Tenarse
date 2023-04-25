@@ -9,6 +9,8 @@ const deleteDB = require('./database/delete')
 const CryptoJS = require('crypto-js');
 const app = express();
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const { log } = require('console');
 
 const PORT = 3000
 
@@ -138,6 +140,118 @@ app.post('/deleteFollowing', (req, res) => {
         res.send({ stop_following: user_removed })
     })
 })
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+    let fecha = new Date();
+    let dia = fecha.getDate();
+    let mes = fecha.getMonth() + 1;
+    let anio = fecha.getFullYear();
+    let hora = fecha.getHours();
+    let minutos = fecha.getMinutes();
+    let segundos = fecha.getSeconds();
+    let miliseconds = fecha.getMilliseconds();
+    if (hora < 10) {
+        hora = '0' + hora;
+    }
+    if (minutos < 10) {
+        minutos = '0' + minutos;
+    }
+    if (segundos < 10) {
+        segundos = '0' + segundos;
+    }
+    let tiempoActual = dia + "_" + mes + "_" + anio + "_" + hora + '_' + minutos + '_' + segundos + "_" + miliseconds
+      cb(null, file.originalname + "-" + tiempoActual +'.jpg')
+      log(file);
+    }
+})
+
+var upload = multer({ storage: storage });
+
+app.post('/uploadfile', upload.single('postImage'), (req, res, next) => {
+    const file = req.file;    
+    if(!file){
+        const error = new Error("Please upload a file");
+        error.httpStatusCode = 400;
+        console.log("Error", "please upload a file");
+        res.send({code:500, msg:error});
+        return next({code:500, msg:error});
+    }
+    res.send({code:200, msg:file});
+});
+
+/* INSERT PUBLICACIO */
+function addPost (req, res) {
+    let fecha = new Date();
+    let hora = fecha.getHours();
+    let minutos = fecha.getMinutes();
+    let segundos = fecha.getSeconds();
+    if (hora < 10) {
+        hora = '0' + hora;
+    }
+    if (minutos < 10) {
+        minutos = '0' + minutos;
+    }
+    if (segundos < 10) {
+        segundos = '0' + segundos;
+    }
+    let tiempoActual = hora + ':' + minutos + ':' + segundos
+
+    //Llamnar a las imagenes de los posts -> user + hora.png EX: A19Narcis_091232.png
+    /*const post = {
+        tipus: 'doubt',
+        titol: req.body.title,
+        text: req.body.description,
+        hastags: [],
+        url_img: '',
+        url_video: '',
+        comentaris: [],
+        owner: "A19NarcisX",
+        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
+        hora: tiempoActual
+    }*/
+    const post = {
+        tipus: 'doubt',
+        titol: 'How to substract numeric and alphanumeric value in python?',
+        text: 'I have 2 column with numeric and alphanumeric value. I want to apply substraction on numeric value in third column and keep aplhanumeric value as "Canadian". Please help',
+        url_img: '',
+        url_video: '',
+        comentaris: [],
+        owner: 'A19Narcis',
+        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
+        hora: tiempoActual
+    }
+    /*const post = {
+        tipus: 'image',
+        titol: '',
+        text: 'Mi primer post en esta red social.',
+        url_img: 'http://localhost:3000/uploads/images/JavaScript_code.png', 
+        url_video: '',
+        comentaris: [],
+        owner: 'A19Narcis',
+        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
+        hora: tiempoActual
+    }*/
+    /*const post = {
+        tipus: 'video',
+        titol: '',
+        text: 'Se viene...',
+        url_img: '',
+        url_video: 'http://localhost:3000/uploads/videos/videoTest.mp4',
+        comentaris: [],
+        owner: 'A19NarcisX',
+        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
+        hora: tiempoActual
+    }*/
+
+    insertDB.insertPost(post, function () {
+        res.send({ success: true });
+    })
+}
+
 
 /* INSERT PUBLICACIO */
 app.post('/addNewPost', (req, res) => {
