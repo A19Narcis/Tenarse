@@ -5,14 +5,11 @@ import static android.app.Activity.RESULT_OK;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.GestureDetector;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,30 +18,33 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
-import com.example.tenarse.ui.home.adapters.MultiAdapter;
+import com.example.tenarse.httpRetrofit.ApiService;
 import com.example.tenarse.ui.newpost.adapters.HashtagAdapter;
 import com.example.tenarse.widgets.CropperActivity;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-public class FragmentAddImages extends Fragment{
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
+import java.io.File;
+
+public class FragmentAddImages extends Fragment{
     ImageView image;
     CardView cardView;
 
@@ -62,6 +62,9 @@ public class FragmentAddImages extends Fragment{
 
     ArrayList<String> arrayRecycler = new ArrayList<>();
 
+    String pathImg;
+
+    ApiService apiService;
     private static final int GALLERY_REQUEST_CODE = 1;
 
     @Override
@@ -88,6 +91,8 @@ public class FragmentAddImages extends Fragment{
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(hashtagAdapter);
 
+        initRetrofitClient();
+
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -96,7 +101,6 @@ public class FragmentAddImages extends Fragment{
                 hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
                 adapter.remove(seleccion);
                 adapter.notifyDataSetChanged();
-                System.out.println(arrayRecycler);
                 autoCompleteTextView.setText("");
                 autoCompleteTextView.setHint(autoCompleteTextView.getHint());
                 // Cierra la lista de autocompletado
@@ -114,48 +118,50 @@ public class FragmentAddImages extends Fragment{
             }
         });
 
+
         submitBtnImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap imagenBitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
-
-                // Convierte la imagen a un array de bytes
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                imagenBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte[] imagenBytes = stream.toByteArray();
-
-                // Crea una cola de solicitudes HTTP
-                RequestQueue colaSolicitudes = Volley.newRequestQueue(getContext());
-
-                // URL del servidor Node.js
-                String urlServidor = "http://10.0.2.2:3000/pruebaImg";
-
-                // Crea una solicitud POST
-                StringRequest solicitud = new StringRequest(Request.Method.POST, urlServidor,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                System.out.println("CONEXIÓN OKEY");
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                error.printStackTrace();
-                            }
-                        }) {
+                File file = new File(pathImg);
+                if (file.exists()) {
+                    System.out.println("EXISTEEEEE");
+                } else {
+                    System.out.println("NOOOOOOOOOOOOOOOOOO EXISTE");
+                }
+                RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("postImage", file.getName(), reqFile);
+                RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "postImage");
+                Call<ResponseBody> req = apiService.postImage(body, name);
+                req.enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public byte[] getBody() {
-                        return imagenBytes; // Establece los bytes de la imagen como el cuerpo de la solicitud
-                    }
-                };
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-// Añade la solicitud a la cola de solicitudes
-                colaSolicitudes.add(solicitud);
+                        System.out.println(response.body().toString());
+
+                        if (response.code() == 200) {
+                            System.out.println("SUBIDAAAAAA");
+                        }
+
+                        Toast.makeText(getContext(), response.code() + " ", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        System.out.println("ERROOOOOOR");
+                        Toast.makeText(getContext(), "Request failed", Toast.LENGTH_SHORT).show();
+                        t.printStackTrace();
+                    }
+                });
             }
         });
 
         return rootView;
+    }
+
+    private void initRetrofitClient(){
+        OkHttpClient client = new OkHttpClient.Builder().build();
+
+        apiService = new Retrofit.Builder().baseUrl("http://10.0.2.2:3000").client(client).build().create(ApiService.class);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -176,11 +182,15 @@ public class FragmentAddImages extends Fragment{
             intent.putExtra("DATA", selectedImage.toString());
             startActivityForResult(intent, 101);
         } else if (resultCode == -1 && requestCode == 101) {
-            String result = data.getStringExtra("RESULT");
+            pathImg = data.getStringExtra("RESULT");
+
             Uri resultUri=null;
-            if(result!=null){
-                resultUri=Uri.parse(result);
+            if(pathImg!=null){
+                resultUri=Uri.parse(pathImg);
             }
+            String fileName = pathImg.substring(pathImg.lastIndexOf("/") + 1);
+            pathImg = getContext().getCacheDir() + "/" + fileName;
+            System.out.println(pathImg);
             image.setImageURI(resultUri);
             Bitmap imagenBitmap = BitmapFactory.decodeFile(resultUri.getPath());
 
