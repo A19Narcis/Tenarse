@@ -9,6 +9,8 @@ const deleteDB = require('./database/delete')
 const CryptoJS = require('crypto-js');
 const app = express();
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const { log } = require('console');
 
 const PORT = 3000
 
@@ -124,6 +126,29 @@ app.post('/deleteFollowing', (req, res) => {
 
 })
 
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.fieldname + '-' + Date.now()+'.jpg')
+    }
+})
+
+var upload = multer({ storage: storage });
+
+app.post('/uploadfile', upload.single('postImage'), (req, res, next) => {
+    const file = req.file
+    if(!file){
+        const error = new Error("Please upload a file");
+        error.httpStatusCode = 400;
+        console.log("Error", "please upload a file");
+        res.send({code:500, msg:error});
+        return next({code:500, msg:error});
+    }
+    res.send({code:200, msg:file});
+});
+
 /* INSERT PUBLICACIO */
 app.post('/addNewPost', (req, res) => {
     let fecha = new Date();
@@ -158,7 +183,7 @@ app.post('/addNewPost', (req, res) => {
         tipus: 'doubt',
         titol: 'How to substract numeric and alphanumeric value in python?',
         text: 'I have 2 column with numeric and alphanumeric value. I want to apply substraction on numeric value in third column and keep aplhanumeric value as "Canadian". Please help',
-        url_img: '',
+¡'9t       url_img: '',
         url_video: '',
         comentaris: [],
         owner: 'A19Narcis',
