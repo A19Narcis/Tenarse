@@ -1,16 +1,27 @@
 package com.example.tenarse.ui.home.elements;
 
 public class ListElementDoubt {
+
+    public String id;
     public String user_img_url;
     public String username;
     public String title;
     public String description;
 
-    public ListElementDoubt(String username, String title, String descr, String userImg){
+    public ListElementDoubt(String id, String username, String title, String descr, String userImg){
+        this.id = id;
         this.username = username;
         this.title = title;
         this.description = descr;
         this.user_img_url = userImg;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUser_img_url() {

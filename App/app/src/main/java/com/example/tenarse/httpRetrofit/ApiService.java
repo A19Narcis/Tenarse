@@ -13,5 +13,5 @@ public interface ApiService {
 
     @Multipart
     @POST("/uploadfile")
-    Call<ResponseBody> postImage(@Part MultipartBody.Part image, @Part("postImage") RequestBody name);
+    Call<ResponseBody> postImage(@Part MultipartBody.Part image, @Part("postImage") RequestBody name, @Part("PostJson") RequestBody jsonBody);
 }

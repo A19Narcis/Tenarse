@@ -145,9 +145,7 @@ public class ProfileFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             userInfo = (ListElementUser) args.getSerializable("userInfo");
-            System.out.println("USER: " + userInfo.toString());
             fragmentAnterior = args.getString("fragment");
-            System.out.println(fragmentAnterior);
         }
 
 

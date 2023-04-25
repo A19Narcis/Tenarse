@@ -30,6 +30,9 @@ import com.example.tenarse.httpRetrofit.ApiService;
 import com.example.tenarse.ui.newpost.adapters.HashtagAdapter;
 import com.example.tenarse.widgets.CropperActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import okhttp3.MediaType;
@@ -128,14 +131,27 @@ public class FragmentAddImages extends Fragment{
                 } else {
                     System.out.println("NOOOOOOOOOOOOOOOOOO EXISTE");
                 }
-                RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
-                MultipartBody.Part body = MultipartBody.Part.createFormData("postImage", file.getName(), reqFile);
+
+// Crear un objeto JSONObject y agregar los campos necesarios
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("id", "1234");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+// Crear un RequestBody a partir del JSON
+                RequestBody jsonBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
+                RequestBody postImg = RequestBody.create(MediaType.parse("image/*"), file);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("postImage", "idUsuario", postImg);
                 RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "postImage");
-                Call<ResponseBody> req = apiService.postImage(body, name);
+
+// Enviar la solicitud POST con el multipart y el JSON como parte del cuerpo de la solicitud
+                Call<ResponseBody> req = apiService.postImage(body, name, jsonBody);
+
                 req.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
                         System.out.println(response.body().toString());
 
                         if (response.code() == 200) {
@@ -152,6 +168,7 @@ public class FragmentAddImages extends Fragment{
                         t.printStackTrace();
                     }
                 });
+
             }
         });
 

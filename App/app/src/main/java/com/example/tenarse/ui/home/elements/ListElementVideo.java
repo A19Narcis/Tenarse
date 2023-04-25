@@ -1,16 +1,28 @@
 package com.example.tenarse.ui.home.elements;
 
 public class ListElementVideo {
+
+    public String id;
     public String user_img_url;
     public String username;
     public String post_video_url;
     public String post_text;
 
-    public ListElementVideo(String username, String userImg, String videoURL, String textPost){
+    public ListElementVideo(String id, String username, String userImg, String videoURL, String textPost){
+        this.id = id;
         this.username = username;
         this.user_img_url = userImg;
         this.post_video_url = videoURL;
         this.post_text = textPost;
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getPost_text() {
