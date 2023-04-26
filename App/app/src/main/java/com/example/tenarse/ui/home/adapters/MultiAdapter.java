@@ -146,17 +146,24 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 });
 
+
+                if (!doubtElement.isLiked()){
+                    doubtViewHolder.likeImage.setImageResource(R.drawable.no_like);
+                } else if (doubtElement.isLiked()) {
+                    doubtViewHolder.likeImage.setImageResource(R.drawable.like);
+                }
+
                 doubtViewHolder.likeImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (doubtViewHolder.liked){
-                            doubtViewHolder.likeImage.setImageResource(R.drawable.no_like);
-                            doubtViewHolder.liked = false;
+                        if (!doubtElement.isLiked()){
                             mHomeFragment.addLike(doubtElement.getId());
-                        } else {
                             doubtViewHolder.likeImage.setImageResource(R.drawable.like);
-                            doubtViewHolder.liked = true;
+                            doubtElement.setLiked(true);
+                        } else if (doubtElement.isLiked()) {
                             mHomeFragment.removeLike(doubtElement.getId());
+                            doubtViewHolder.likeImage.setImageResource(R.drawable.no_like);
+                            doubtElement.setLiked(false);
                         }
                     }
                 });
@@ -207,7 +214,6 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ImageView userImageView;
         TextView username;
         TextView post_text;
-        boolean liked;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
@@ -215,7 +221,6 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             userImageView = itemView.findViewById(R.id.rv_userImage); //100px
             username = itemView.findViewById(R.id.rv_username);
             post_text = itemView.findViewById(R.id.rv_post_text);
-            liked = false;
         }
     }
 
@@ -225,7 +230,6 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView description;
         ImageView userImageView;
         ImageView likeImage;
-        boolean liked;
 
 
         public DoubtViewHolder(View itemView) {
@@ -235,7 +239,6 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             description = itemView.findViewById(R.id.rv_description);
             userImageView = itemView.findViewById(R.id.rv_userImage);
             likeImage = itemView.findViewById(R.id.like_image);
-            liked = false;
         }
     }
 

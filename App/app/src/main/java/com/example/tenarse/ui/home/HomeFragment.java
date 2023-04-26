@@ -1,5 +1,7 @@
 package com.example.tenarse.ui.home;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -69,8 +71,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private Object resultNewPosts;
     private int resultLengthPost;
 
-    private GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-    private JSONObject dadesUser = globalDadesUser.getDadesUser();
+    private GlobalDadesUser globalDadesUser;
+    private JSONObject dadesUser;
 
     private Runnable mRunnable = new Runnable() {
         @Override
@@ -93,11 +95,28 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         MainActivity mainActivity = (MainActivity) getActivity();
 
-
         dataList = new ArrayList<>();
         multiAdapter = new MultiAdapter(dataList, getContext(), HomeFragment.this);
 
         recyclerView = binding.rvHome;
+
+        globalDadesUser = GlobalDadesUser.getInstance();
+
+        if (dadesUser == null){
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+            String dadesUserMyPrefs = sharedPreferences.getString("infoUser", "");
+
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(dadesUserMyPrefs);
+                globalDadesUser.setDadesUser(jsonObject);
+                dadesUser = globalDadesUser.getDadesUser();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
 
          chechIfNewPost();
 
@@ -177,7 +196,19 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     System.out.println(post.getString("url_img"));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
-                    dataList.add(0, new ListElementDoubt(post.getString("_id"), post.getString("owner"), post.getString("titol"), post.getString("text"),  post.getString("user_img")));
+                    boolean isLiked = false;
+                    ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), post.getString("owner"), post.getString("titol"), post.getString("text"),  post.getString("user_img"), post.getJSONArray("likes"));
+                    listElementDoubt.setLiked(false);
+                    for (int j = 0; j < listElementDoubt.getLikes().length() && !isLiked; j++) {
+                        System.out.println("ID DE LA PERSONA LIKE: " + listElementDoubt.getLikes().get(j).toString());
+                        System.out.println("ID DE LA PERSONA AQUI: " + dadesUser.getString("_id"));
+                        if (listElementDoubt.getLikes().get(j).toString().equals(dadesUser.getString("_id"))){
+                            System.out.println("LIKE MIO");
+                            isLiked = true;
+                            listElementDoubt.setLiked(true);
+                        }
+                    }
+                    dataList.add(0, listElementDoubt);
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video1")){
                     dataList.add(0, new ListElementVideo(post.getString("_id"), post.getString("owner"), post.getString("user_img"), post.getString("url_video"), post.getString("text")));
@@ -286,8 +317,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         transaction.commit();
     }
 
+
+
     public void addLike(String idPost) {
         //Thread para dar like
+        dadesUser = globalDadesUser.getDadesUser();
         String url = "http://10.0.2.2:3000/newLike";
         JSONObject body = new JSONObject();
         try {
@@ -309,6 +343,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void removeLike(String idPost) {
         //Quitar like
+        dadesUser = globalDadesUser.getDadesUser();
         String url = "http://10.0.2.2:3000/removeLike";
         JSONObject body = new JSONObject();
         try {
