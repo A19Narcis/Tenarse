@@ -190,6 +190,12 @@ app.post('/uploadfile', upload.single('postImage'), (req, res, next) => {
     addPost(JSON.parse(req.body.PostJson), file.path);
 });
 
+app.post('/addPostDubt', (req, res) => {
+    log(req.body);
+    addPost(req.body);
+    res.send({code:200});
+});
+
 /* INSERT PUBLICACIO */
 function addPost (body, postUrl) {
     let fecha = new Date();
@@ -207,21 +213,41 @@ function addPost (body, postUrl) {
     }
     let tiempoActual = hora + ':' + minutos + ':' + segundos
     let URLServer = "http://10.0.2.2:3000/";
-    log(postUrl);
 
     //Llamnar a las imagenes de los posts -> user + hora.png EX: A19Narcis_091232.png
-    const post = {
-        tipus: body.type,
-        titol: body.title,
-        text: body.text,
-        hastags: body.hashtags,
-        url_img: URLServer + postUrl,
-        url_video: '',
-        comentaris: body.comments,
-        owner: body.owner,
-        user_img: body.user_img,
-        hora: tiempoActual
+    var post;
+    switch(body.type){
+        case("image"):
+        post = {
+            tipus: body.type,
+            titol: body.title,
+            text: body.text,
+            hastags: body.hashtags,
+            url_img: URLServer + postUrl,
+            url_video: '',
+            comentaris: body.comments,
+            owner: body.owner,
+            user_img: body.user_img,
+            hora: tiempoActual
+        }
+        break;
+        case("doubt"):
+        post = {
+            tipus: body.type,
+            titol: body.title,
+            text: body.text,
+            hastags: body.hashtags,
+            url_img: '',
+            url_video: '',
+            comentaris: body.comments,
+            owner: body.owner,
+            user_img: body.user_img,
+            hora: tiempoActual
+        }
+        break;
+
     }
+    
     /*const post = {
         tipus: 'doubt',
         titol: 'How to substract numeric and alphanumeric value in python?',
