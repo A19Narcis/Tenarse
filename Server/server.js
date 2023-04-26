@@ -172,14 +172,13 @@ var storage = multer.diskStorage({
     }
     let tiempoActual = dia + "_" + mes + "_" + anio + "_" + hora + '_' + minutos + '_' + segundos + "_" + miliseconds
       cb(null, file.originalname + "-" + tiempoActual +'.jpg')
-      log(file);
     }
 })
 
 var upload = multer({ storage: storage });
 
 app.post('/uploadfile', upload.single('postImage'), (req, res, next) => {
-    const file = req.file;    
+    const file = req.file;
     if(!file){
         const error = new Error("Please upload a file");
         error.httpStatusCode = 400;
@@ -188,10 +187,11 @@ app.post('/uploadfile', upload.single('postImage'), (req, res, next) => {
         return next({code:500, msg:error});
     }
     res.send({code:200, msg:file});
+    addPost(JSON.parse(req.body.PostJson), file.path);
 });
 
 /* INSERT PUBLICACIO */
-function addPost (req, res) {
+function addPost (body, postUrl) {
     let fecha = new Date();
     let hora = fecha.getHours();
     let minutos = fecha.getMinutes();
@@ -206,21 +206,23 @@ function addPost (req, res) {
         segundos = '0' + segundos;
     }
     let tiempoActual = hora + ':' + minutos + ':' + segundos
+    let URLServer = "http://10.0.2.2:3000/";
+    log(postUrl);
 
     //Llamnar a las imagenes de los posts -> user + hora.png EX: A19Narcis_091232.png
-    /*const post = {
-        tipus: 'doubt',
-        titol: req.body.title,
-        text: req.body.description,
-        hastags: [],
-        url_img: '',
-        url_video: '',
-        comentaris: [],
-        owner: "A19NarcisX",
-        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-        hora: tiempoActual
-    }*/
     const post = {
+        tipus: body.type,
+        titol: body.title,
+        text: body.text,
+        hastags: body.hashtags,
+        url_img: URLServer + postUrl,
+        url_video: '',
+        comentaris: body.comments,
+        owner: body.owner,
+        user_img: body.user_img,
+        hora: tiempoActual
+    }
+    /*const post = {
         tipus: 'doubt',
         titol: 'How to substract numeric and alphanumeric value in python?',
         text: 'I have 2 column with numeric and alphanumeric value. I want to apply substraction on numeric value in third column and keep aplhanumeric value as "Canadian". Please help',
@@ -230,7 +232,7 @@ function addPost (req, res) {
         owner: 'A19Narcis',
         user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
         hora: tiempoActual
-    }
+    }*/
     /*const post = {
         tipus: 'image',
         titol: '',
@@ -254,9 +256,8 @@ function addPost (req, res) {
         hora: tiempoActual
     }*/
 
-    insertDB.insertPost(post, function () {
-        res.send({ success: true });
-    })
+    insertDB.insertPost(post, () =>
+     {log("subido!!!")})
 }
 
 

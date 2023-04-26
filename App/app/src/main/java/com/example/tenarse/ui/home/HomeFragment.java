@@ -169,6 +169,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 JSONObject post = jsonArray.getJSONObject(i);
                 if (post.getString("tipus").equals("image")){
                     dataList.add(0, new ListElementImg(post.getString("_id"), post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("user_img")));
+                    System.out.println(post.getString("url_img"));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
                     dataList.add(0, new ListElementDoubt(post.getString("_id"), post.getString("owner"), post.getString("titol"), post.getString("text"),  post.getString("user_img")));
