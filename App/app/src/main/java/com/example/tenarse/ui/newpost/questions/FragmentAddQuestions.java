@@ -7,6 +7,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,19 +17,24 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.ui.newpost.adapters.HashtagAdapter;
 import com.example.tenarse.ui.newpost.httpUploads.MyAsyncTaskQuestion;
 import com.example.tenarse.ui.register.MyAsyncTaskRegister;
 import com.example.tenarse.ui.search.users.ListElementUser;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class FragmentAddQuestions extends Fragment {
@@ -34,6 +42,12 @@ public class FragmentAddQuestions extends Fragment {
     EditText title;
     EditText bodyQuestion;
     Button submitBtnQuestion;
+
+    AutoCompleteTextView autoCompleteTextView;
+    ArrayAdapter<String> adapter;
+    RecyclerView recyclerView;
+    HashtagAdapter hashtagAdapter;
+    ArrayList<String> arrayRecycler = new ArrayList<>();
 
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
     JSONObject dadesUsuari = globalDadesUser.getDadesUser();
@@ -47,21 +61,48 @@ public class FragmentAddQuestions extends Fragment {
         bodyQuestion = rootView.findViewById(R.id.editTextQuestionBody);
         submitBtnQuestion = rootView.findViewById(R.id.submitBtnQuestion);
 
-        String url_register = "http://10.0.2.2:3000/addNewPost";
+        autoCompleteTextView = rootView.findViewById(R.id.autoCompleteDoubt);
+        adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.opciones_autocompletado));
+        autoCompleteTextView.setAdapter(adapter);
+
+        hashtagAdapter = new HashtagAdapter(arrayRecycler, adapter, getContext());
+        recyclerView = rootView.findViewById(R.id.add_recyclerView_doubt);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(hashtagAdapter);
+
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String seleccion = (String) parent.getItemAtPosition(position);
+                arrayRecycler.add(seleccion);
+                hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
+                adapter.remove(seleccion);
+                adapter.notifyDataSetChanged();
+                autoCompleteTextView.setText("");
+                autoCompleteTextView.setHint(autoCompleteTextView.getHint());
+                // Cierra la lista de autocompletado
+                autoCompleteTextView.dismissDropDown();
+            }
+        });
+
+        String url_register = "http://10.0.2.2:3000/addPostDubt";
 
         submitBtnQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 JSONObject body = new JSONObject();
+                JSONArray comments = new JSONArray();
+                //JSONArray hashtags = new JSONArray(arrayRecycler);
                 try {
-                    body.put("tipus", "doubt");
+                    body.put("type", "doubt");
                     body.put("title", title.getText().toString());
-                    body.put("description", bodyQuestion.getText().toString());
-                    body.put("hashtags", "[]");
-                    body.put("imagen", "");
-                    body.put("video", "");
+                    body.put("text", bodyQuestion.getText().toString());
+                    body.put("comments", comments);
                     body.put("owner", dadesUsuari.getString("username"));
                     body.put("user_img", dadesUsuari.getString("url_img"));
+                    body.put("hashtags", "[]");
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
