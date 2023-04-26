@@ -89,6 +89,10 @@ public class LoginFragment extends Fragment {
                 }
 
                 if (!resultLogin.contains("false") || (email_username.equals("") && passwd.equals(""))){
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("infoUser", resultLogin);
+                    editor.apply();
                     binding.errorLoginText.setVisibility(View.GONE);
                     startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                     getActivity().finish();

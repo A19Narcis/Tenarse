@@ -24,10 +24,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentHomeBinding;
+import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.adapters.MultiAdapter;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskHomePosts;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
@@ -66,6 +68,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private Object resultNewPosts;
     private int resultLengthPost;
+
+    private GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+    private JSONObject dadesUser = globalDadesUser.getDadesUser();
 
     private Runnable mRunnable = new Runnable() {
         @Override
@@ -272,6 +277,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         ViewPostFragment viewPostFragment = new ViewPostFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
+        bundle.putSerializable("origin", "home");
         transaction.replace(R.id.viewFragment, viewPostFragment);
         viewPostFragment.setArguments(bundle);
         transaction.setReorderingAllowed(true);
@@ -279,4 +285,45 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         transaction.commit();
     }
 
+    public void addLike(String idPost) {
+        //Thread para dar like
+        String url = "http://10.0.2.2:3000/newLike";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("id_post", idPost);
+            body.put("id_user", dadesUser.getString("_id"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        MyAsyncTaskLikes likesTask = new MyAsyncTaskLikes(url, body);
+        likesTask.execute();
+        String resultLikes = "";
+        try {
+            resultLikes = likesTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void removeLike(String idPost) {
+        //Quitar like
+        String url = "http://10.0.2.2:3000/removeLike";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("id_post", idPost);
+            body.put("id_user", dadesUser.getString("_id"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        MyAsyncTaskLikes likesTask = new MyAsyncTaskLikes(url, body);
+        likesTask.execute();
+        String resultLikes = "";
+        try {
+            resultLikes = likesTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

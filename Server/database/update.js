@@ -46,6 +46,35 @@ const addCommentPost = function (id_publi, comentari, callback) {
     })
 }
 
+const addLikePost = function(id_publi, id_user, callback) {
+    readDB.getPublicacio(id_publi, function (dades_publi) {
+        if (dades_publi) {
+            Promise.all([
+                Post.updateOne({ _id: id_publi }, { $push: { likes: id_user } })
+            ]).then(() => {
+                callback();
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
+    })
+}
+
+
+const removeLikePost = function(id_publi, id_user, callback) {
+    readDB.getPublicacio(id_publi, function (dades_publi) {
+        if (dades_publi) {
+            Promise.all([
+                Post.updateOne({ _id: id_publi }, { $pull: { likes: id_user } })
+            ]).then(() => {
+                callback();
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
+    })
+}
+
 /* Afegir un following i, per tant, també un follower a la persona que has seguit */
 const addFollowingUser = function (following, user_followed, user, callback) {
     readDB.getUser(user, function (dades_user) {
@@ -82,6 +111,8 @@ module.exports = {
     addUserPost,
     addMessageChat,
     addCommentPost,
+    addLikePost,
+    removeLikePost,
     addFollowingUser,
     remFollowingUser
 }

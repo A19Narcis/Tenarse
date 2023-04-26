@@ -41,6 +41,7 @@ import com.example.tenarse.ui.post.ViewPostFragment;
 import com.example.tenarse.ui.profile.asynctask.MyAsyncTaskFollowing;
 import com.example.tenarse.ui.search.SearchFragment;
 import com.example.tenarse.ui.search.users.ListElementUser;
+import com.example.tenarse.ui.user.UserFragment;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
 import com.example.tenarse.ui.user.adapters.MultiAdapter;
@@ -447,22 +448,30 @@ public class ProfileFragment extends Fragment {
             } else {
                 binding.userFollowers.setText(Integer.toString(new_numero_followers));
             }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
 
-        try {
-            JSONArray new_publicacions = userInfo.getPublicacions_search();
+
+            JSONArray new_publicacions = new JSONArray(newDadesUser.getString("publicacions"));
+            List<Object> new_dataList = new ArrayList<>();
+
             for (int i = 0; i < new_publicacions.length(); i++) {
                 JSONObject post = new_publicacions.getJSONObject(i);
                 if (post.getString("tipus").equals("image")){
-                    dataList.add(new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    new_dataList.add(new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
                 } else if (post.getString("tipus").equals("video")){
                     //Añadir video
                 } else if (post.getString("tipus").equals("doubt")){
-                    dataList.add(new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    new_dataList.add(new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
                 }
             }
+
+            MultiAdapter newMultiAdapter = new MultiAdapter(new_dataList, ProfileFragment.this);
+            multiAdapter.setList(new_dataList);
+            recyclerView = binding.recyclerViewFeed;
+
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+            recyclerView.setAdapter(newMultiAdapter);
+
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -497,6 +506,7 @@ public class ProfileFragment extends Fragment {
         ViewPostFragment viewPostFragment = new ViewPostFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
+        bundle.putSerializable("origin", "otherUser");
         transaction.replace(R.id.viewFragment, viewPostFragment);
         viewPostFragment.setArguments(bundle);
         transaction.setReorderingAllowed(true);

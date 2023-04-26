@@ -1,6 +1,9 @@
 package com.example.tenarse.ui.post;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -14,7 +17,9 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.tenarse.Login;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentProfileBinding;
 import com.example.tenarse.databinding.FragmentViewPostBinding;
@@ -22,6 +27,7 @@ import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.HomeFragment;
 import com.example.tenarse.ui.post.adapters.AdapterComentarios;
 import com.example.tenarse.ui.post.asynctask.MyAsyncTaskComment;
+import com.example.tenarse.ui.post.asynctask.MyAsyncTaskDeletePost;
 import com.example.tenarse.ui.post.elements.Comentario;
 import com.example.tenarse.ui.search.SearchFragment;
 import com.example.tenarse.ui.user.UserFragment;
@@ -69,10 +75,12 @@ public class ViewPostFragment extends Fragment {
         });
 
 
+        String originFragment = "";
         Bundle args = getArguments();
         if (args != null){
             infoPost = args.getString("infoPost");
             fragmentAnterior = args.getString("fragment");
+            originFragment = args.getString("origin");
         }
 
         try {
@@ -80,6 +88,58 @@ public class ViewPostFragment extends Fragment {
             binding.rvUsername.setText(dadesPost.getString("owner"));
             String userImg = dadesPost.getString("user_img").replace("localhost", "10.0.2.2");
             Picasso.with(getContext()).load(userImg).into(binding.rvUserImage);
+
+            //Veure l'icone de borrar 'post' si es teu el post
+            if (!dadesUsuari.getString("username").equals(dadesPost.getString("owner")) || !originFragment.equals("perfil")){
+                binding.removeButton.setVisibility(View.GONE);
+            } else {
+                binding.removeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Esborrar post
+                        System.out.println("CLIIIIIICK");
+                        AlertDialog.Builder alertaLogOut = new AlertDialog.Builder(getActivity());
+                        alertaLogOut.setTitle("Eliminar publicación");
+                        alertaLogOut.setMessage("¿Quieres eliminar esta publicación?");
+                        alertaLogOut.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String url = "http://10.0.2.2:3000/deletePost";
+                                JSONObject body = new JSONObject();
+                                try {
+                                    body.put("id_post", dadesPost.getString("_id"));
+                                    body.put("user", dadesUsuari.getString("username"));
+
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+
+                                MyAsyncTaskDeletePost deletePost = new MyAsyncTaskDeletePost(url, body);
+                                deletePost.execute();
+                                String resultDelete = null;
+                                try {
+                                    resultDelete = deletePost.get();
+                                } catch (ExecutionException | InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+
+                                getActivity().getSupportFragmentManager().popBackStack();
+                                Toast toast = Toast.makeText(getContext(), "Publicación eliminada", Toast.LENGTH_SHORT);
+                                toast.setText("Publicación eliminada");
+                                toast.show();
+                            }
+                        });
+                        alertaLogOut.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Es queda a la pantalla
+                            }
+                        });
+                        alertaLogOut.show();
+                    }
+                });
+            }
+
 
 
             if (dadesPost.getString("tipus").equals("doubt")){
@@ -93,7 +153,8 @@ public class ViewPostFragment extends Fragment {
                 binding.rvTitle.setVisibility(View.GONE);
             }
 
-            int numero_likes = Integer.parseInt(dadesPost.getString("likes"));
+            int numero_likes = dadesPost.getJSONArray("likes").length();
+            System.out.println("NUMERO LIKES: " + numero_likes);
             if (numero_likes >= 10000 && numero_likes < 999950) {
                 String likesString = formatLikes10(numero_likes);
                 binding.numeroLikes.setText(likesString);
@@ -101,7 +162,7 @@ public class ViewPostFragment extends Fragment {
                 String likesString_100 = formatLikes100(numero_likes);
                 binding.numeroLikes.setText(likesString_100);
             } else {
-                binding.numeroLikes.setText(dadesPost.getString("likes"));
+                binding.numeroLikes.setText(String.valueOf(numero_likes));
             }
 
             numeroComentarios = dadesPost.getJSONArray("comentaris").length();

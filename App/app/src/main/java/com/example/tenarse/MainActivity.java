@@ -93,11 +93,17 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String lastActivity = sharedPreferences.getString("infoUser", "");
 
+
         try {
             if (dadesUsuari == null){
+                System.out.println("ENTRAAAAAAAA");
                 JSONObject jsonObject = new JSONObject(lastActivity);
                 globalDadesUser.setDadesUser(jsonObject);
                 dadesUsuari = globalDadesUser.getDadesUser();
+
+                System.out.println("DADES MAIN: " + dadesUsuari);
+
+
                 Menu menu = navView.getMenu();
                 MenuItem menuItem = menu.findItem(R.id.navigation_user);
                 LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);

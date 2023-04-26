@@ -104,6 +104,10 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
+    public void setList(List<Object> nuevaListaDatos) {
+        this.dataList = nuevaListaDatos;
+    }
+
     @Override
     public int getItemCount() {
         return dataList.size();

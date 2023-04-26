@@ -26,11 +26,17 @@ import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentHomeBinding;
 import com.example.tenarse.databinding.FragmentNotificacionesBinding;
 import com.example.tenarse.databinding.FragmentSettingsBinding;
+import com.example.tenarse.globals.GlobalDadesUser;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONObject;
 
 public class SettingsFragment extends Fragment{
 
     private FragmentSettingsBinding binding;
+
+    GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+    JSONObject removeDadesUser = new JSONObject();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +61,7 @@ public class SettingsFragment extends Fragment{
                 alertaLogOut.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        globalDadesUser.setDadesUser(removeDadesUser);
                         startActivity(new Intent(getActivity(), Login.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                         getActivity().finish();
                     }
