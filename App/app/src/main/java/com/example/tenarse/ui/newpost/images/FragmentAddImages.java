@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -26,10 +27,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
+import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.httpRetrofit.ApiService;
 import com.example.tenarse.ui.newpost.adapters.HashtagAdapter;
 import com.example.tenarse.widgets.CropperActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,6 +66,7 @@ public class FragmentAddImages extends Fragment{
 
     Button submitBtnImg;
 
+    EditText postText;
     ArrayList<String> arrayRecycler = new ArrayList<>();
 
     String pathImg;
@@ -82,6 +86,7 @@ public class FragmentAddImages extends Fragment{
         cardView = rootView.findViewById(R.id.card_view_rv_image);
         scrollView = rootView.findViewById(R.id.scrollV_add_images);
         submitBtnImg = rootView.findViewById(R.id.submitBtnImg);
+        postText = rootView.findViewById(R.id.postText);
 
         autoCompleteTextView = rootView.findViewById(R.id.autoCompleteImg);
         adapter = new ArrayAdapter<String>(getContext(),
@@ -133,9 +138,23 @@ public class FragmentAddImages extends Fragment{
                 }
 
 // Crear un objeto JSONObject y agregar los campos necesarios
+                String idUser = "null";
+                GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+                JSONObject jsonGDU = globalDadesUser.getDadesUser();
                 JSONObject json = new JSONObject();
+                System.out.println(jsonGDU.toString());
+                JSONArray comments = new JSONArray();
+                JSONArray hashtags = new JSONArray(arrayRecycler);
+
                 try {
-                    json.put("id", "1234");
+                    idUser = jsonGDU.getString("_id");
+                    json.put("type", "image");
+                    json.put("title", "");
+                    json.put("text", postText.getText().toString());
+                    json.put("comments", comments);
+                    json.put("owner", jsonGDU.getString("username"));
+                    json.put("user_img", jsonGDU.getString("url_img"));
+                    json.put("hashtags", hashtags);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -143,7 +162,7 @@ public class FragmentAddImages extends Fragment{
 // Crear un RequestBody a partir del JSON
                 RequestBody jsonBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
                 RequestBody postImg = RequestBody.create(MediaType.parse("image/*"), file);
-                MultipartBody.Part body = MultipartBody.Part.createFormData("postImage", "idUsuario", postImg);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("postImage", idUser, postImg);
                 RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "postImage");
 
 // Enviar la solicitud POST con el multipart y el JSON como parte del cuerpo de la solicitud
