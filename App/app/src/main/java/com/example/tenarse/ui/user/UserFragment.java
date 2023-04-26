@@ -86,6 +86,12 @@ public class UserFragment extends Fragment {
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        try {
+            refreshUserInfo(dadesUsuari.getString("_id"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
         binding.logoHomeToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -263,22 +269,30 @@ public class UserFragment extends Fragment {
             } else {
                 binding.userFollowers.setText(Integer.toString(new_numero_followers));
             }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
 
-        try {
-            JSONArray new_publicacions = new JSONArray(dadesUsuari.getString("publicacions"));
+
+            JSONArray new_publicacions = new JSONArray(newDadesUser.getString("publicacions"));
+            List<Object> new_dataList = new ArrayList<>();
+
             for (int i = 0; i < new_publicacions.length(); i++) {
                 JSONObject post = new_publicacions.getJSONObject(i);
                 if (post.getString("tipus").equals("image")){
-                    dataList.add(new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    new_dataList.add(new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
                 } else if (post.getString("tipus").equals("video")){
                     //Añadir video
                 } else if (post.getString("tipus").equals("doubt")){
-                    dataList.add(new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    new_dataList.add(new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
                 }
             }
+
+            MultiAdapter newMultiAdapter = new MultiAdapter(new_dataList, UserFragment.this);
+            multiAdapter.setList(new_dataList);
+            recyclerView = binding.recyclerViewFeed;
+
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+            recyclerView.setAdapter(newMultiAdapter);
+
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -313,6 +327,7 @@ public class UserFragment extends Fragment {
         ViewPostFragment viewPostFragment = new ViewPostFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
+        bundle.putSerializable("origin", "perfil");
         transaction.replace(R.id.viewFragment, viewPostFragment);
         viewPostFragment.setArguments(bundle);
         transaction.setReorderingAllowed(true);

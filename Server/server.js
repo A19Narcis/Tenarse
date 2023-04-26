@@ -101,6 +101,9 @@ app.post('/getSelectedUser', (req, res) => {
 
 app.post('/getUserById', (req, res) => {
     var id = req.body.id_user;
+
+    /*var id = "644785f8fdc077b15553ba12"*/
+
     readDB.getUserByID(id, (dades_user) => {
         res.send(dades_user)
     })
@@ -395,10 +398,40 @@ app.post('/addNewComment', (req, res) => {
 })
 
 
+/* LIKES */
+app.post('/newLike', (req, res) => {
+    const id_post = req.body.id_post
+    const id_user = req.body.id_user
+
+    /*const id_post = "6448e116ee402c11b13bcb4a"
+    const id_user = "644785f8fdc077b15553ba12"*/
+
+    updateDB.addLikePost(id_post, id_user, () => {
+        res.send({ success: true })
+    })
+})
+
+app.post('/removeLike', (req, res) => {
+    const id_post = req.body.id_post
+    const id_user = req.body.id_user
+
+    /*const id_post = "6448e116ee402c11b13bcb4a"
+    const id_user = "644785f8fdc077b15553ba12"*/
+
+    updateDB.removeLikePost(id_post, id_user, () => {
+        res.send({ success: true })
+    })
+})
+
+
 /* DELETE PUBLICACIO */
 app.post('/deletePost', (req, res) => {
-    const _id = '64465cc064f8a23046990969';
-    const username = 'A19Narcis'
+    const _id = req.body.id_post
+    const username = req.body.user
+
+    /*const _id = '6448d4d9fbd18ce084e97d0b';
+    const username = 'UserTest'*/
+
     deleteDB.deletePost(_id, username, () => {
         res.send({ removed: true })
     })
