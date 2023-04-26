@@ -1,6 +1,7 @@
 package com.example.tenarse.ui.user.adapters;
 
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.example.tenarse.ui.profile.ProfileFragment;
 import com.example.tenarse.ui.user.UserFragment;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
 import com.example.tenarse.ui.user.elements.ListElementImg;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -26,15 +28,18 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private UserFragment mUserFragment;
     private ProfileFragment mProfileFragment;
+    private Context context;
 
-    public MultiAdapter(List<Object> dataList, UserFragment mUserFragment) {
+    public MultiAdapter(List<Object> dataList, Context context, UserFragment mUserFragment) {
         this.dataList = dataList;
         this.mUserFragment = mUserFragment;
+        this.context = context;
     }
 
-    public MultiAdapter(List<Object> dataList, ProfileFragment mProfileFragment) {
+    public MultiAdapter(List<Object> dataList, Context context, ProfileFragment mProfileFragment) {
         this.dataList = dataList;
         this.mProfileFragment = mProfileFragment;
+        this.context = context;
     }
 
     @Override
@@ -69,6 +74,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case TYPE_IMAGE:
                 ListElementImg imgElement = (ListElementImg) dataList.get(position);
                 ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
+                Picasso.with(context).load(imgElement.getPost_img_url()).into(imageViewHolder.imageView);
                 imageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

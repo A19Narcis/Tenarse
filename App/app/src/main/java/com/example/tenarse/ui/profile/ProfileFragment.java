@@ -92,7 +92,7 @@ public class ProfileFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         dataList = new ArrayList<>();
-        multiAdapter = new MultiAdapter(dataList, ProfileFragment.this);
+        multiAdapter = new MultiAdapter(dataList, getContext(),ProfileFragment.this);
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -158,8 +158,6 @@ public class ProfileFragment extends Fragment {
                         e.printStackTrace();
                     }
 
-                    System.out.println(body);
-
                     MyAsyncTaskFollowing startFollowing = new MyAsyncTaskFollowing(url, body);
                     startFollowing.execute();
                     String resultFollowing = null;
@@ -172,18 +170,6 @@ public class ProfileFragment extends Fragment {
                     binding.followButton.setBackgroundColor(Color.WHITE);
                     binding.followButton.setTextColor(Color.BLACK);
                     binding.followButton.setText("Siguiendo ✓");
-
-                    //Pujar un seguidor per veure els canvis
-                    int numero_followers = userInfo.getFollowers_search() + 1;
-                    if (numero_followers >= 10000 && numero_followers < 999950) {
-                        String followingsString = formatFollowers10(numero_followers);
-                        binding.userFollowers.setText(followingsString); // 10.0 k
-                    } else if (numero_followers >= 999950){
-                        String followingsString = formatFollowers100(numero_followers);
-                        binding.userFollowers.setText(followingsString); // 10.0 M
-                    } else {
-                        binding.userFollowers.setText(Integer.toString(numero_followers));
-                    }
 
                     //******* UPDATE DATOS USER **********
                     String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
@@ -210,6 +196,7 @@ public class ProfileFragment extends Fragment {
                         throw new RuntimeException(e);
                     }
                     //******* UPDATE DATOS USER **********
+                    refreshUserInfo(userInfo.getId_user());
                 } else {
                     AlertDialog.Builder alertaLogOut = new AlertDialog.Builder(getActivity());
                     alertaLogOut.setTitle("Dejar de seguir");
@@ -243,17 +230,6 @@ public class ProfileFragment extends Fragment {
                             binding.followButton.setTextColor(Color.WHITE);
                             binding.followButton.setText("Seguir");
 
-                            //Baixar un seguidor per veure els canvis
-                            int numero_followers = userInfo.getFollowers_search();
-                            if (numero_followers >= 10000 && numero_followers < 999950) {
-                                String followingsString = formatFollowers10(numero_followers);
-                                binding.userFollowers.setText(followingsString); // 10.0 k
-                            } else if (numero_followers >= 999950){
-                                String followingsString = formatFollowers100(numero_followers);
-                                binding.userFollowers.setText(followingsString); // 10.0 M
-                            } else {
-                                binding.userFollowers.setText(Integer.toString(numero_followers));
-                            }
 
                             //******* UPDATE DATOS USER **********
                             String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
@@ -280,6 +256,7 @@ public class ProfileFragment extends Fragment {
                                 throw new RuntimeException(e);
                             }
                             //******* UPDATE DATOS USER **********
+                            refreshUserInfo(userInfo.getId_user());
                         }
                     });
                     alertaLogOut.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -464,7 +441,7 @@ public class ProfileFragment extends Fragment {
                 }
             }
 
-            MultiAdapter newMultiAdapter = new MultiAdapter(new_dataList, ProfileFragment.this);
+            MultiAdapter newMultiAdapter = new MultiAdapter(new_dataList, getContext(), ProfileFragment.this);
             multiAdapter.setList(new_dataList);
             recyclerView = binding.recyclerViewFeed;
 

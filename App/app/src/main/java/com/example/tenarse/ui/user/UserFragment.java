@@ -82,7 +82,7 @@ public class UserFragment extends Fragment {
                 new ViewModelProvider(this).get(UserViewModel.class);
 
         dataList = new ArrayList<>();
-        multiAdapter = new MultiAdapter(dataList, UserFragment.this);
+        multiAdapter = new MultiAdapter(dataList, getContext(), UserFragment.this);
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -285,7 +285,7 @@ public class UserFragment extends Fragment {
                 }
             }
 
-            MultiAdapter newMultiAdapter = new MultiAdapter(new_dataList, UserFragment.this);
+            MultiAdapter newMultiAdapter = new MultiAdapter(new_dataList, getContext(), UserFragment.this);
             multiAdapter.setList(new_dataList);
             recyclerView = binding.recyclerViewFeed;
 
