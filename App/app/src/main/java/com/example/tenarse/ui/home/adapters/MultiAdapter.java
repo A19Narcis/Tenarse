@@ -116,6 +116,27 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 });
 
+                if (!imgElement.isLiked()){
+                    imageViewHolder.likeImage.setImageResource(R.drawable.no_like);
+                } else if (imgElement.isLiked()) {
+                    imageViewHolder.likeImage.setImageResource(R.drawable.like);
+                }
+
+                imageViewHolder.likeImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!imgElement.isLiked()){
+                            mHomeFragment.addLike(imgElement.getId());
+                            imageViewHolder.likeImage.setImageResource(R.drawable.like);
+                            imgElement.setLiked(true);
+                        } else if (imgElement.isLiked()) {
+                            mHomeFragment.removeLike(imgElement.getId());
+                            imageViewHolder.likeImage.setImageResource(R.drawable.no_like);
+                            imgElement.setLiked(false);
+                        }
+                    }
+                });
+
 
                 break;
             case TYPE_DOUBT:
@@ -214,6 +235,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ImageView userImageView;
         TextView username;
         TextView post_text;
+        ImageView likeImage;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
@@ -221,6 +243,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             userImageView = itemView.findViewById(R.id.rv_userImage); //100px
             username = itemView.findViewById(R.id.rv_username);
             post_text = itemView.findViewById(R.id.rv_post_text);
+            likeImage = itemView.findViewById(R.id.like_image);
         }
     }
 

@@ -12,7 +12,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentAddpostBinding;
@@ -105,6 +107,11 @@ public class NewpostFragment extends Fragment {
         });
 
         return root;
+    }
+
+    public void postUploaded(){
+        NavController navController = NavHostFragment.findNavController(this);
+        navController.popBackStack();
     }
 
     @Override

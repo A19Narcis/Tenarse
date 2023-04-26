@@ -306,9 +306,9 @@ public class UserFragment extends Fragment {
         binding = null;
     }
 
-    public void selectPost(String post_img_id) {
+    public void selectPost(String idPost){
         //Recoger todos los datos de un post y verlos en un fragment nuevo
-        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + post_img_id;
+        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + idPost;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
         getSinglePost.execute();
         String resultSinglePost = null;
@@ -318,16 +318,32 @@ public class UserFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost);
+        //Ver si el post que hemos seleccionado tiene mi `Like`
+        boolean myLike = false;
+        try {
+            JSONObject dadesPostResult = new JSONObject(resultSinglePost);
+            for (int i = 0; i < dadesPostResult.getJSONArray("likes").length() && !myLike; i++) {
+                if (dadesPostResult.getJSONArray("likes").get(i).equals(dadesUsuari.getString("_id"))){
+                    myLike = true;
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        viewSelectedPost(resultSinglePost, myLike);
+
     }
 
-    public void viewSelectedPost(String infoPost) {
+    public void viewSelectedPost(String infoPost, boolean myLike) {
+        //Carregar el nou fragment amb les seves dades
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         ViewPostFragment viewPostFragment = new ViewPostFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
         bundle.putSerializable("origin", "perfil");
+        bundle.putSerializable("isLiked", myLike);
         transaction.replace(R.id.viewFragment, viewPostFragment);
         viewPostFragment.setArguments(bundle);
         transaction.setReorderingAllowed(true);

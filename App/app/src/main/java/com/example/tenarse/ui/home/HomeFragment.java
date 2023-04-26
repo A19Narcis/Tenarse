@@ -44,7 +44,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -73,6 +72,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private GlobalDadesUser globalDadesUser;
     private JSONObject dadesUser;
+
+    private boolean isLiked;
 
     private Runnable mRunnable = new Runnable() {
         @Override
@@ -192,18 +193,22 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject post = jsonArray.getJSONObject(i);
                 if (post.getString("tipus").equals("image")){
-                    dataList.add(0, new ListElementImg(post.getString("_id"), post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("user_img")));
-                    System.out.println(post.getString("url_img"));
+                    isLiked = false;
+                    ListElementImg listElementImg = new ListElementImg(post.getString("_id"), post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("user_img"), post.getJSONArray("likes"));
+                    for (int j = 0; j < listElementImg.getLikes().length() && !isLiked; j++) {
+                        if (listElementImg.getLikes().get(j).toString().equals(dadesUser.getString("_id"))) {
+                            isLiked = true;
+                            listElementImg.setLiked(true);
+                        }
+                    }
+                    dataList.add(0, listElementImg);
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
-                    boolean isLiked = false;
+                    isLiked = false;
                     ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), post.getString("owner"), post.getString("titol"), post.getString("text"),  post.getString("user_img"), post.getJSONArray("likes"));
                     listElementDoubt.setLiked(false);
                     for (int j = 0; j < listElementDoubt.getLikes().length() && !isLiked; j++) {
-                        System.out.println("ID DE LA PERSONA LIKE: " + listElementDoubt.getLikes().get(j).toString());
-                        System.out.println("ID DE LA PERSONA AQUI: " + dadesUser.getString("_id"));
                         if (listElementDoubt.getLikes().get(j).toString().equals(dadesUser.getString("_id"))){
-                            System.out.println("LIKE MIO");
                             isLiked = true;
                             listElementDoubt.setLiked(true);
                         }
@@ -298,11 +303,24 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost);
+        //Ver si el post que hemos seleccionado tiene mi `Like`
+        boolean myLike = false;
+        try {
+            JSONObject dadesPostResult = new JSONObject(resultSinglePost);
+            for (int i = 0; i < dadesPostResult.getJSONArray("likes").length() && !myLike; i++) {
+                if (dadesPostResult.getJSONArray("likes").get(i).equals(dadesUser.getString("_id"))){
+                    myLike = true;
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        viewSelectedPost(resultSinglePost, myLike);
 
     }
 
-    public void viewSelectedPost(String infoPost) {
+    public void viewSelectedPost(String infoPost, boolean myLike) {
         //Carregar el nou fragment amb les seves dades
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -310,6 +328,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
         bundle.putSerializable("origin", "home");
+        bundle.putSerializable("isLiked", myLike);
         transaction.replace(R.id.viewFragment, viewPostFragment);
         viewPostFragment.setArguments(bundle);
         transaction.setReorderingAllowed(true);
@@ -322,6 +341,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void addLike(String idPost) {
         //Thread para dar like
         dadesUser = globalDadesUser.getDadesUser();
+        isLiked = true;
         String url = "http://10.0.2.2:3000/newLike";
         JSONObject body = new JSONObject();
         try {
@@ -344,6 +364,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void removeLike(String idPost) {
         //Quitar like
         dadesUser = globalDadesUser.getDadesUser();
+        isLiked = false;
         String url = "http://10.0.2.2:3000/removeLike";
         JSONObject body = new JSONObject();
         try {

@@ -25,6 +25,7 @@ import com.example.tenarse.databinding.FragmentProfileBinding;
 import com.example.tenarse.databinding.FragmentViewPostBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.HomeFragment;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.post.adapters.AdapterComentarios;
 import com.example.tenarse.ui.post.asynctask.MyAsyncTaskComment;
 import com.example.tenarse.ui.post.asynctask.MyAsyncTaskDeletePost;
@@ -56,6 +57,9 @@ public class ViewPostFragment extends Fragment {
 
     String fragmentAnterior = "";
 
+    private boolean isLiked;
+    private JSONObject dadesPost;
+
     @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,10 +85,11 @@ public class ViewPostFragment extends Fragment {
             infoPost = args.getString("infoPost");
             fragmentAnterior = args.getString("fragment");
             originFragment = args.getString("origin");
+            isLiked = args.getBoolean("isLiked");
         }
 
         try {
-            JSONObject dadesPost = new JSONObject(infoPost);
+            dadesPost = new JSONObject(infoPost);
             binding.rvUsername.setText(dadesPost.getString("owner"));
             String userImg = dadesPost.getString("user_img").replace("localhost", "10.0.2.2");
             Picasso.with(getContext()).load(userImg).into(binding.rvUserImage);
@@ -97,7 +102,6 @@ public class ViewPostFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         //Esborrar post
-                        System.out.println("CLIIIIIICK");
                         AlertDialog.Builder alertaLogOut = new AlertDialog.Builder(getActivity());
                         alertaLogOut.setTitle("Eliminar publicación");
                         alertaLogOut.setMessage("¿Quieres eliminar esta publicación?");
@@ -148,13 +152,13 @@ public class ViewPostFragment extends Fragment {
                 binding.rvPostText.setText(dadesPost.getString("text"));
             } else if (dadesPost.getString("tipus").equals("image")){
                 binding.rvTitle.setVisibility(View.GONE);
-                Picasso.with(getContext()).load(dadesPost.getString("url_img")).into(binding.rvPostImage);
+                binding.rvPostText.setText(dadesPost.getString("text"));
+                Picasso.with(getContext()).load(dadesPost.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.rvPostImage);
             } else if (dadesPost.getString("tipus").equals("video")){
                 binding.rvTitle.setVisibility(View.GONE);
             }
 
             int numero_likes = dadesPost.getJSONArray("likes").length();
-            System.out.println("NUMERO LIKES: " + numero_likes);
             if (numero_likes >= 10000 && numero_likes < 999950) {
                 String likesString = formatLikes10(numero_likes);
                 binding.numeroLikes.setText(likesString);
@@ -251,7 +255,108 @@ public class ViewPostFragment extends Fragment {
         binding.recyclerViewComentarios.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewComentarios.setAdapter(adapterComentarios);
 
+        if (isLiked){
+            binding.likeImage.setImageResource(R.drawable.like);
+        } else {
+            binding.likeImage.setImageResource(R.drawable.no_like);
+        }
+
+        binding.likeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isLiked){
+                    try {
+                        removeLike(dadesPost.getString("_id"));
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    binding.likeImage.setImageResource(R.drawable.no_like);
+                    isLiked = false;
+                } else {
+                    try {
+                        addNewLike(dadesPost.getString("_id"));
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    binding.likeImage.setImageResource(R.drawable.like);
+                    isLiked = true;
+                }
+            }
+        });
+
         return root;
+    }
+
+    private void addNewLike(String id) {
+        //Thread para dar like
+        dadesUsuari = globalDadesUser.getDadesUser();
+        isLiked = true;
+        String url = "http://10.0.2.2:3000/newLike";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("id_post", id);
+            body.put("id_user", dadesUsuari.getString("_id"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        MyAsyncTaskLikes likesTask = new MyAsyncTaskLikes(url, body);
+        likesTask.execute();
+        String resultLikes = "";
+        try {
+            resultLikes = likesTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Establecer el numero de likes a +1 para ver el cambio
+        int numero_likes = Integer.parseInt(binding.numeroLikes.getText().toString()) + 1;
+
+        if (numero_likes >= 10000 && numero_likes < 999950) {
+            String likesString = formatLikes10(numero_likes);
+            binding.numeroLikes.setText(likesString);
+        } else if ((numero_likes) >= 999950){
+            String likesString_100 = formatLikes100(numero_likes);
+            binding.numeroLikes.setText(likesString_100);
+        } else {
+            binding.numeroLikes.setText(String.valueOf(numero_likes));
+        }
+    }
+
+    private void removeLike(String id) {
+        //Quitar like
+        dadesUsuari = globalDadesUser.getDadesUser();
+        isLiked = false;
+        String url = "http://10.0.2.2:3000/removeLike";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("id_post", id);
+            body.put("id_user", dadesUsuari.getString("_id"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        MyAsyncTaskLikes likesTask = new MyAsyncTaskLikes(url, body);
+        likesTask.execute();
+        String resultLikes = "";
+        try {
+            resultLikes = likesTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Establecer el numero de likes a como estaba antes del like
+        int numero_likes = Integer.parseInt(binding.numeroLikes.getText().toString()) - 1;
+
+        if (numero_likes >= 10000 && numero_likes < 999950) {
+            String likesString = formatLikes10(numero_likes);
+            binding.numeroLikes.setText(likesString);
+        } else if ((numero_likes) >= 999950){
+            String likesString_100 = formatLikes100(numero_likes);
+            binding.numeroLikes.setText(likesString_100);
+        } else {
+            binding.numeroLikes.setText(String.valueOf(numero_likes));
+        }
     }
 
     public static String formatLikes10(int num) {

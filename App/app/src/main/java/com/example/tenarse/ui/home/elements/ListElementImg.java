@@ -1,5 +1,7 @@
 package com.example.tenarse.ui.home.elements;
 
+import org.json.JSONArray;
+
 public class ListElementImg {
 
     public String id;
@@ -8,12 +10,32 @@ public class ListElementImg {
     public String post_img_url;
     public String post_img_text;
 
-    public ListElementImg(String id, String username, String text, String urlImg, String userImg){
+    public JSONArray likes;
+    public boolean isLiked;
+
+    public ListElementImg(String id, String username, String text, String urlImg, String userImg, JSONArray likes){
         this.id = id;
         this.username = username;
         this.post_img_text = text;
         this.post_img_url = urlImg;
         this.user_img_url = userImg;
+        this.likes = likes;
+    }
+
+    public JSONArray getLikes() {
+        return likes;
+    }
+
+    public void setLikes(JSONArray likes) {
+        this.likes = likes;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 
     public String getId() {

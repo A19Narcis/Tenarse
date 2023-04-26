@@ -136,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
         GlobalDadesUser globalDadesExit = GlobalDadesUser.getInstance();
         JSONObject dadesUsuariExit = globalDadesExit.getDadesUser();
         editor.putString("infoUser", dadesUsuariExit.toString());
-        System.out.println("GUARDO ESTOS DATOS: " + dadesUsuariExit);
         editor.apply();
     }
 }

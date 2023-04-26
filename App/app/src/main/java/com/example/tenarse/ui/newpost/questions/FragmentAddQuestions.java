@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +26,7 @@ import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.ui.newpost.NewpostFragment;
 import com.example.tenarse.ui.newpost.adapters.HashtagAdapter;
 import com.example.tenarse.ui.newpost.httpUploads.MyAsyncTaskQuestion;
 import com.example.tenarse.ui.register.MyAsyncTaskRegister;
@@ -117,8 +120,11 @@ public class FragmentAddQuestions extends Fragment {
                 }
                 if (!resultAddQuestion.contains("false")){
                     Toast.makeText(getContext(), "¡Post subido!", Toast.LENGTH_SHORT).show();
-                    title.setText("");
-                    bodyQuestion.setText("");
+
+                    /* RECARGAR FRAGMENT */
+                    NewpostFragment newpostFragment = (NewpostFragment) getParentFragment();
+                    newpostFragment.postUploaded();
+
                     //Update global dades
                     String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
                     JSONObject jsonBody = new JSONObject();

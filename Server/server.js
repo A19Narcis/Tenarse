@@ -215,7 +215,7 @@ function addPost (body, postUrl) {
         segundos = '0' + segundos;
     }
     let tiempoActual = hora + ':' + minutos + ':' + segundos
-    let URLServer = "http://10.0.2.2:3000/";
+    let URLServer = "http://localhost:3000/";
 
     //Llamnar a las imagenes de los posts -> user + hora.png EX: A19Narcis_091232.png
     var post;
@@ -285,8 +285,7 @@ function addPost (body, postUrl) {
         hora: tiempoActual
     }*/
 
-    insertDB.insertPost(post, () =>
-     {log("subido!!!")})
+    insertDB.insertPost(post, () => {})
 }
 
 
@@ -308,7 +307,7 @@ app.post('/addNewPost', (req, res) => {
     let tiempoActual = hora + ':' + minutos + ':' + segundos
 
     //Llamnar a las imagenes de los posts -> user + hora.png EX: A19Narcis_091232.png
-    const post = {
+    /*const post = {
         tipus: req.body.tipus,
         titol: req.body.title,
         text: req.body.description,
@@ -319,7 +318,7 @@ app.post('/addNewPost', (req, res) => {
         owner: req.body.owner,
         user_img: req.body.user_img,
         hora: tiempoActual
-    }
+    }*/
     /*const post = {
         tipus: 'doubt',
         titol: 'How to substract numeric and alphanumeric value in python?',
@@ -331,17 +330,17 @@ app.post('/addNewPost', (req, res) => {
         user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
         hora: tiempoActual
     }*/
-    /*const post = {
+    const post = {
         tipus: 'image',
         titol: '',
         text: 'Mi primer post en esta red social.',
-        url_img: 'http://localhost:3000/uploads/images/JavaScript_code.png', 
+        url_img: 'http://localhost:3000/uploads/images/6448f52dba9f0866d1851bb6-26_4_2023_11_56_38_600.jpg', 
         url_video: '',
         comentaris: [],
         owner: 'A19Narcis',
         user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
         hora: tiempoActual
-    }*/
+    }
     /*const post = {
         tipus: 'video',
         titol: '',

@@ -23,12 +23,14 @@ import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.httpRetrofit.ApiService;
+import com.example.tenarse.ui.newpost.NewpostFragment;
 import com.example.tenarse.ui.newpost.adapters.HashtagAdapter;
 import com.example.tenarse.widgets.CropperActivity;
 
@@ -132,9 +134,9 @@ public class FragmentAddImages extends Fragment{
             public void onClick(View view) {
                 File file = new File(pathImg);
                 if (file.exists()) {
-                    System.out.println("EXISTEEEEE");
+                    System.out.println("File ok");
                 } else {
-                    System.out.println("NOOOOOOOOOOOOOOOOOO EXISTE");
+                    System.out.println("Files does not exists");
                 }
 
 // Crear un objeto JSONObject y agregar los campos necesarios
@@ -142,7 +144,6 @@ public class FragmentAddImages extends Fragment{
                 GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
                 JSONObject jsonGDU = globalDadesUser.getDadesUser();
                 JSONObject json = new JSONObject();
-                System.out.println(jsonGDU.toString());
                 JSONArray comments = new JSONArray();
                 JSONArray hashtags = new JSONArray(arrayRecycler);
 
@@ -171,19 +172,20 @@ public class FragmentAddImages extends Fragment{
                 req.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        System.out.println(response.body().toString());
 
                         if (response.code() == 200) {
-                            System.out.println("SUBIDAAAAAA");
+                            System.out.println("image uploaded successfully");
                         }
 
-                        Toast.makeText(getContext(), response.code() + " ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "¡Post subido!", Toast.LENGTH_SHORT).show();
+
+                        NewpostFragment newpostFragment = (NewpostFragment) getParentFragment();
+                        newpostFragment.postUploaded();
+
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        System.out.println("ERROOOOOOR");
-                        Toast.makeText(getContext(), "Request failed", Toast.LENGTH_SHORT).show();
                         t.printStackTrace();
                     }
                 });
@@ -226,7 +228,6 @@ public class FragmentAddImages extends Fragment{
             }
             String fileName = pathImg.substring(pathImg.lastIndexOf("/") + 1);
             pathImg = getContext().getCacheDir() + "/" + fileName;
-            System.out.println(pathImg);
             image.setImageURI(resultUri);
             Bitmap imagenBitmap = BitmapFactory.decodeFile(resultUri.getPath());
 
