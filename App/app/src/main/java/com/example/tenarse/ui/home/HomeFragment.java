@@ -221,6 +221,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 }
             }
 
+
+            ListElementVideo listElementVideo = new ListElementVideo("aaaaa", "user", "", "",  "Prueba de video");
+            dataList.add(listElementVideo);
+            multiAdapter.notifyItemInserted(0);
+
+
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setAdapter(multiAdapter);

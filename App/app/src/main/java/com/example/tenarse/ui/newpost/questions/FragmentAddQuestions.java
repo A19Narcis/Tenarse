@@ -97,7 +97,7 @@ public class FragmentAddQuestions extends Fragment {
             public void onClick(View view) {
                 JSONObject body = new JSONObject();
                 JSONArray comments = new JSONArray();
-                //JSONArray hashtags = new JSONArray(arrayRecycler);
+                JSONArray hashtags = new JSONArray(arrayRecycler);
                 try {
                     body.put("type", "doubt");
                     body.put("title", title.getText().toString());
@@ -105,7 +105,7 @@ public class FragmentAddQuestions extends Fragment {
                     body.put("comments", comments);
                     body.put("owner", dadesUsuari.getString("username"));
                     body.put("user_img", dadesUsuari.getString("url_img"));
-                    body.put("hashtags", "[]");
+                    body.put("hashtags", hashtags);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }

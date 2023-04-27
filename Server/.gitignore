@@ -1,3 +1,5 @@
 node_modules/
+uploads/images
+uploads/videos
 
 #git rm -r --cached node_modules

@@ -211,15 +211,17 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
                 /* Cargar USER IMAGE Bitmat hilo */
-                String urlUserVideo = videoElement.getUser_img_url().replace("localhost", "10.0.2.2");
+                /*String urlUserVideo = videoElement.getUser_img_url().replace("localhost", "10.0.2.2");
                 ImageView userImageViewVideo = videoViewHolder.userImageView;
-                new HomeViewModel.DownloadImageTask(userImageViewVideo).execute(urlUserVideo);
+                new HomeViewModel.DownloadImageTask(userImageViewVideo).execute(urlUserVideo);*/
 
                 /* Cargar VIDEO */
-                Uri uri = Uri.parse(videoElement.getPost_video_url());
-                videoViewHolder.post_video.setMediaController(new MediaController(context));
+                String videoPath = "http://10.0.2.2:3000/uploads/videos/chairs.mp4";
+                Uri uri = Uri.parse(videoPath);
                 videoViewHolder.post_video.setVideoURI(uri);
-                videoViewHolder.post_video.start();
+                MediaController mediaController = new MediaController(context);
+                videoViewHolder.post_video.setMediaController(mediaController);
+                mediaController.setAnchorView(videoViewHolder.post_video);
 
                 break;
         }
