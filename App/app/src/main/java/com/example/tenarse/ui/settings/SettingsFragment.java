@@ -59,6 +59,9 @@ public class SettingsFragment extends Fragment{
 
     private String data_usuari = "";
 
+    private String start_email;
+    private String start_username;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
@@ -72,9 +75,15 @@ public class SettingsFragment extends Fragment{
             binding.newNombre.setText(actualDadesUser.getString("nombre"));
             binding.newApellidos.setText(actualDadesUser.getString("apellidos"));
             binding.newFecha.setText(actualDadesUser.getString("fecha_nac"));
+
+            //Guardarse los datos que hay al empezar para ver si hay cambios
+
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
+        start_email = binding.newEmail.getText().toString();
+        start_username = binding.newUsername.getText().toString();
 
         binding.newFecha.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,28 +159,65 @@ public class SettingsFragment extends Fragment{
                 }
 
                 //Ver si ya existe este nuevo email - username
-                String url_checkDades = "http://10.0.2.2:3000/checkUserExists";
+                boolean newUsernameInput = false;
+                boolean newEmailInput = false;
 
-                JSONObject bodyCheck = new JSONObject();
-
-                try {
-                    bodyCheck.put("username", binding.newUsername.getText().toString());
-                    bodyCheck.put("email", binding.newEmail.getText().toString());
-
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                if (!newUsername.equals(start_username)){
+                    newUsernameInput = true;
                 }
 
-                MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(url_checkDades, bodyCheck);
-                getUser.execute();
-                String resultGetUser = null;
-                try {
-                    resultGetUser = getUser.get();
-                } catch (ExecutionException | InterruptedException e) {
-                    throw new RuntimeException(e);
+
+                //Ver si el nuevo Email / Username es valido
+                String resultGetUser = "";
+                if (newUsernameInput){
+                    String url_checkDades = "http://10.0.2.2:3000/checkUserExists";
+
+                    JSONObject bodyCheck = new JSONObject();
+
+                    try {
+                        bodyCheck.put("username", binding.newUsername.getText().toString());
+
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(url_checkDades, bodyCheck);
+                    getUser.execute();
+                    try {
+                        resultGetUser = getUser.get();
+                    } catch (ExecutionException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
-                if (infoValida){
+                if (!newEmail.equals(start_email)){
+                    newEmailInput = true;
+                }
+
+                String resultGetUserEmail = "";
+                if (newEmailInput){
+                    String url_checkDades = "http://10.0.2.2:3000/checkEmailExists";
+                    JSONObject bodyCheck = new JSONObject();
+
+                    try {
+                        bodyCheck.put("email", binding.newEmail.getText().toString());
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(url_checkDades, bodyCheck);
+                    getUser.execute();
+
+                    try {
+                        resultGetUserEmail = getUser.get();
+                    } catch (ExecutionException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+
+                if (infoValida && (resultGetUser.contains("false") && resultGetUserEmail.contains("false")) || ((start_email.equals(newEmail) || start_username.equals(newUsername)))){
                     // Todos los campos son válidos
                     JSONObject body = new JSONObject();
 
@@ -232,9 +278,9 @@ public class SettingsFragment extends Fragment{
                     snackbar.show();
 
                 } else if (!infoValida){
-
                     binding.errorTextUpdate.setVisibility(View.VISIBLE);
-                } else if (resultGetUser.contains("true")){
+                    binding.userExisteUpdate.setVisibility(View.GONE);
+                } else if (resultGetUser.contains("true") || resultGetUserEmail.contains("true")){
                     //Ese usuario ya existe
                     binding.userExisteUpdate.setVisibility(View.VISIBLE);
                     binding.errorTextUpdate.setVisibility(View.GONE);

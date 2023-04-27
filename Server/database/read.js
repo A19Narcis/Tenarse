@@ -13,13 +13,17 @@ const getUser = async (email_username, callback) => {
     callback(userSelected);
 }
 
-const checkUserExists = async (email, username, callback) => {
-    const userSelected = await User.findOne({ 
-        $or: [
-          { username: username },
-          { email: email }
-        ]
-      });
+const checkUserExists = async (username, callback) => {
+    const userSelected = await User.findOne({ username: username });
+    if (userSelected) {
+        callback(true)
+    } else {
+        callback(false)
+    }
+}
+
+const checkEmailExists = async (email, callback) => {
+    const userSelected = await User.findOne({ email: email });
     if (userSelected) {
         callback(true)
     } else {
@@ -57,6 +61,7 @@ const getPosts = async (callback) => {
 module.exports = {
     getUser,
     checkUserExists,
+    checkEmailExists,
     getUserByID,
     getUsers,
     getChat,

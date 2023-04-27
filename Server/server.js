@@ -68,10 +68,17 @@ app.post('/addNewUser', (req, res) => {
 
 
 app.post('/checkUserExists', (req, res) => {
-    const email = req.body.email
     const username = req.body.username
 
-    readDB.checkUserExists(email, username, (exists) => {
+    readDB.checkUserExists(username, (exists) => {
+        res.send(exists)
+    })
+})
+
+app.post('/checkEmailExists', (req, res) => {
+    const email = req.body.email
+
+    readDB.checkEmailExists(email, (exists) => {
         res.send(exists)
     })
 })
