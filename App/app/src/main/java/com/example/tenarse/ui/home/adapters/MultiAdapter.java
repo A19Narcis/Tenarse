@@ -1,6 +1,7 @@
 package com.example.tenarse.ui.home.adapters;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -195,6 +196,8 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 ListElementVideo videoElement = (ListElementVideo) dataList.get(position);
                 VideoViewHolder videoViewHolder = (VideoViewHolder) holder;
                 videoViewHolder.username.setText(videoElement.getUsername());
+                String urImg = videoElement.getUser_img_url().replace("localhost", "10.0.2.2");
+                Picasso.with(context).load(urImg).into(videoViewHolder.userImageView);
 
                 videoViewHolder.username.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -210,18 +213,35 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     videoViewHolder.post_text.setText(videoElement.getPost_text());
                 }
 
-                /* Cargar USER IMAGE Bitmat hilo */
+                /* Cargar USER IMAGE */
                 /*String urlUserVideo = videoElement.getUser_img_url().replace("localhost", "10.0.2.2");
                 ImageView userImageViewVideo = videoViewHolder.userImageView;
                 new HomeViewModel.DownloadImageTask(userImageViewVideo).execute(urlUserVideo);*/
 
                 /* Cargar VIDEO */
-                String videoPath = "http://10.0.2.2:3000/uploads/videos/chairs.mp4";
+                String videoPath = videoElement.getPost_video_url().replace("localhost", "10.0.2.2");
                 Uri uri = Uri.parse(videoPath);
                 videoViewHolder.post_video.setVideoURI(uri);
                 MediaController mediaController = new MediaController(context);
-                videoViewHolder.post_video.setMediaController(mediaController);
+                videoViewHolder.post_video.setMediaController(null);
                 mediaController.setAnchorView(videoViewHolder.post_video);
+                videoViewHolder.post_video.setOnPreparedListener(mp -> {
+                    mp.setLooping(true);
+                    mp.start();
+                });
+
+
+
+                videoViewHolder.post_video.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(videoViewHolder.post_video.isPlaying()){
+                            videoViewHolder.post_video.pause();
+                        }else{
+                            videoViewHolder.post_video.start();
+                        }
+                    }
+                });
 
                 break;
         }

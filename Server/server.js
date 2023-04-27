@@ -153,9 +153,14 @@ app.post('/deleteFollowing', (req, res) => {
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'uploads/images')
+        if(file.mimetype == "video/*"){
+            cb(null, 'uploads/videos')
+        }else if(file.mimetype == "image/*"){
+            cb(null, 'uploads/images')
+        }
     },
     filename: function (req, file, cb) {
+        log(file)
     let fecha = new Date();
     let dia = fecha.getDate();
     let mes = fecha.getMonth() + 1;
@@ -174,14 +179,19 @@ var storage = multer.diskStorage({
         segundos = '0' + segundos;
     }
     let tiempoActual = dia + "_" + mes + "_" + anio + "_" + hora + '_' + minutos + '_' + segundos + "_" + miliseconds
+    if(file.mimetype == "video/*"){
+        cb(null, file.originalname + "-" + tiempoActual +'.mp4')
+    }else if(file.mimetype == "image/*"){
       cb(null, file.originalname + "-" + tiempoActual +'.jpg')
+    }
     }
 })
 
 var upload = multer({ storage: storage });
 
-app.post('/uploadfile', upload.single('postImage'), (req, res, next) => {
+app.post('/uploadfile', upload.single('post'), (req, res, next) => {
     const file = req.file;
+    log(req.body);
     if(!file){
         const error = new Error("Please upload a file");
         error.httpStatusCode = 400;
@@ -248,7 +258,20 @@ function addPost (body, postUrl) {
             hora: tiempoActual
         }
         break;
-
+        case("video"):
+        post = {
+            tipus: body.type,
+            titol: body.title,
+            text: body.text,
+            hastags: body.hashtags,
+            url_img: '',
+            url_video: URLServer + postUrl,
+            comentaris: body.comments,
+            owner: body.owner,
+            user_img: body.user_img,
+            hora: tiempoActual
+        }
+        break;
     }
     
     /*const post = {
