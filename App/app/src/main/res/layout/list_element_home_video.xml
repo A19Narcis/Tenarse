@@ -79,8 +79,9 @@
         <VideoView
             android:id="@+id/rv_post_video"
             android:layout_width="match_parent"
-            android:layout_height="225dp"
-            android:scaleType="centerCrop"/>
+            android:layout_height="1000dp"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"/>
 
     </androidx.cardview.widget.CardView>
 

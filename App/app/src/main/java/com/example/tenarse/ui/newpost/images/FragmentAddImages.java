@@ -163,7 +163,7 @@ public class FragmentAddImages extends Fragment{
 // Crear un RequestBody a partir del JSON
                 RequestBody jsonBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
                 RequestBody postImg = RequestBody.create(MediaType.parse("image/*"), file);
-                MultipartBody.Part body = MultipartBody.Part.createFormData("postImage", idUser, postImg);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("post", idUser, postImg);
                 RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "postImage");
 
 // Enviar la solicitud POST con el multipart y el JSON como parte del cuerpo de la solicitud
@@ -229,14 +229,8 @@ public class FragmentAddImages extends Fragment{
             String fileName = pathImg.substring(pathImg.lastIndexOf("/") + 1);
             pathImg = getContext().getCacheDir() + "/" + fileName;
             image.setImageURI(resultUri);
-            Bitmap imagenBitmap = BitmapFactory.decodeFile(resultUri.getPath());
+            System.out.println(pathImg);
 
-            // Obtén la altura de la imagen en píxeles
-            int alturaImagen = imagenBitmap.getHeight();
-            int anchuraImagen = imagenBitmap.getWidth();
-            if(anchuraImagen > alturaImagen){
-
-            }
             ViewGroup.LayoutParams layoutParams = cardView.getLayoutParams();
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;

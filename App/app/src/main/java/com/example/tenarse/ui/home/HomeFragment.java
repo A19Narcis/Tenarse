@@ -215,11 +215,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     }
                     dataList.add(0, listElementDoubt);
                     multiAdapter.notifyItemInserted(0);
-                } else if (post.getString("tipus").equals("video1")){
+                } else if (post.getString("tipus").equals("video")){
                     dataList.add(0, new ListElementVideo(post.getString("_id"), post.getString("owner"), post.getString("user_img"), post.getString("url_video"), post.getString("text")));
                     multiAdapter.notifyItemInserted(0);
                 }
             }
+
 
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
