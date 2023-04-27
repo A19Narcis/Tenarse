@@ -180,11 +180,13 @@ public class UserFragment extends Fragment {
             for (int i = 0; i < publicacions.length(); i++) {
                 JSONObject post = publicacions.getJSONObject(i);
                 if (post.getString("tipus").equals("image")){
-                    dataList.add(new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
                     //Añadir video
                 } else if (post.getString("tipus").equals("doubt")){
-                    dataList.add(new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 }
             }
         } catch (JSONException e) {
@@ -273,19 +275,22 @@ public class UserFragment extends Fragment {
 
             JSONArray new_publicacions = new JSONArray(newDadesUser.getString("publicacions"));
             List<Object> new_dataList = new ArrayList<>();
+            MultiAdapter newMultiAdapter = new MultiAdapter(new_dataList, getContext(), UserFragment.this);
 
             for (int i = 0; i < new_publicacions.length(); i++) {
                 JSONObject post = new_publicacions.getJSONObject(i);
                 if (post.getString("tipus").equals("image")){
-                    new_dataList.add(new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
                     //Añadir video
                 } else if (post.getString("tipus").equals("doubt")){
-                    new_dataList.add(new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 }
             }
 
-            MultiAdapter newMultiAdapter = new MultiAdapter(new_dataList, getContext(), UserFragment.this);
+
             multiAdapter.setList(new_dataList);
             recyclerView = binding.recyclerViewFeed;
 

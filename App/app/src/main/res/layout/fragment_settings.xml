@@ -52,14 +52,161 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginEnd="35dp"
             android:orientation="vertical" >
 
-            <Button
-                android:id="@+id/logout_btn"
+            <androidx.cardview.widget.CardView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="30dp"
+                app:cardCornerRadius="250dp"
+                app:cardElevation="10dp">
+
+                <ImageView
+                    android:id="@+id/newFotoPerfil"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop" />
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="5dp"
+                android:text="Email"/>
+
+            <EditText
+                android:id="@+id/newEmail"
                 android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_marginBottom="35dp"
+                android:background="@drawable/rounded_edit_text"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="5dp"
+                android:text="Username"/>
+
+            <EditText
+                android:id="@+id/newUsername"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="35dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:background="@drawable/rounded_edit_text"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="5dp"
+                android:text="Nombre"/>
+
+            <EditText
+                android:id="@+id/newNombre"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="35dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:background="@drawable/rounded_edit_text"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="5dp"
+                android:text="Apellidos"/>
+
+            <EditText
+                android:id="@+id/newApellidos"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="35dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:background="@drawable/rounded_edit_text"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="5dp"
+                android:text="Fehca de nacimiento"/>
+
+            <EditText
+                android:id="@+id/newFecha"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="35dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:clickable="true"
+                android:focusable="false"
+                android:background="@drawable/rounded_edit_text"/>
+
+            <Button
+                android:backgroundTint="@color/black"
+                android:id="@+id/save_data"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="30dp"
+                android:text="Guardar cambios"/>
+
+            <TextView
+                android:id="@+id/errorTextUpdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:visibility="gone"
+                android:text="La información que nos has dado no cumple los requisitos." />
+
+            <TextView
+                android:id="@+id/userExisteUpdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="30dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:gravity="center_horizontal"
+                android:text="Este usuario i/o correo electronico ya esta registrado" />
+
+            <Button
+                android:backgroundTint="@color/red"
+                android:id="@+id/logout_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
                 android:text="Cerrar Sesion"/>
         </LinearLayout>
 
