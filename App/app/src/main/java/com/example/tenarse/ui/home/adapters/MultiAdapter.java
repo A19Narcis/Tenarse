@@ -219,6 +219,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 new HomeViewModel.DownloadImageTask(userImageViewVideo).execute(urlUserVideo);*/
 
                 /* Cargar VIDEO */
+                System.out.println("ENTRO PARA CARGAR VIDEO");
                 String videoPath = videoElement.getPost_video_url().replace("localhost", "10.0.2.2");
                 Uri uri = Uri.parse(videoPath);
                 videoViewHolder.post_video.setVideoURI(uri);
@@ -229,6 +230,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     mp.setLooping(true);
                     mp.start();
                 });
+
 
                 if (!videoElement.isLiked()){
                     videoViewHolder.likeImage.setImageResource(R.drawable.no_like);
