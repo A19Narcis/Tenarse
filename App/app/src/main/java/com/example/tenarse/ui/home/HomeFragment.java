@@ -216,7 +216,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     dataList.add(0, listElementDoubt);
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    dataList.add(0, new ListElementVideo(post.getString("_id"), post.getString("owner"), post.getString("user_img"), post.getString("url_video"), post.getString("text")));
+                    isLiked = false;
+                    ListElementVideo listElementVideo = new ListElementVideo(post.getString("_id"), post.getString("owner"), post.getString("user_img"), post.getString("url_video"), post.getString("text"), post.getJSONArray("likes"));
+                    listElementVideo.setLiked(false);
+                    for (int j = 0; j < listElementVideo.getLikes().length() && !isLiked; j++) {
+                        if (listElementVideo.getLikes().get(j).toString().equals(dadesUser.getString("_id"))){
+                            isLiked = true;
+                            listElementVideo.setLiked(true);
+                        }
+                    }
+                    dataList.add(0, listElementVideo);
                     multiAdapter.notifyItemInserted(0);
                 }
             }

@@ -230,7 +230,26 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     mp.start();
                 });
 
+                if (!videoElement.isLiked()){
+                    videoViewHolder.likeImage.setImageResource(R.drawable.no_like);
+                } else if (videoElement.isLiked()) {
+                    videoViewHolder.likeImage.setImageResource(R.drawable.like);
+                }
 
+                videoViewHolder.likeImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!videoElement.isLiked()){
+                            mHomeFragment.addLike(videoElement.getId());
+                            videoViewHolder.likeImage.setImageResource(R.drawable.like);
+                            videoElement.setLiked(true);
+                        } else if (videoElement.isLiked()) {
+                            mHomeFragment.removeLike(videoElement.getId());
+                            videoViewHolder.likeImage.setImageResource(R.drawable.no_like);
+                            videoElement.setLiked(false);
+                        }
+                    }
+                });
 
                 videoViewHolder.post_video.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -292,6 +311,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView post_text;
         ImageView userImageView;
         VideoView post_video;
+        ImageView likeImage;
 
         public VideoViewHolder(View itemView){
             super(itemView);
@@ -299,6 +319,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             post_text = itemView.findViewById(R.id.rv_post_text);
             userImageView = itemView.findViewById(R.id.rv_userImage);
             post_video = itemView.findViewById(R.id.rv_post_video);
+            likeImage = itemView.findViewById(R.id.like_image);
         }
     }
 }
