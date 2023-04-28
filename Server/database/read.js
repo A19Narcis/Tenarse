@@ -13,6 +13,24 @@ const getUser = async (email_username, callback) => {
     callback(userSelected);
 }
 
+const checkUserExists = async (username, callback) => {
+    const userSelected = await User.findOne({ username: username });
+    if (userSelected) {
+        callback(true)
+    } else {
+        callback(false)
+    }
+}
+
+const checkEmailExists = async (email, callback) => {
+    const userSelected = await User.findOne({ email: email });
+    if (userSelected) {
+        callback(true)
+    } else {
+        callback(false)
+    }
+}
+
 const getUserByID = async (id, callback) => {
     const userID = await User.findOne({ _id: id })
     callback(userID);
@@ -42,6 +60,8 @@ const getPosts = async (callback) => {
 
 module.exports = {
     getUser,
+    checkUserExists,
+    checkEmailExists,
     getUserByID,
     getUsers,
     getChat,

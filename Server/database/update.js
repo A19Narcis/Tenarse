@@ -107,6 +107,24 @@ const remFollowingUser = function (user_following, user_removed, callback) {
         })
 }
 
+const updateUser = function (id_user, newDadesUser, callback) {
+    User.updateOne(
+        { _id: id_user }, 
+        { 
+            email: newDadesUser.email,
+            username: newDadesUser.username,
+            nombre: newDadesUser.nombre,
+            apellidos: newDadesUser.apellidos,
+            fecha_nac: newDadesUser.fecha_nac
+        }
+    ).then(() => {
+        readDB.getUserByID(id_user, (newDadesUser) => {
+            callback(newDadesUser)
+        })
+    })
+    
+}
+
 module.exports = {
     addUserPost,
     addMessageChat,
@@ -114,5 +132,6 @@ module.exports = {
     addLikePost,
     removeLikePost,
     addFollowingUser,
-    remFollowingUser
+    remFollowingUser,
+    updateUser
 }

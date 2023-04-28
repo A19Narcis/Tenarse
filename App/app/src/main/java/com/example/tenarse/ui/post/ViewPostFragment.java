@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +26,7 @@ import com.example.tenarse.databinding.FragmentProfileBinding;
 import com.example.tenarse.databinding.FragmentViewPostBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.HomeFragment;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.post.adapters.AdapterComentarios;
 import com.example.tenarse.ui.post.asynctask.MyAsyncTaskComment;
@@ -87,6 +89,24 @@ public class ViewPostFragment extends Fragment {
             originFragment = args.getString("origin");
             isLiked = args.getBoolean("isLiked");
         }
+
+
+
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                System.out.println("REFRESHED");
+                try {
+                    refreshViewPostInfo(dadesPost.getString("_id"));
+                    refreshViewPostInfoComments(dadesPost.getString("_id"), true);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                binding.swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        binding.swipeRefreshLayout.setDistanceToTriggerSync((int) (180 * getResources().getDisplayMetrics().density));
 
         try {
             dadesPost = new JSONObject(infoPost);
@@ -172,15 +192,6 @@ public class ViewPostFragment extends Fragment {
             numeroComentarios = dadesPost.getJSONArray("comentaris").length();
             binding.numeroComentarios.setText("Comentarios (" + numeroComentarios + ")");
 
-
-            //Cargar los comentarios
-            for (int i = 0; i < dadesPost.getJSONArray("comentaris").length(); i++) {
-                JSONObject comentarioNuevo = (JSONObject) dadesPost.getJSONArray("comentaris").get(i);
-                comentarioList.add(0, new Comentario(comentarioNuevo.getString("user_img"), comentarioNuevo.getString("user"), comentarioNuevo.getString("coment_text")));
-                adapterComentarios.notifyItemInserted(0);
-            }
-
-
             binding.subirComentario.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -209,11 +220,7 @@ public class ViewPostFragment extends Fragment {
                         }
 
                         try {
-                            comentarioList.add(0, new Comentario(innerComentari.getString("user_img"), innerComentari.getString("user"), innerComentari.getString("coment_text")));
-                            adapterComentarios.notifyItemInserted(0);
-                            binding.recyclerViewComentarios.smoothScrollToPosition(0);
-                            numeroComentarios++;
-                            binding.numeroComentarios.setText("Comentarios (" + numeroComentarios + ")");
+                            refreshViewPostInfoComments(dadesPost.getString("_id"), false);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -255,36 +262,136 @@ public class ViewPostFragment extends Fragment {
         binding.recyclerViewComentarios.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewComentarios.setAdapter(adapterComentarios);
 
-        if (isLiked){
-            binding.likeImage.setImageResource(R.drawable.like);
-        } else {
-            binding.likeImage.setImageResource(R.drawable.no_like);
+        try {
+            if (refreshViewPostInfo(dadesPost.getString("_id"))){
+                binding.likeImage.setImageResource(R.drawable.like);
+            } else {
+                binding.likeImage.setImageResource(R.drawable.no_like);
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
 
         binding.likeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isLiked){
-                    try {
-                        removeLike(dadesPost.getString("_id"));
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                try {
+                    if (refreshViewPostInfo(dadesPost.getString("_id"))){
+                        try {
+                            removeLike(dadesPost.getString("_id"));
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                        binding.likeImage.setImageResource(R.drawable.no_like);
+                        isLiked = false;
+                    } else {
+                        try {
+                            addNewLike(dadesPost.getString("_id"));
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                        binding.likeImage.setImageResource(R.drawable.like);
+                        isLiked = true;
                     }
-                    binding.likeImage.setImageResource(R.drawable.no_like);
-                    isLiked = false;
-                } else {
-                    try {
-                        addNewLike(dadesPost.getString("_id"));
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                    binding.likeImage.setImageResource(R.drawable.like);
-                    isLiked = true;
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
 
+        try {
+            refreshViewPostInfoComments(dadesPost.getString("_id"), true);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
         return root;
+    }
+
+    private void refreshViewPostInfoComments(String id, boolean refreshed) {
+        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + id;
+        MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
+        getSinglePost.execute();
+        String resultSinglePost = null;
+        try {
+            resultSinglePost = getSinglePost.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        JSONObject new_dadesPost = null;
+        try {
+            new_dadesPost = new JSONObject(resultSinglePost);
+
+            /*COMENTARIOS*/
+            int numeroComentariosAntes = comentarioList.size();
+
+            if (refreshed){
+                for (int i = new_dadesPost.getJSONArray("comentaris").length(); i > numeroComentariosAntes; i--) {
+                    JSONObject comentarioNuevo = (JSONObject) new_dadesPost.getJSONArray("comentaris").get(i-1);
+                    comentarioList.add(new Comentario(comentarioNuevo.getString("user_img"), comentarioNuevo.getString("user"), comentarioNuevo.getString("coment_text")));
+                    adapterComentarios.notifyItemInserted(comentarioList.size());
+                }
+            } else {
+                for (int i = new_dadesPost.getJSONArray("comentaris").length(); i > numeroComentariosAntes; i--) {
+                    JSONObject comentarioNuevo = (JSONObject) new_dadesPost.getJSONArray("comentaris").get(i-1);
+                    comentarioList.add(0, new Comentario(comentarioNuevo.getString("user_img"), comentarioNuevo.getString("user"), comentarioNuevo.getString("coment_text")));
+                    adapterComentarios.notifyItemInserted(0);
+                }
+            }
+
+            binding.recyclerViewComentarios.smoothScrollToPosition(0);
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private boolean refreshViewPostInfo(String id) {
+        boolean myLike = false;
+        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + id;
+        MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
+        getSinglePost.execute();
+        String resultSinglePost = null;
+        try {
+            resultSinglePost = getSinglePost.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Recargar los `likes`
+        try {
+            JSONObject new_dadesPost = new JSONObject(resultSinglePost);
+
+            /*LIKES*/
+            for (int i = 0; i < new_dadesPost.getJSONArray("likes").length() && !myLike; i++) {
+                if (new_dadesPost.getJSONArray("likes").get(i).equals(dadesUsuari.getString("_id"))){
+                    myLike = true;
+                }
+            }
+
+            if (myLike){
+                binding.likeImage.setImageResource(R.drawable.like);
+            } else {
+                binding.likeImage.setImageResource(R.drawable.no_like);
+            }
+
+            int new_numero_likes = new_dadesPost.getJSONArray("likes").length();
+            if (new_numero_likes >= 10000 && new_numero_likes < 999950) {
+                String likesString = formatLikes10(new_numero_likes);
+                binding.numeroLikes.setText(likesString);
+            } else if ((new_numero_likes) >= 999950){
+                String likesString_100 = formatLikes100(new_numero_likes);
+                binding.numeroLikes.setText(likesString_100);
+            } else {
+                binding.numeroLikes.setText(String.valueOf(new_numero_likes));
+            }
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return myLike;
     }
 
     private void addNewLike(String id) {

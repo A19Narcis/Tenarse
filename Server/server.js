@@ -66,6 +66,40 @@ app.post('/addNewUser', (req, res) => {
     })
 })
 
+
+app.post('/checkUserExists', (req, res) => {
+    const username = req.body.username
+
+    readDB.checkUserExists(username, (exists) => {
+        res.send(exists)
+    })
+})
+
+app.post('/checkEmailExists', (req, res) => {
+    const email = req.body.email
+
+    readDB.checkEmailExists(email, (exists) => {
+        res.send(exists)
+    })
+})
+
+app.post('/updateUser', (req, res) => {
+
+    const id = req.body.id_user
+
+    const newDadesUser = {
+        email: req.body.email,
+        username: req.body.username,
+        nombre: req.body.name,
+        apellidos: req.body.surname,
+        fecha_nac: req.body.date
+    }
+
+    updateDB.updateUser(id, newDadesUser, (newDadesUpdated) => {
+        res.send(newDadesUpdated)
+    })
+})
+
 app.post('/getUser', (req, res) => {
     var email_username = req.body.email_username
     var passwd = req.body.password
@@ -204,7 +238,6 @@ app.post('/uploadfile', upload.single('post'), (req, res, next) => {
 });
 
 app.post('/addPostDubt', (req, res) => {
-    log(req.body);
     addPost(req.body);
     res.send({code:200});
 });
@@ -227,7 +260,6 @@ function addPost (body, postUrl) {
     let tiempoActual = hora + ':' + minutos + ':' + segundos
     let URLServer = "http://localhost:3000/";
 
-    //Llamnar a las imagenes de los posts -> user + hora.png EX: A19Narcis_091232.png
     var post;
     switch(body.type){
         case("image"):
@@ -273,114 +305,9 @@ function addPost (body, postUrl) {
         }
         break;
     }
-    
-    /*const post = {
-        tipus: 'doubt',
-        titol: 'How to substract numeric and alphanumeric value in python?',
-        text: 'I have 2 column with numeric and alphanumeric value. I want to apply substraction on numeric value in third column and keep aplhanumeric value as "Canadian". Please help',
-        url_img: '',
-        url_video: '',
-        comentaris: [],
-        owner: 'A19Narcis',
-        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-        hora: tiempoActual
-    }*/
-    /*const post = {
-        tipus: 'image',
-        titol: '',
-        text: 'Mi primer post en esta red social.',
-        url_img: 'http://localhost:3000/uploads/images/JavaScript_code.png', 
-        url_video: '',
-        comentaris: [],
-        owner: 'A19Narcis',
-        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-        hora: tiempoActual
-    }*/
-    /*const post = {
-        tipus: 'video',
-        titol: '',
-        text: 'Se viene...',
-        url_img: '',
-        url_video: 'http://localhost:3000/uploads/videos/videoTest.mp4',
-        comentaris: [],
-        owner: 'A19NarcisX',
-        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-        hora: tiempoActual
-    }*/
 
     insertDB.insertPost(post, () => {})
 }
-
-
-/* INSERT PUBLICACIO */
-app.post('/addNewPost', (req, res) => {
-    let fecha = new Date();
-    let hora = fecha.getHours();
-    let minutos = fecha.getMinutes();
-    let segundos = fecha.getSeconds();
-    if (hora < 10) {
-        hora = '0' + hora;
-    }
-    if (minutos < 10) {
-        minutos = '0' + minutos;
-    }
-    if (segundos < 10) {
-        segundos = '0' + segundos;
-    }
-    let tiempoActual = hora + ':' + minutos + ':' + segundos
-
-    //Llamnar a las imagenes de los posts -> user + hora.png EX: A19Narcis_091232.png
-    /*const post = {
-        tipus: req.body.tipus,
-        titol: req.body.title,
-        text: req.body.description,
-        hastags: req.body.hashtags,
-        url_img: req.body.imagen,
-        url_video: req.body.video,
-        comentaris: [],
-        owner: req.body.owner,
-        user_img: req.body.user_img,
-        hora: tiempoActual
-    }*/
-    /*const post = {
-        tipus: 'doubt',
-        titol: 'How to substract numeric and alphanumeric value in python?',
-        text: 'I have 2 column with numeric and alphanumeric value. I want to apply substraction on numeric value in third column and keep aplhanumeric value as "Canadian". Please help',
-        url_img: '',
-        url_video: '',
-        comentaris: [],
-        owner: 'A19Narcis',
-        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-        hora: tiempoActual
-    }*/
-    const post = {
-        tipus: 'image',
-        titol: '',
-        text: 'Mi primer post en esta red social.',
-        url_img: 'http://localhost:3000/uploads/images/6448f52dba9f0866d1851bb6-26_4_2023_11_56_38_600.jpg', 
-        url_video: '',
-        comentaris: [],
-        owner: 'A19Narcis',
-        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-        hora: tiempoActual
-    }
-    /*const post = {
-        tipus: 'video',
-        titol: '',
-        text: 'Se viene...',
-        url_img: '',
-        url_video: 'http://localhost:3000/uploads/videos/videoTest.mp4',
-        comentaris: [],
-        owner: 'A19NarcisX',
-        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-        hora: tiempoActual
-    }*/
-
-    insertDB.insertPost(post, function () {
-        res.send({ success: true });
-    })
-})
-
 
 app.post('/pruebaImg', (req, res) => {
     console.log("Hola :)");
@@ -406,6 +333,8 @@ app.post('/addNewComment', (req, res) => {
     
     const id_publi = req.body.id_publi
     const comentari = req.body.comentari
+
+    console.log(comentari);
     
     /*const id_publi = '644624407cd0eca623e9d7c1'
     const comentari = {
