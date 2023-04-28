@@ -2,10 +2,14 @@ package com.example.tenarse.ui.user.adapters;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +19,7 @@ import com.example.tenarse.ui.profile.ProfileFragment;
 import com.example.tenarse.ui.user.UserFragment;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
 import com.example.tenarse.ui.user.elements.ListElementImg;
+import com.example.tenarse.ui.user.elements.ListElementVideo;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -48,6 +53,8 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return TYPE_IMAGE;
         } else if (dataList.get(position) instanceof ListElementDoubt) {
             return TYPE_DOUBT;
+        }else if(dataList.get(position) instanceof ListElementVideo){
+            return TYPE_VIDEO;
         }
         return -1;
     }
@@ -63,6 +70,9 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case TYPE_DOUBT:
                 view = inflater.inflate(R.layout.list_element_user_doubt, parent, false);
                 return new MultiAdapter.DoubtViewHolder(view);
+            case TYPE_VIDEO:
+                view = inflater.inflate(R.layout.list_element_user_video, parent, false);
+                return new MultiAdapter.VideoViewHolder(view);
             default:
                 return null;
         }
@@ -107,6 +117,32 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 doubtViewHolder.title.setText(doubtElement.getTitle());
                 break;
+            case TYPE_VIDEO:
+                ListElementVideo videoElement = (ListElementVideo) dataList.get(position);
+                VideoViewHolder videoViewHolder = (VideoViewHolder) holder;
+
+                videoViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mUserFragment != null){
+                            mUserFragment.selectPost(videoElement.getPost_video_id());
+                        }
+
+                        if (mProfileFragment != null) {
+                            mProfileFragment.selectPost(videoElement.getPost_video_id());
+                        }
+                    }
+                });
+
+                /* Cargar VIDEO */
+                String videoPath = videoElement.post_video_url.replace("localhost", "10.0.2.2");
+                /*Uri uri = Uri.parse(videoPath);*/
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                retriever.setDataSource(videoPath);
+                Bitmap bitmap = retriever.getFrameAtTime(0);
+                videoViewHolder.miniatura.setImageBitmap(bitmap);
+
+                break;
         }
     }
 
@@ -136,6 +172,15 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public DoubtViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.userFeedPost);
+        }
+    }
+
+    public static class VideoViewHolder extends RecyclerView.ViewHolder {
+        ImageView miniatura;
+
+        public VideoViewHolder(View itemView) {
+            super(itemView);
+            miniatura = itemView.findViewById(R.id.userFeedPost);
         }
     }
 }

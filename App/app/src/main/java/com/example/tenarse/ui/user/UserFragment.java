@@ -30,6 +30,7 @@ import com.example.tenarse.databinding.FragmentUserBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.ui.user.elements.ListElementVideo;
 import com.example.tenarse.ui.post.ViewPostFragment;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
@@ -183,7 +184,8 @@ public class UserFragment extends Fragment {
                     dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    //Añadir video
+                    dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
                     dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
                     multiAdapter.notifyItemInserted(0);
@@ -283,7 +285,8 @@ public class UserFragment extends Fragment {
                     new_dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    //Añadir video
+                    new_dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
                     new_dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
                     multiAdapter.notifyItemInserted(0);
