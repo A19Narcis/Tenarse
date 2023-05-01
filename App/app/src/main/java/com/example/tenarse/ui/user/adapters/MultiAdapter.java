@@ -89,11 +89,11 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         if (mUserFragment != null){
-                            mUserFragment.selectPost(imgElement.getPost_img_id());
+                            mUserFragment.selectPost(imgElement.getPost_img_id(), v);
                         }
 
                         if (mProfileFragment != null) {
-                            mProfileFragment.selectPost(imgElement.getPost_img_id());
+                            mProfileFragment.selectPost(imgElement.getPost_img_id(), v);
                         }
                     }
                 });
@@ -106,11 +106,11 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         if (mUserFragment != null){
-                            mUserFragment.selectPost(doubtElement.getDoubt_id());
+                            mUserFragment.selectPost(doubtElement.getDoubt_id(), v);
                         }
 
                         if (mProfileFragment != null) {
-                            mProfileFragment.selectPost(doubtElement.getDoubt_id());
+                            mProfileFragment.selectPost(doubtElement.getDoubt_id(), v);
                         }
                     }
                 });
@@ -125,11 +125,11 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         if (mUserFragment != null){
-                            mUserFragment.selectPost(videoElement.getPost_video_id());
+                            mUserFragment.selectPost(videoElement.getPost_video_id(), v);
                         }
 
                         if (mProfileFragment != null) {
-                            mProfileFragment.selectPost(videoElement.getPost_video_id());
+                            mProfileFragment.selectPost(videoElement.getPost_video_id(), v);
                         }
                     }
                 });

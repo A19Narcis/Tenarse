@@ -3,17 +3,13 @@ package com.example.tenarse.ui.user;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -21,7 +17,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -314,7 +309,7 @@ public class UserFragment extends Fragment {
         binding = null;
     }
 
-    public void selectPost(String idPost){
+    public void selectPost(String idPost, View v){
         //Recoger todos los datos de un post y verlos en un fragment nuevo
         String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + idPost;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
@@ -339,13 +334,20 @@ public class UserFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike);
+        viewSelectedPost(resultSinglePost, myLike, v);
 
     }
 
-    public void viewSelectedPost(String infoPost, boolean myLike) {
+    public void viewSelectedPost(String infoPost, boolean myLike, View v) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("infoPost", infoPost);
+        bundle.putSerializable("origin", "perfil");
+        bundle.putSerializable("isLiked", myLike);
+        Navigation.findNavController(v).navigate(R.id.action_navigation_user_to_viewPostFragment, bundle);
+
+
         //Carregar el nou fragment amb les seves dades
-        FragmentManager fragmentManager = getParentFragmentManager();
+        /*FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         ViewPostFragment viewPostFragment = new ViewPostFragment();
         Bundle bundle = new Bundle();
@@ -356,6 +358,6 @@ public class UserFragment extends Fragment {
         viewPostFragment.setArguments(bundle);
         transaction.setReorderingAllowed(true);
         transaction.addToBackStack(null);
-        transaction.commit();
+        transaction.commit();*/
     }
 }

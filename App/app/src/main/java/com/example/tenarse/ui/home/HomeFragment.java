@@ -258,7 +258,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         resultNewPosts = nuevosPostsBD;
     }
 
-    public void selectUser(String username){
+    public void selectUser(String username, View view){
         //Recoger todos los datos del usuario que tiene ese `username` y luego cambiar de fragment para ver su perfil
         String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
         JSONObject jsonBody = new JSONObject();
@@ -282,14 +282,19 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         try {
             JSONObject dadesLogin = new JSONObject(resultSearch);
             ListElementUser userSelected = new ListElementUser(dadesLogin.getString("_id"), dadesLogin.getString("url_img"), dadesLogin.getString("username"), dadesLogin.getString("nombre") + " " + dadesLogin.getString("apellidos"), dadesLogin.getJSONArray("followers").length(), dadesLogin.getJSONArray("followings").length(), dadesLogin.getJSONArray("publicacions"));
-            viewSelectedUser(userSelected);
+            viewSelectedUser(userSelected, view);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void viewSelectedUser(ListElementUser userSelected) {
-        FragmentManager fragmentManager = getParentFragmentManager();
+    public void viewSelectedUser(ListElementUser userSelected, View view) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userInfo", userSelected);
+        Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_profileFragment, bundle);
+
+
+        /*FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         ProfileFragment profileFragment = new ProfileFragment();
         Bundle bundle = new Bundle();
@@ -298,10 +303,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         fragmentTransaction.replace(R.id.viewFragment, profileFragment);
         fragmentTransaction.setReorderingAllowed(true);
         fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
     }
 
-    public void selectPost(String idPost){
+    public void selectPost(String idPost, View view){
         //Recoger todos los datos de un post y verlos en un fragment nuevo
         String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + idPost;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
@@ -326,13 +331,19 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike);
+        viewSelectedPost(resultSinglePost, myLike, view);
 
     }
 
-    public void viewSelectedPost(String infoPost, boolean myLike) {
+    public void viewSelectedPost(String infoPost, boolean myLike, View view) {
         //Carregar el nou fragment amb les seves dades
-        FragmentManager fragmentManager = getParentFragmentManager();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("infoPost", infoPost);
+        bundle.putSerializable("origin", "home");
+        bundle.putSerializable("isLiked", myLike);
+        Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_viewPostFragment, bundle);
+
+        /*FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         ViewPostFragment viewPostFragment = new ViewPostFragment();
         Bundle bundle = new Bundle();
@@ -343,7 +354,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         viewPostFragment.setArguments(bundle);
         transaction.setReorderingAllowed(true);
         transaction.addToBackStack(null);
-        transaction.commit();
+        transaction.commit();*/
     }
 
 

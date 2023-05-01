@@ -91,7 +91,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         //Aquí
-                        mHomeFragment.selectUser(imageViewHolder.username.getText().toString());
+                        mHomeFragment.selectUser(imageViewHolder.username.getText().toString(), v);
                     }
                 });
 
@@ -113,7 +113,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 imageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mHomeFragment.selectPost(imgElement.getId());
+                        mHomeFragment.selectPost(imgElement.getId(), v);
                     }
                 });
 
@@ -149,7 +149,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         //Aquí
-                        mHomeFragment.selectUser(doubtViewHolder.username.getText().toString());
+                        mHomeFragment.selectUser(doubtViewHolder.username.getText().toString(), v);
                     }
                 });
 
@@ -164,7 +164,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 doubtViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mHomeFragment.selectPost(doubtElement.getId());
+                        mHomeFragment.selectPost(doubtElement.getId(), v);
                     }
                 });
 
@@ -203,7 +203,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         //Aquí
-                        mHomeFragment.selectUser(videoViewHolder.username.getText().toString());
+                        mHomeFragment.selectUser(videoViewHolder.username.getText().toString(), v);
                     }
                 });
 

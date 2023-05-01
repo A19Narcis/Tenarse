@@ -194,7 +194,6 @@ var storage = multer.diskStorage({
         }
     },
     filename: function (req, file, cb) {
-        log(file)
     let fecha = new Date();
     let dia = fecha.getDate();
     let mes = fecha.getMonth() + 1;
@@ -225,7 +224,6 @@ var upload = multer({ storage: storage });
 
 app.post('/uploadfile', upload.single('post'), (req, res, next) => {
     const file = req.file;
-    log(req.body);
     if(!file){
         const error = new Error("Please upload a file");
         error.httpStatusCode = 400;
@@ -309,10 +307,6 @@ function addPost (body, postUrl) {
     insertDB.insertPost(post, () => {})
 }
 
-app.post('/pruebaImg', (req, res) => {
-    console.log("Hola :)");
-})
-
 app.get('/getSelectedPost/:id', (req, res) => {
     const id = req.params.id
 
@@ -333,8 +327,6 @@ app.post('/addNewComment', (req, res) => {
     
     const id_publi = req.body.id_publi
     const comentari = req.body.comentari
-
-    console.log(comentari);
     
     /*const id_publi = '644624407cd0eca623e9d7c1'
     const comentari = {

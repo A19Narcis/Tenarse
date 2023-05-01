@@ -3,48 +3,38 @@ package com.example.tenarse.ui.profile;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.tenarse.Login;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentProfileBinding;
-import com.example.tenarse.databinding.FragmentUserBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
-import com.example.tenarse.ui.home.HomeFragment;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.post.ViewPostFragment;
 import com.example.tenarse.ui.profile.asynctask.MyAsyncTaskFollowing;
-import com.example.tenarse.ui.search.SearchFragment;
 import com.example.tenarse.ui.search.users.ListElementUser;
 import com.example.tenarse.ui.user.UserFragment;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
 import com.example.tenarse.ui.user.adapters.MultiAdapter;
+import com.example.tenarse.ui.user.elements.ListElementVideo;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -99,7 +89,7 @@ public class ProfileFragment extends Fragment {
         binding.backToMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                Navigation.findNavController(v).popBackStack();
             }
         });
 
@@ -323,15 +313,18 @@ public class ProfileFragment extends Fragment {
 
 
         try {
-            JSONArray publicacions = userInfo.getPublicacions_search();
+            JSONArray publicacions = new JSONArray(dadesUsuari.getString("publicacions"));
             for (int i = 0; i < publicacions.length(); i++) {
                 JSONObject post = publicacions.getJSONObject(i);
                 if (post.getString("tipus").equals("image")){
-                    dataList.add(new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    //Añadir video
+                    dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
-                    dataList.add(new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 }
             }
         } catch (JSONException e) {
@@ -429,19 +422,23 @@ public class ProfileFragment extends Fragment {
 
             JSONArray new_publicacions = new JSONArray(newDadesUser.getString("publicacions"));
             List<Object> new_dataList = new ArrayList<>();
+            MultiAdapter newMultiAdapter = new MultiAdapter(new_dataList, getContext(), ProfileFragment.this);
 
             for (int i = 0; i < new_publicacions.length(); i++) {
                 JSONObject post = new_publicacions.getJSONObject(i);
                 if (post.getString("tipus").equals("image")){
-                    new_dataList.add(new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    //Añadir video
+                    new_dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
-                    new_dataList.add(new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    multiAdapter.notifyItemInserted(0);
                 }
             }
 
-            MultiAdapter newMultiAdapter = new MultiAdapter(new_dataList, getContext(), ProfileFragment.this);
+
             multiAdapter.setList(new_dataList);
             recyclerView = binding.recyclerViewFeed;
 
@@ -462,7 +459,7 @@ public class ProfileFragment extends Fragment {
         binding = null;
     }
 
-    public void selectPost(String post_img_id) {
+    public void selectPost(String post_img_id, View v) {
         //Recoger todos los datos de un post y verlos en un fragment nuevo
         String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + post_img_id;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
@@ -474,11 +471,17 @@ public class ProfileFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost);
+        viewSelectedPost(resultSinglePost, v);
     }
 
-    public void viewSelectedPost(String infoPost) {
-        FragmentManager fragmentManager = getParentFragmentManager();
+    public void viewSelectedPost(String infoPost, View v) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("infoPost", infoPost);
+        bundle.putSerializable("origin", "otherUser");
+        Navigation.findNavController(v).navigate(R.id.action_profileFragment_to_viewPostFragment, bundle);
+
+
+        /*FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         ViewPostFragment viewPostFragment = new ViewPostFragment();
         Bundle bundle = new Bundle();
@@ -488,6 +491,6 @@ public class ProfileFragment extends Fragment {
         viewPostFragment.setArguments(bundle);
         transaction.setReorderingAllowed(true);
         transaction.addToBackStack(null);
-        transaction.commit();
+        transaction.commit();*/
     }
 }

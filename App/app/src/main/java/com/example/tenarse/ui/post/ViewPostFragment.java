@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -76,7 +77,7 @@ public class ViewPostFragment extends Fragment {
         binding.backToMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                Navigation.findNavController(v).popBackStack();
             }
         });
 
@@ -95,7 +96,6 @@ public class ViewPostFragment extends Fragment {
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                System.out.println("REFRESHED");
                 try {
                     refreshViewPostInfo(dadesPost.getString("_id"));
                     refreshViewPostInfoComments(dadesPost.getString("_id"), true);
