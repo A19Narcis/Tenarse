@@ -1,3 +1,4 @@
+const { query } = require('express');
 const { User } = require('./connection')
 const { Post } = require('./connection')
 const { Chat } = require('./connection')
@@ -57,8 +58,18 @@ const getPosts = async (callback) => {
 }
 
 const getPostsByHashtag = async (hashtag, callback) => {
-    const posts = await Post.find({ hashtags: hashtag, tipus: 'image' } );
+    const posts = await Post.find({ hashtags: hashtag, $or: [{ tipus: 'image' }, { tipus: 'video' }] });
     callback(posts)
+}
+
+const getPostsByQuery = async (query, callback) => {
+    const doubts = await Post.find({
+        $or: [
+          { titol: { $regex: query, $options: 'i' } },
+          { text: { $regex: query, $options: 'i' } }
+        ]
+      });
+    callback(doubts)
 }
 
 
@@ -72,5 +83,6 @@ module.exports = {
     getChat,
     getPublicacio,
     getPosts,
-    getPostsByHashtag
+    getPostsByHashtag,
+    getPostsByQuery
 }

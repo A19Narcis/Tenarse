@@ -26,13 +26,20 @@
         android:id="@+id/navigation_search"
         android:name="com.example.tenarse.ui.search.SearchFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_addpost" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_navigation_search_to_viewPostFragment"
+            app:destination="@id/viewPostFragment" />
+        <action
+            android:id="@+id/action_navigation_search_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_add"
         android:name="com.example.tenarse.ui.newpost.NewpostFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_addpost" />
 
     <fragment
         android:id="@+id/navigation_message"

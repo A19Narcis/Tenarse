@@ -13,9 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tenarse.R;
 import com.squareup.picasso.Picasso;
 
-import com.example.tenarse.ui.search.posts.ListElementImg;
-import com.example.tenarse.ui.search.posts.ListElementVideo;
-
 import java.util.List;
 
 public class AdapterSearchPost extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -50,10 +47,10 @@ public class AdapterSearchPost extends RecyclerView.Adapter<RecyclerView.ViewHol
         View view;
         switch (viewType) {
             case TYPE_IMAGE:
-                view = inflater.inflate(R.layout.list_element_user_img, parent, false);
+                view = inflater.inflate(R.layout.list_element_user_img_search, parent, false);
                 return new AdapterSearchPost.ImageViewHolder(view);
             case TYPE_VIDEO:
-                view = inflater.inflate(R.layout.list_element_user_video, parent, false);
+                view = inflater.inflate(R.layout.list_element_user_video_search, parent, false);
                 return new AdapterSearchPost.VideoViewHolder(view);
             default:
                 return null;
@@ -67,35 +64,27 @@ public class AdapterSearchPost extends RecyclerView.Adapter<RecyclerView.ViewHol
                 ListElementImg imgElement = (ListElementImg) dataList.get(position);
                 ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
                 Picasso.with(context).load(imgElement.getPost_img_url().replace("localhost", "10.0.2.2")).into(imageViewHolder.imageView);
-                /*imageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                imageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (mSearchPostFragment != null){
-                            //mSearchPostFragment.selectPost(imgElement.getPost_img_id(), v);
-                        }
-
-                        if (mSearchPostFragment != null) {
-                            //mSearchPostFragment.selectPost(imgElement.getPost_img_id(), v);
+                            mSearchPostFragment.selectPost(imgElement.getPost_img_id(), v);
                         }
                     }
-                });*/
+                });
                 break;
             case TYPE_VIDEO:
                 ListElementVideo videoElement = (ListElementVideo) dataList.get(position);
                 VideoViewHolder videoViewHolder = (VideoViewHolder) holder;
 
-                /*videoViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                videoViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (mSearchPostFragment != null){
-                            //mSearchPostFragment.selectPost(videoElement.getPost_video_id(), v);
-                        }
-
-                        if (mSearchPostFragment != null) {
-                            //mSearchPostFragment.selectPost(videoElement.getPost_video_id(), v);
+                            mSearchPostFragment.selectPost(videoElement.getPost_video_id(), v);
                         }
                     }
-                });*/
+                });
 
                 /* Cargar VIDEO */
                 String videoPath = videoElement.post_video_url.replace("localhost", "10.0.2.2");

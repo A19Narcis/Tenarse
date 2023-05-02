@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/post_home">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/rv_cardViewUserImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/rv_userImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/rv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UserTest"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_cardViewUserImage"
+        app:layout_constraintStart_toEndOf="@+id/rv_cardViewUserImage"
+        app:layout_constraintTop_toTopOf="@+id/rv_cardViewUserImage" />
+
+    <ImageView
+        android:id="@+id/share_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/share_icon"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_cardViewUserImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rv_cardViewUserImage" />
+
+    <TextView
+        android:id="@+id/rv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="How to substract numeric and alphanumeric value in python"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/share_icon"
+        app:layout_constraintStart_toStartOf="@+id/rv_cardViewUserImage"
+        app:layout_constraintTop_toBottomOf="@+id/rv_cardViewUserImage" />
+
+    <TextView
+        android:id="@+id/rv_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="I have 2 column with numeric and alphanumeric value. I want to apply substraction on numeric value in third column and keep aplhanumeric value as &quot;Canadian&quot;. Please help"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="@+id/rv_title"
+        app:layout_constraintStart_toStartOf="@+id/rv_title"
+        app:layout_constraintTop_toBottomOf="@+id/rv_title" />
+
+    <ImageView
+        android:id="@+id/like_image"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/no_like"
+        android:clickable="true"
+        app:layout_constraintStart_toStartOf="@+id/rv_description"
+        app:layout_constraintTop_toBottomOf="@id/rv_description" />
+
+    <ImageView
+        android:id="@+id/comment_image"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/comment"
+        app:layout_constraintBottom_toBottomOf="@+id/like_image"
+        app:layout_constraintEnd_toStartOf="@+id/send_image"
+        app:layout_constraintStart_toEndOf="@+id/like_image"
+        app:layout_constraintTop_toTopOf="@+id/like_image" />
+
+    <ImageView
+        android:id="@+id/send_image"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="110dp"
+        android:src="@drawable/send"
+        app:layout_constraintBottom_toBottomOf="@+id/like_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/like_image" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

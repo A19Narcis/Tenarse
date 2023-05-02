@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentSearchUsersBinding;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.profile.ProfileFragment;
 import com.example.tenarse.ui.search.SearchFragment;
 
@@ -41,20 +43,7 @@ public class SearchUsersFragment extends Fragment{
         binding = FragmentSearchUsersBinding.inflate(inflater, container, false);
 
         dataSearchList = new ArrayList<>();
-        myAdpater = new AdapterSearchUsers(dataSearchList, getContext(), new AdapterSearchUsers.OnItemClickListener() {
-            @Override
-            public void onItemClick(ListElementUser userClick) {
-                FragmentManager fragmentManager = getParentFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                ProfileFragment profileFragment = new ProfileFragment();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("userInfo", userClick);
-                profileFragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.fragment_container_search, profileFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        });
+        myAdpater = new AdapterSearchUsers(dataSearchList, getContext(), SearchUsersFragment.this);
 
         return binding.getRoot();
     }
@@ -62,15 +51,7 @@ public class SearchUsersFragment extends Fragment{
     public void buscarQuery(String query) {
         /* AÑADIR LOS USUARIOS A LA RECYCLER VIEW */
         dataSearchList = new ArrayList<>();
-        myAdpater = new AdapterSearchUsers(dataSearchList, getContext(), new AdapterSearchUsers.OnItemClickListener() {
-            @Override
-            public void onItemClick(ListElementUser userClick) {
-                SearchFragment searchFragment = (SearchFragment) getParentFragment();
-                if (searchFragment != null){
-                    searchFragment.seeProfileUser(userClick);
-                }
-            }
-        });
+        myAdpater = new AdapterSearchUsers(dataSearchList, getContext(), SearchUsersFragment.this);
 
         JSONObject body = new JSONObject();
 
@@ -117,5 +98,40 @@ public class SearchUsersFragment extends Fragment{
         binding.rvSearchUsers.setHasFixedSize(true);
         binding.rvSearchUsers.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvSearchUsers.setAdapter(myAdpater);
+    }
+
+    public void selectUser(String id_user, View v) {
+        //Recoger todos los datos del usuario que tiene ese `username` y luego cambiar de fragment para ver su perfil
+        String url_selectUser = "http://10.0.2.2:3000/getUserById";
+        JSONObject jsonBody = new JSONObject();
+
+
+        try {
+            jsonBody.put("id_user", id_user);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = selectedUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            JSONObject dadesLogin = new JSONObject(resultSearch);
+            ListElementUser userSelected = new ListElementUser(dadesLogin.getString("_id"), dadesLogin.getString("url_img"), dadesLogin.getString("username"), dadesLogin.getString("nombre") + " " + dadesLogin.getString("apellidos"), dadesLogin.getJSONArray("followers").length(), dadesLogin.getJSONArray("followings").length(), dadesLogin.getJSONArray("publicacions"));
+            viewSelectedUser(userSelected, v);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void viewSelectedUser(ListElementUser userSelected, View view) {
+        SearchFragment searchFragment = (SearchFragment) getParentFragment();
+        searchFragment.seeProfileUser(userSelected, view);
     }
 }

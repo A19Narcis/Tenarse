@@ -4,16 +4,15 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentSearchPostBinding;
-import com.example.tenarse.ui.user.elements.ListElementImg;
-import com.example.tenarse.ui.user.elements.ListElementVideo;
+import com.example.tenarse.globals.GlobalDadesUser;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
+import com.example.tenarse.ui.search.SearchFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +31,9 @@ public class SearchPostFragment extends Fragment {
     AdapterSearchPost myAdapter;
 
     private final String URL = "http://10.0.2.2:3000/searchPost";
+
+    private GlobalDadesUser globalDadesUser;
+    private JSONObject dadesUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,7 +75,7 @@ public class SearchPostFragment extends Fragment {
         //Pintarlos en la RecyclerView
         try {
             JSONArray resultSearchPostsArray = new JSONArray(resultSearchPost);
-            //binding.numPosts.setText("#" + query + "(" + resultSearchPostsArray.length() + ") publicaciones");
+            binding.numPosts.setText(query.toLowerCase() + " (" + resultSearchPostsArray.length() + " publicaciones)");
 
             for (int i = 0; i < resultSearchPostsArray.length(); i++) {
                 JSONObject post = resultSearchPostsArray.getJSONObject(i);
@@ -85,7 +87,6 @@ public class SearchPostFragment extends Fragment {
                     myAdapter.notifyItemInserted(0);
                 }
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -93,5 +94,41 @@ public class SearchPostFragment extends Fragment {
         binding.rvSearchPosts.setHasFixedSize(true);
         binding.rvSearchPosts.setLayoutManager(new GridLayoutManager(getContext(), 3));
         binding.rvSearchPosts.setAdapter(myAdapter);
+    }
+
+    public void selectPost(String id_post, View view) {
+        globalDadesUser = GlobalDadesUser.getInstance();
+        dadesUser = globalDadesUser.getDadesUser();
+
+        //Recoger todos los datos de un post y verlos en un fragment nuevo
+        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + id_post;
+        MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
+        getSinglePost.execute();
+        String resultSinglePost = null;
+        try {
+            resultSinglePost = getSinglePost.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Ver si el post que hemos seleccionado tiene mi `Like`
+        boolean myLike = false;
+        try {
+            JSONObject dadesPostResult = new JSONObject(resultSinglePost);
+            for (int i = 0; i < dadesPostResult.getJSONArray("likes").length() && !myLike; i++) {
+                if (dadesPostResult.getJSONArray("likes").get(i).equals(dadesUser.getString("_id"))){
+                    myLike = true;
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        viewSelectedPost(resultSinglePost, myLike, view);
+    }
+
+    private void viewSelectedPost(String resultSinglePost, boolean myLike, View view) {
+        SearchFragment searchFragment = (SearchFragment) getParentFragment();
+        searchFragment.seeSelectedPost(resultSinglePost, myLike, view);
     }
 }

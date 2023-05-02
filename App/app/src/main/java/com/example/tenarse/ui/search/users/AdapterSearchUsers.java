@@ -22,16 +22,12 @@ public class AdapterSearchUsers extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<Object> dataSearchList;
     private Context context;
 
-    final AdapterSearchUsers.OnItemClickListener listener;
+    private SearchUsersFragment mSearchUsersFragment;
 
-    public interface OnItemClickListener {
-        void onItemClick(ListElementUser userClick);
-    }
-
-    public AdapterSearchUsers(List<Object> dataSearchList, Context context, AdapterSearchUsers.OnItemClickListener listener){
+    public AdapterSearchUsers(List<Object> dataSearchList, Context context, SearchUsersFragment mSearchUsersFragment){
         this.dataSearchList = dataSearchList;
         this.context = context;
-        this.listener = listener;
+        this.mSearchUsersFragment = mSearchUsersFragment;
     }
 
 
@@ -58,7 +54,7 @@ public class AdapterSearchUsers extends RecyclerView.Adapter<RecyclerView.ViewHo
         userViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onItemClick(listElementUser);
+                mSearchUsersFragment.selectUser(listElementUser.getId_user(), v);
             }
         });
     }

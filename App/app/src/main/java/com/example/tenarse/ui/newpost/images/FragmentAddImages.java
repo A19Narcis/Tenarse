@@ -139,7 +139,7 @@ public class FragmentAddImages extends Fragment{
                     System.out.println("Files does not exists");
                 }
 
-// Crear un objeto JSONObject y agregar los campos necesarios
+                // Crear un objeto JSONObject y agregar los campos necesarios
                 String idUser = "null";
                 GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
                 JSONObject jsonGDU = globalDadesUser.getDadesUser();
@@ -160,13 +160,13 @@ public class FragmentAddImages extends Fragment{
                     e.printStackTrace();
                 }
 
-// Crear un RequestBody a partir del JSON
+                // Crear un RequestBody a partir del JSON
                 RequestBody jsonBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
                 RequestBody postImg = RequestBody.create(MediaType.parse("image/*"), file);
                 MultipartBody.Part body = MultipartBody.Part.createFormData("post", idUser, postImg);
                 RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "postImage");
 
-// Enviar la solicitud POST con el multipart y el JSON como parte del cuerpo de la solicitud
+                // Enviar la solicitud POST con el multipart y el JSON como parte del cuerpo de la solicitud
                 Call<ResponseBody> req = apiService.postImage(body, name, jsonBody);
 
                 req.enqueue(new Callback<ResponseBody>() {

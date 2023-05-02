@@ -1,6 +1,8 @@
 package com.example.tenarse.ui.search.posts;
 
-public class ListElementImg {
+import java.io.Serializable;
+
+public class ListElementImg implements Serializable {
     public String user_img_url;
     public String username;
     public String post_img_url;

@@ -15,8 +15,6 @@ import android.view.animation.RotateAnimation;
 import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,10 +25,8 @@ import com.example.tenarse.databinding.FragmentProfileBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
-import com.example.tenarse.ui.post.ViewPostFragment;
 import com.example.tenarse.ui.profile.asynctask.MyAsyncTaskFollowing;
 import com.example.tenarse.ui.search.users.ListElementUser;
-import com.example.tenarse.ui.user.UserFragment;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
 import com.example.tenarse.ui.user.adapters.MultiAdapter;
@@ -60,6 +56,9 @@ public class ProfileFragment extends Fragment {
     MultiAdapter multiAdapter;
 
     String fragmentAnterior = "";
+
+    private GlobalDadesUser globalDadesUser;
+    private JSONObject dadesUser;
 
     private Runnable mRunnable = new Runnable() {
         private int mPreviousScrollPosition = -1;
@@ -461,6 +460,9 @@ public class ProfileFragment extends Fragment {
     }
 
     public void selectPost(String post_img_id, View v) {
+        globalDadesUser = GlobalDadesUser.getInstance();
+        dadesUser = globalDadesUser.getDadesUser();
+
         //Recoger todos los datos de un post y verlos en un fragment nuevo
         String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + post_img_id;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
@@ -472,26 +474,27 @@ public class ProfileFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, v);
+        //Ver si el post que hemos seleccionado tiene mi `Like`
+        boolean myLike = false;
+        try {
+            JSONObject dadesPostResult = new JSONObject(resultSinglePost);
+            for (int i = 0; i < dadesPostResult.getJSONArray("likes").length() && !myLike; i++) {
+                if (dadesPostResult.getJSONArray("likes").get(i).equals(dadesUser.getString("_id"))){
+                    myLike = true;
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        viewSelectedPost(resultSinglePost, myLike, v);
     }
 
-    public void viewSelectedPost(String infoPost, View v) {
+    public void viewSelectedPost(String infoPost, boolean myLike, View v) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
         bundle.putSerializable("origin", "otherUser");
+        bundle.putSerializable("isLiked", myLike);
         Navigation.findNavController(v).navigate(R.id.action_profileFragment_to_viewPostFragment, bundle);
-
-
-        /*FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        ViewPostFragment viewPostFragment = new ViewPostFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("infoPost", infoPost);
-        bundle.putSerializable("origin", "otherUser");
-        transaction.replace(R.id.viewFragment, viewPostFragment);
-        viewPostFragment.setArguments(bundle);
-        transaction.setReorderingAllowed(true);
-        transaction.addToBackStack(null);
-        transaction.commit();*/
     }
 }

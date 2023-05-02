@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentSearchBinding;
@@ -19,8 +20,6 @@ import com.example.tenarse.ui.search.posts.SearchPostFragment;
 import com.example.tenarse.ui.search.questions.SearchQuestionsFragment;
 import com.example.tenarse.ui.search.users.ListElementUser;
 import com.example.tenarse.ui.search.users.SearchUsersFragment;
-
-import java.io.Serializable;
 
 public class SearchFragment extends Fragment {
 
@@ -119,10 +118,9 @@ public class SearchFragment extends Fragment {
                             searchUsersFragment.buscarQuery(query);
                             break;
                         case POST_SELECTED:
-                            searchPostFragment.buscarQuery(query);
+                            searchPostFragment.buscarQuery("#"+query);
                             break;
                         case QUESTION_SELECTED:
-                            SearchQuestionsFragment searchQuestionsFragment = new SearchQuestionsFragment();
                             searchQuestionsFragment.buscarQuery(query);
                             break;
                     }
@@ -149,17 +147,17 @@ public class SearchFragment extends Fragment {
         binding = null;
     }
 
-    public void seeProfileUser(ListElementUser userClick) {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        ProfileFragment profileFragment = new ProfileFragment();
+    public void seeProfileUser(ListElementUser userClick, View view) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userInfo", userClick);
-        bundle.putSerializable("fragment", "search");
-        profileFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.viewFragment, profileFragment);
-        fragmentTransaction.setReorderingAllowed(true);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        Navigation.findNavController(view).navigate(R.id.action_navigation_search_to_profileFragment, bundle);
+    }
+
+    public void seeSelectedPost(String resultSinglePost, boolean myLike, View view) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("infoPost", resultSinglePost);
+        bundle.putSerializable("origin", "search");
+        bundle.putSerializable("isLiked", myLike);
+        Navigation.findNavController(view).navigate(R.id.action_navigation_search_to_viewPostFragment, bundle);
     }
 }

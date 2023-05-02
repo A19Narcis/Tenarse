@@ -36,8 +36,8 @@ public class suggestedUsers extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ChatAdapter.chatViewHolder cvh = (ChatAdapter.chatViewHolder) holder;
-        cvh.textoUsuario.setText(dataList.get(position).getUserName());
-        cvh.lastMsg.setText(dataList.get(position).getLastMsg());
+        //cvh.textoUsuario.setText(dataList.get(position).getUserName());
+        //cvh.lastMsg.setText(dataList.get(position).getLastMsg());
         //cvh.profileImg.setImageBitmap(dataList.get(position).getProfileImg());
     }
 

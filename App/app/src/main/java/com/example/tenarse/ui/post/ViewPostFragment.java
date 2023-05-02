@@ -124,7 +124,7 @@ public class ViewPostFragment extends Fragment {
             } else {
                 binding.removeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View viewButton) {
                         //Esborrar post
                         AlertDialog.Builder alertaLogOut = new AlertDialog.Builder(getActivity());
                         alertaLogOut.setTitle("Eliminar publicación");
@@ -151,7 +151,7 @@ public class ViewPostFragment extends Fragment {
                                     throw new RuntimeException(e);
                                 }
 
-                                getActivity().getSupportFragmentManager().popBackStack();
+                                Navigation.findNavController(viewButton).popBackStack();
                                 Toast toast = Toast.makeText(getContext(), "Publicación eliminada", Toast.LENGTH_SHORT);
                                 toast.setText("Publicación eliminada");
                                 toast.show();
@@ -379,17 +379,23 @@ public class ViewPostFragment extends Fragment {
             /*COMENTARIOS*/
             int numeroComentariosAntes = comentarioList.size();
 
+            binding.numeroComentarios.setText("Comentarios (" + new_dadesPost.getJSONArray("comentaris").length() + ")");
+
             if (refreshed){
+                System.out.println("NUEVO POST CON REFRESH");
+                System.out.println("----------------------");
                 for (int i = new_dadesPost.getJSONArray("comentaris").length(); i > numeroComentariosAntes; i--) {
                     JSONObject comentarioNuevo = (JSONObject) new_dadesPost.getJSONArray("comentaris").get(i-1);
                     comentarioList.add(new Comentario(comentarioNuevo.getString("user_img"), comentarioNuevo.getString("user"), comentarioNuevo.getString("coment_text")));
                     adapterComentarios.notifyItemInserted(comentarioList.size());
                 }
             } else {
+                System.out.println("NUEVO POST CON SUBIR BUTTON");
                 for (int i = new_dadesPost.getJSONArray("comentaris").length(); i > numeroComentariosAntes; i--) {
                     JSONObject comentarioNuevo = (JSONObject) new_dadesPost.getJSONArray("comentaris").get(i-1);
                     comentarioList.add(0, new Comentario(comentarioNuevo.getString("user_img"), comentarioNuevo.getString("user"), comentarioNuevo.getString("coment_text")));
                     adapterComentarios.notifyItemInserted(0);
+                    binding.recyclerViewComentarios.requestLayout();
                 }
             }
 

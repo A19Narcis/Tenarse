@@ -431,12 +431,20 @@ app.post('/searchUsers', (req, res) => {
 })
 
 app.post('/searchPost', (req, res) => {
-    const hashtag = "#java"
+    const hashtag = req.body.hashtag
 
     readDB.getPostsByHashtag(hashtag, (allPosts) => {
         res.send(allPosts);
     })
+})
 
+
+app.post('/searchDoubt', (req, res) => {
+    const query = req.body.query;
+
+    readDB.getPostsByQuery(query, (allDoubts) => {
+        res.send(allDoubts)
+    })
 })
 
 app.listen(PORT, () => {
