@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
@@ -75,6 +76,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private boolean isLiked;
 
+    private ProgressBar progressBar;
+
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
@@ -95,7 +98,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         View root = binding.getRoot();
 
         MainActivity mainActivity = (MainActivity) getActivity();
-
         dataList = new ArrayList<>();
         multiAdapter = new MultiAdapter(dataList, getContext(), HomeFragment.this);
 
@@ -404,4 +406,5 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             throw new RuntimeException(e);
         }
     }
+
 }

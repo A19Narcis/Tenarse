@@ -127,6 +127,7 @@ public class ProfileFragment extends Fragment {
             fragmentAnterior = args.getString("fragment");
         }
 
+        refreshUserInfo(userInfo.getId_user());
 
         GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
         JSONObject dadesUsuari = globalDadesUser.getDadesUser();

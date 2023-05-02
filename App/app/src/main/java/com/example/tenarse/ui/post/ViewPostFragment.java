@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -29,6 +30,7 @@ import com.example.tenarse.databinding.FragmentProfileBinding;
 import com.example.tenarse.databinding.FragmentViewPostBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.HomeFragment;
+import com.example.tenarse.ui.home.adapters.MultiAdapter;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.post.adapters.AdapterComentarios;
@@ -171,6 +173,7 @@ public class ViewPostFragment extends Fragment {
 
             if (dadesPost.getString("tipus").equals("doubt")){
                 binding.rvPostImage.setVisibility(View.GONE);
+                binding.progressBar.setVisibility(View.GONE);
                 binding.rvTitle.setText(dadesPost.getString("titol"));
                 binding.rvPostText.setText(dadesPost.getString("text"));
                 ViewGroup.LayoutParams params = binding.cardViewRvVideo.getLayoutParams();
@@ -181,6 +184,7 @@ public class ViewPostFragment extends Fragment {
                 binding.rvPostVideo.setLayoutParams(params_video);
             } else if (dadesPost.getString("tipus").equals("image")){
                 binding.rvTitle.setVisibility(View.GONE);
+                binding.progressBar.setVisibility(View.GONE);
                 ViewGroup.LayoutParams params = binding.cardViewRvVideo.getLayoutParams();
                 params.height = 0;
                 binding.cardViewRvVideo.setLayoutParams(params);
@@ -192,17 +196,39 @@ public class ViewPostFragment extends Fragment {
             } else if (dadesPost.getString("tipus").equals("video")){
                 binding.rvTitle.setVisibility(View.GONE);
                 binding.rvPostImage.setVisibility(View.GONE);
+                binding.progressBar.setVisibility(View.VISIBLE);
                 String videoPath = dadesPost.getString("url_video").replace("localhost", "10.0.2.2");
-                Uri uri = Uri.parse(videoPath);
-                binding.rvPostVideo.setVideoURI(uri);
+                /*Uri uri = Uri.parse(videoPath);
+                videoViewHolder.post_video.setVideoURI(uri);*/
+                binding.rvPostVideo.setVideoPath(videoPath);
                 MediaController mediaController = new MediaController(getContext());
                 binding.rvPostVideo.setMediaController(null);
                 mediaController.setAnchorView(binding.rvPostVideo);
                 binding.rvPostVideo.setOnPreparedListener(mp -> {
+                    binding.progressBar.setVisibility(View.GONE);
                     mp.setLooping(true);
                     mp.start();
                 });
+
+                binding.rvPostVideo.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                    @Override
+                    public boolean onError(MediaPlayer mp, int what, int extra) {
+                        System.out.println("Error al reproducir el video: " + what + ", " + extra);
+                        try {
+                            binding.rvPostVideo.setVideoURI(Uri.parse(dadesPost.getString("url_video").replace("localhost", "10.0.2.2")));
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                        binding.rvPostVideo.setOnPreparedListener(mp1 -> {
+                            binding.progressBar.setVisibility(View.GONE);
+                            mp1.setLooping(true);
+                            mp1.start();
+                        });
+                        return true;
+                    }
+                });
             }
+
 
             int numero_likes = dadesPost.getJSONArray("likes").length();
             if (numero_likes >= 10000 && numero_likes < 999950) {
@@ -333,6 +359,7 @@ public class ViewPostFragment extends Fragment {
 
         return root;
     }
+
 
     private void refreshViewPostInfoComments(String id, boolean refreshed) {
         String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + id;

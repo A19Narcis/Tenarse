@@ -1,12 +1,14 @@
 package com.example.tenarse.ui.home.adapters;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -204,15 +206,37 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
                 /* Cargar VIDEO */
+
+                verProgressBar(videoViewHolder);
+
                 String videoPath = videoElement.getPost_video_url().replace("localhost", "10.0.2.2");
-                Uri uri = Uri.parse(videoPath);
-                videoViewHolder.post_video.setVideoURI(uri);
+                /*Uri uri = Uri.parse(videoPath);
+                videoViewHolder.post_video.setVideoURI(uri);*/
+                videoViewHolder.post_video.setVideoPath(videoPath);
                 MediaController mediaController = new MediaController(context);
                 videoViewHolder.post_video.setMediaController(null);
                 mediaController.setAnchorView(videoViewHolder.post_video);
-                videoViewHolder.post_video.setOnPreparedListener(mp -> {
-                    mp.setLooping(true);
-                    mp.start();
+                videoViewHolder.post_video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        MultiAdapter.this.ocultarProgressBar(videoViewHolder);
+                        mp.setLooping(true);
+                        mp.start();
+                    }
+                });
+
+                videoViewHolder.post_video.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                    @Override
+                    public boolean onError(MediaPlayer mp, int what, int extra) {
+                        System.out.println("Error al reproducir el video: " + what + ", " + extra);
+                        videoViewHolder.post_video.setVideoURI(Uri.parse(videoElement.getPost_video_url().replace("localhost", "10.0.2.2")));
+                        videoViewHolder.post_video.setOnPreparedListener(mp1 -> {
+                            MultiAdapter.this.ocultarProgressBar(videoViewHolder);
+                            mp1.setLooping(true);
+                            mp1.start();
+                        });
+                        return true;
+                    }
                 });
 
 
@@ -257,6 +281,14 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 break;
         }
+    }
+
+    private void verProgressBar(VideoViewHolder videoViewHolder) {
+        videoViewHolder.progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void ocultarProgressBar(VideoViewHolder videoViewHolder) {
+        videoViewHolder.progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -306,6 +338,8 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         VideoView post_video;
         ImageView likeImage;
 
+        ProgressBar progressBar;
+
         public VideoViewHolder(View itemView){
             super(itemView);
             username = itemView.findViewById(R.id.rv_username);
@@ -313,6 +347,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             userImageView = itemView.findViewById(R.id.rv_userImage);
             post_video = itemView.findViewById(R.id.rv_post_video);
             likeImage = itemView.findViewById(R.id.like_image);
+            progressBar = itemView.findViewById(R.id.progress_bar);
         }
     }
 }
