@@ -423,6 +423,15 @@ app.post('/searchUsers', (req, res) => {
     })
 })
 
+app.post('/searchPost', (req, res) => {
+    const hashtag = "#java"
+
+    readDB.getPostsByHashtag(hashtag, (allPosts) => {
+        res.send(allPosts);
+    })
+
+})
+
 app.listen(PORT, () => {
     console.log("Server Running [" + PORT + "]");
 });

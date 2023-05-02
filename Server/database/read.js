@@ -56,6 +56,11 @@ const getPosts = async (callback) => {
     callback(posts)
 }
 
+const getPostsByHashtag = async (hashtag, callback) => {
+    const posts = await Post.find({ hashtags: hashtag, tipus: 'image' } );
+    callback(posts)
+}
+
 
 
 module.exports = {
@@ -66,5 +71,6 @@ module.exports = {
     getUsers,
     getChat,
     getPublicacio,
-    getPosts
+    getPosts,
+    getPostsByHashtag
 }

@@ -32,6 +32,9 @@ public class SearchFragment extends Fragment {
 
     private int selected_image = USER_SELECTED;
 
+    private SearchPostFragment searchPostFragment;
+    private SearchQuestionsFragment searchQuestionsFragment;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         SearchViewModel searchViewModel =
@@ -74,7 +77,7 @@ public class SearchFragment extends Fragment {
                 binding.imgSearchPost.setImageResource(R.drawable.selected_videos);
                 binding.imgSearchUser.setImageResource(R.drawable.unsel_user);
                 binding.imgSearchDoubt.setImageResource(R.drawable.unsel_questions);
-                SearchPostFragment searchPostFragment = new SearchPostFragment();
+                searchPostFragment = new SearchPostFragment();
                 FragmentManager fragmentManager = getChildFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.fragment_container_search, searchPostFragment);
@@ -90,7 +93,7 @@ public class SearchFragment extends Fragment {
                 binding.imgSearchDoubt.setImageResource(R.drawable.selected_questions);
                 binding.imgSearchPost.setImageResource(R.drawable.unsel_videos);
                 binding.imgSearchUser.setImageResource(R.drawable.unsel_user);
-                SearchQuestionsFragment searchQuestionsFragment = new SearchQuestionsFragment();
+                searchQuestionsFragment = new SearchQuestionsFragment();
                 FragmentManager fragmentManager = getChildFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.fragment_container_search, searchQuestionsFragment);
@@ -116,7 +119,6 @@ public class SearchFragment extends Fragment {
                             searchUsersFragment.buscarQuery(query);
                             break;
                         case POST_SELECTED:
-                            SearchPostFragment searchPostFragment = new SearchPostFragment();
                             searchPostFragment.buscarQuery(query);
                             break;
                         case QUESTION_SELECTED:

@@ -1,10 +1,9 @@
-package com.example.tenarse.ui.search.users;
+package com.example.tenarse.ui.search.posts;
 
 import android.os.AsyncTask;
 
-import com.example.tenarse.globals.GlobalDadesUser;
+import com.example.tenarse.ui.search.users.SearchUsersFragment;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -15,12 +14,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MyAsyncTaskSearchUsers extends AsyncTask<Void, Void, String> {
+public class MyAsyncTaskGetPosts extends AsyncTask<Void, Void, String> {
 
     private final String URL;
     private final JSONObject jsonObject;
 
-    public MyAsyncTaskSearchUsers(String url, JSONObject jsonObject){
+    public MyAsyncTaskGetPosts(String url, JSONObject jsonObject){
         this.URL = url;
         this.jsonObject = jsonObject;
     }
