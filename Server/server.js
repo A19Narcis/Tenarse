@@ -391,7 +391,7 @@ app.post('/createChat', (req, res) => {
     insertDB.insertChat(chat, () => {
         res.send({ newChat: true })
     })
-})
+});
 
 
 //Update con msg
@@ -411,7 +411,14 @@ app.post('/newMessage', (req, res) => {
     updateDB.addMessageChat(message, chat_id, function () {
         res.send({ messageSent: true })
     })
-})
+});
+
+//Crear el chat
+app.post('/getChats', (req, res) => {
+    readDB.getChat(req.user_id, () => {
+        res.send({ newChat: true })
+    })
+});
 
 
 /* BUSCADOR Usuarios - Publicaciones - Dudas */
