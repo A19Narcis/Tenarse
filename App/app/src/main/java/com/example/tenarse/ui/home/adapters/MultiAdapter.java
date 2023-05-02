@@ -1,24 +1,15 @@
 package com.example.tenarse.ui.home.adapters;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
@@ -27,7 +18,6 @@ import com.example.tenarse.ui.home.HomeViewModel;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
-import com.example.tenarse.ui.profile.ProfileFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -213,13 +203,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     videoViewHolder.post_text.setText(videoElement.getPost_text());
                 }
 
-                /* Cargar USER IMAGE */
-                /*String urlUserVideo = videoElement.getUser_img_url().replace("localhost", "10.0.2.2");
-                ImageView userImageViewVideo = videoViewHolder.userImageView;
-                new HomeViewModel.DownloadImageTask(userImageViewVideo).execute(urlUserVideo);*/
-
                 /* Cargar VIDEO */
-                System.out.println("ENTRO PARA CARGAR VIDEO");
                 String videoPath = videoElement.getPost_video_url().replace("localhost", "10.0.2.2");
                 Uri uri = Uri.parse(videoPath);
                 videoViewHolder.post_video.setVideoURI(uri);
@@ -261,6 +245,13 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         }else{
                             videoViewHolder.post_video.start();
                         }
+                    }
+                });
+
+                videoViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mHomeFragment.selectPost(videoElement.getId(), v);
                     }
                 });
 

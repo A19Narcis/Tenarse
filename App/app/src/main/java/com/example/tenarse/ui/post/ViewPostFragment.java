@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -19,6 +20,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.MediaController;
 import android.widget.Toast;
 
 import com.example.tenarse.Login;
@@ -166,16 +168,40 @@ public class ViewPostFragment extends Fragment {
 
 
 
+
             if (dadesPost.getString("tipus").equals("doubt")){
                 binding.rvPostImage.setVisibility(View.GONE);
                 binding.rvTitle.setText(dadesPost.getString("titol"));
                 binding.rvPostText.setText(dadesPost.getString("text"));
+                ViewGroup.LayoutParams params = binding.cardViewRvVideo.getLayoutParams();
+                params.height = 0;
+                binding.cardViewRvVideo.setLayoutParams(params);
+                ViewGroup.LayoutParams params_video = binding.rvPostVideo.getLayoutParams();
+                params_video.height = 0;
+                binding.rvPostVideo.setLayoutParams(params_video);
             } else if (dadesPost.getString("tipus").equals("image")){
                 binding.rvTitle.setVisibility(View.GONE);
+                ViewGroup.LayoutParams params = binding.cardViewRvVideo.getLayoutParams();
+                params.height = 0;
+                binding.cardViewRvVideo.setLayoutParams(params);
+                ViewGroup.LayoutParams params_video = binding.rvPostVideo.getLayoutParams();
+                params_video.height = 0;
+                binding.rvPostVideo.setLayoutParams(params_video);
                 binding.rvPostText.setText(dadesPost.getString("text"));
                 Picasso.with(getContext()).load(dadesPost.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.rvPostImage);
             } else if (dadesPost.getString("tipus").equals("video")){
                 binding.rvTitle.setVisibility(View.GONE);
+                binding.rvPostImage.setVisibility(View.GONE);
+                String videoPath = dadesPost.getString("url_video").replace("localhost", "10.0.2.2");
+                Uri uri = Uri.parse(videoPath);
+                binding.rvPostVideo.setVideoURI(uri);
+                MediaController mediaController = new MediaController(getContext());
+                binding.rvPostVideo.setMediaController(null);
+                mediaController.setAnchorView(binding.rvPostVideo);
+                binding.rvPostVideo.setOnPreparedListener(mp -> {
+                    mp.setLooping(true);
+                    mp.start();
+                });
             }
 
             int numero_likes = dadesPost.getJSONArray("likes").length();

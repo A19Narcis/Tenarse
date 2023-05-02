@@ -265,15 +265,6 @@ public class SettingsFragment extends Fragment{
                     TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
                     textoSnackbar.setGravity(Gravity.CENTER);
 
-                    snackbar.addCallback(new Snackbar.Callback() {
-                        @Override
-                        public void onDismissed(Snackbar snackbar, int event) {
-                            super.onDismissed(snackbar, event);
-                            NavController navController = NavHostFragment.findNavController(SettingsFragment.this);
-                            navController.popBackStack();
-                        }
-                    });
-
                     // Mostrar Snackbar personalizado
                     snackbar.show();
 
