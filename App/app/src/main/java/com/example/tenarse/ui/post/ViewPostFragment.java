@@ -32,6 +32,7 @@ import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.HomeFragment;
 import com.example.tenarse.ui.home.adapters.MultiAdapter;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.post.adapters.AdapterComentarios;
 import com.example.tenarse.ui.post.asynctask.MyAsyncTaskComment;
@@ -256,7 +257,7 @@ public class ViewPostFragment extends Fragment {
                         JSONObject innerComentari = new JSONObject();
                         try {
                             innerComentari.put("user_img", dadesUsuari.getString("url_img"));
-                            innerComentari.put("user", dadesUsuari.getString("username"));
+                            innerComentari.put("user", dadesUsuari.getString("_id"));
                             innerComentari.put("coment_text", binding.editTextComentario.getText().toString());
                             commentBody.put("id_publi", dadesPost.getString("_id"));
                             commentBody.put("comentari", innerComentari);
@@ -387,13 +388,17 @@ public class ViewPostFragment extends Fragment {
             if (refreshed){
                 for (int i = new_dadesPost.getJSONArray("comentaris").length(); i > numeroComentariosAntes; i--) {
                     JSONObject comentarioNuevo = (JSONObject) new_dadesPost.getJSONArray("comentaris").get(i-1);
-                    comentarioList.add(new Comentario(comentarioNuevo.getString("user_img"), comentarioNuevo.getString("user"), comentarioNuevo.getString("coment_text")));
+                    //SACAR USERNAME
+                    String realUsername = getUsernameFromID(comentarioNuevo);
+                    comentarioList.add(new Comentario(comentarioNuevo.getString("user_img"), realUsername, comentarioNuevo.getString("coment_text")));
                     adapterComentarios.notifyItemInserted(comentarioList.size());
                 }
             } else {
                 for (int i = new_dadesPost.getJSONArray("comentaris").length(); i > numeroComentariosAntes; i--) {
                     JSONObject comentarioNuevo = (JSONObject) new_dadesPost.getJSONArray("comentaris").get(i-1);
-                    comentarioList.add(0, new Comentario(comentarioNuevo.getString("user_img"), comentarioNuevo.getString("user"), comentarioNuevo.getString("coment_text")));
+                    //SACAR USERNAME
+                    String realUsername = getUsernameFromID(comentarioNuevo);
+                    comentarioList.add(0, new Comentario(comentarioNuevo.getString("user_img"), realUsername, comentarioNuevo.getString("coment_text")));
                     adapterComentarios.notifyItemInserted(0);
                     binding.recyclerViewComentarios.requestLayout();
                 }
@@ -404,7 +409,26 @@ public class ViewPostFragment extends Fragment {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    private String getUsernameFromID(JSONObject post) {
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameFromID";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("id_user", post.getString("user"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = selectedUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return resultSearch;
     }
 
     private boolean refreshViewPostInfo(String id) {

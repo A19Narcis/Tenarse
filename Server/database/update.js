@@ -120,8 +120,6 @@ const updateUser = function (id_user, newDadesUser, callback) {
             fecha_nac: newDadesUser.fecha_nac
         }
     ).then(() => {
-        
-    }).then(() => {
         readDB.getUserByID(id_user, (newDadesUser) => {
             callback(newDadesUser)
         })

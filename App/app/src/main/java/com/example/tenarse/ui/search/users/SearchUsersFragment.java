@@ -50,7 +50,6 @@ public class SearchUsersFragment extends Fragment{
 
     public void buscarQuery(String query) {
         /* AÑADIR LOS USUARIOS A LA RECYCLER VIEW */
-        System.out.println("BUSCO: " + query);
         dataSearchList = new ArrayList<>();
         myAdpater = new AdapterSearchUsers(dataSearchList, getContext(), SearchUsersFragment.this);
 
@@ -76,12 +75,10 @@ public class SearchUsersFragment extends Fragment{
 
         try {
             JSONArray resultSearchJSONArray = new JSONArray(resultSearchUser);
-            System.out.println("RESULTADO: " + resultSearchJSONArray.length());
             if (resultSearchJSONArray.length() == 0){
                 binding.rvSearchUsers.setVisibility(View.GONE);
                 binding.noUsersText.setVisibility(View.VISIBLE);
             } else {
-                System.out.println("ENTROOOOOOO");
                 binding.rvSearchUsers.setVisibility(View.VISIBLE);
                 binding.noUsersText.setVisibility(View.GONE);
                 for (int i = 0; i < resultSearchJSONArray.length(); i++) {

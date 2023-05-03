@@ -82,6 +82,8 @@ public class UserFragment extends Fragment {
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        System.out.println("DADES CUANDO ENTRO USER: " + dadesUsuari.toString());
+
         try {
             refreshUserInfo(dadesUsuari.getString("_id"));
         } catch (JSONException e) {

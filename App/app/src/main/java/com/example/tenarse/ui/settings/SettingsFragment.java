@@ -1,12 +1,16 @@
 package com.example.tenarse.ui.settings;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +40,10 @@ import com.example.tenarse.databinding.FragmentHomeBinding;
 import com.example.tenarse.databinding.FragmentNotificacionesBinding;
 import com.example.tenarse.databinding.FragmentSettingsBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
+import com.example.tenarse.httpRetrofit.ApiService;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.register.MyAsyncTaskRegister;
+import com.example.tenarse.widgets.CropperActivity;
 import com.example.tenarse.widgets.DatePickerFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -47,6 +53,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 public class SettingsFragment extends Fragment{
 
@@ -61,6 +70,12 @@ public class SettingsFragment extends Fragment{
 
     private String start_email;
     private String start_username;
+
+    private String pathImg;
+
+    private boolean imgEditada = false;
+
+    private static final int GALLERY_REQUEST_CODE = 1;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -104,6 +119,13 @@ public class SettingsFragment extends Fragment{
             }
         });
 
+        binding.cardViewSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+            }
+        });
 
         binding.logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,6 +270,7 @@ public class SettingsFragment extends Fragment{
                     try {
                         JSONObject updatedDades = new JSONObject(resultUpdate);
                         GlobalDadesUser.getInstance().setDadesUser(updatedDades);
+                        System.out.println("DADES NOVES: " + updatedDades.toString());
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -285,7 +308,6 @@ public class SettingsFragment extends Fragment{
     }
 
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -309,6 +331,43 @@ public class SettingsFragment extends Fragment{
         });
 
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            // Obtener la imagen seleccionada de la galería
+            Uri selectedImage = data.getData();
+
+            // Establecer la imagen seleccionada en el ImageView
+            ViewGroup.LayoutParams layoutParams = binding.newFotoPerfil.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            binding.newFotoPerfil.setLayoutParams(layoutParams);
+
+            binding.newFotoPerfil.setImageURI(selectedImage);
+            Intent intent = new Intent(getActivity(), CropperActivity.class);
+            intent.putExtra("DATA", selectedImage.toString());
+            startActivityForResult(intent, 101);
+        } else if (resultCode == -1 && requestCode == 101) {
+            pathImg = data.getStringExtra("RESULT");
+
+            Uri resultUri=null;
+            if(pathImg!=null){
+                resultUri=Uri.parse(pathImg);
+            }
+            String fileName = pathImg.substring(pathImg.lastIndexOf("/") + 1);
+            pathImg = getContext().getCacheDir() + "/" + fileName;
+            binding.newFotoPerfil.setImageURI(resultUri);
+            System.out.println(pathImg);
+
+            /*.LayoutParams layoutParams = binding.cardViewSettings.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            binding.cardViewSettings.setLayoutParams(layoutParams);*/
+            imgEditada = true;
+        }
     }
 
 }
