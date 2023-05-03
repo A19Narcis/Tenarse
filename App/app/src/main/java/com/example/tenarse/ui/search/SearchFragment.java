@@ -33,6 +33,7 @@ public class SearchFragment extends Fragment {
 
     private SearchPostFragment searchPostFragment;
     private SearchQuestionsFragment searchQuestionsFragment;
+    private SearchUsersFragment searchUsersFragmentClicked;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -60,10 +61,10 @@ public class SearchFragment extends Fragment {
                 binding.imgSearchUser.setImageResource(R.drawable.selected_user);
                 binding.imgSearchPost.setImageResource(R.drawable.unsel_videos);
                 binding.imgSearchDoubt.setImageResource(R.drawable.unsel_questions);
-                SearchUsersFragment searchUsersFragment = new SearchUsersFragment();
+                searchUsersFragmentClicked = new SearchUsersFragment();
                 FragmentManager fragmentManager = getChildFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.fragment_container_search, searchUsersFragment);
+                transaction.replace(R.id.fragment_container_search, searchUsersFragmentClicked);
                 transaction.commit();
             }
         });
@@ -115,7 +116,11 @@ public class SearchFragment extends Fragment {
                 if (!query.equals("")){
                     switch (selected_image){
                         case USER_SELECTED:
-                            searchUsersFragment.buscarQuery(query);
+                            if (searchUsersFragmentClicked == null){
+                                searchUsersFragment.buscarQuery(query);
+                            } else {
+                                searchUsersFragmentClicked.buscarQuery(query);
+                            }
                             break;
                         case POST_SELECTED:
                             searchPostFragment.buscarQuery("#"+query);
@@ -153,11 +158,12 @@ public class SearchFragment extends Fragment {
         Navigation.findNavController(view).navigate(R.id.action_navigation_search_to_profileFragment, bundle);
     }
 
-    public void seeSelectedPost(String resultSinglePost, boolean myLike, View view) {
+    public void seeSelectedPost(String resultSinglePost, boolean myLike, View view, String username) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", resultSinglePost);
         bundle.putSerializable("origin", "search");
         bundle.putSerializable("isLiked", myLike);
+        bundle.putSerializable("usernamePost", username);
         Navigation.findNavController(view).navigate(R.id.action_navigation_search_to_viewPostFragment, bundle);
     }
 }

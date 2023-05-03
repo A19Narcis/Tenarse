@@ -65,6 +65,7 @@ public class ViewPostFragment extends Fragment {
     String fragmentAnterior = "";
 
     private boolean isLiked;
+    private String usernamePost;
     private JSONObject dadesPost;
 
     @SuppressLint("SetTextI18n")
@@ -93,8 +94,10 @@ public class ViewPostFragment extends Fragment {
             fragmentAnterior = args.getString("fragment");
             originFragment = args.getString("origin");
             isLiked = args.getBoolean("isLiked");
+            usernamePost = args.getString("usernamePost");
         }
 
+        System.out.println(usernamePost);
 
 
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -114,7 +117,7 @@ public class ViewPostFragment extends Fragment {
 
         try {
             dadesPost = new JSONObject(infoPost);
-            binding.rvUsername.setText(dadesPost.getString("owner"));
+            binding.rvUsername.setText(usernamePost);
             String userImg = dadesPost.getString("user_img").replace("localhost", "10.0.2.2");
             Picasso.with(getContext()).load(userImg).into(binding.rvUserImage);
 

@@ -316,14 +316,16 @@ public class ProfileFragment extends Fragment {
             JSONArray publicacions = new JSONArray(dadesUsuari.getString("publicacions"));
             for (int i = 0; i < publicacions.length(); i++) {
                 JSONObject post = publicacions.getJSONObject(i);
+                //SACAR USERNAME
+                String realUsername = getUsernameFromID(post);
                 if (post.getString("tipus").equals("image")){
-                    dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    dataList.add(0, new ListElementImg(realUsername, post.getString("text"), post.getString("url_img"), post.getString("_id")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    dataList.add(0, new ListElementVideo(realUsername, post.getString("text"), post.getString("url_video"), post.getString("_id")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
-                    dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    dataList.add(0, new ListElementDoubt(realUsername, post.getString("titol"), post.getString("text"), post.getString("_id")));
                     multiAdapter.notifyItemInserted(0);
                 }
             }
@@ -426,14 +428,16 @@ public class ProfileFragment extends Fragment {
 
             for (int i = 0; i < new_publicacions.length(); i++) {
                 JSONObject post = new_publicacions.getJSONObject(i);
+                //SACAR USERNAME
+                String realUsername = getUsernameFromID(post);
                 if (post.getString("tipus").equals("image")){
-                    new_dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementImg(realUsername, post.getString("text"), post.getString("url_img"), post.getString("_id")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    new_dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementVideo(realUsername, post.getString("text"), post.getString("url_video"), post.getString("_id")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
-                    new_dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementDoubt(realUsername, post.getString("titol"), post.getString("text"), post.getString("_id")));
                     multiAdapter.notifyItemInserted(0);
                 }
             }
@@ -453,13 +457,33 @@ public class ProfileFragment extends Fragment {
         //******* UPDATE DATOS USER **********
     }
 
+    private String getUsernameFromID(JSONObject post) {
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameFromID";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("id_user", post.getString("owner"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = selectedUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return resultSearch;
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
-    public void selectPost(String post_img_id, View v) {
+    public void selectPost(String post_img_id, View v, String username) {
         globalDadesUser = GlobalDadesUser.getInstance();
         dadesUser = globalDadesUser.getDadesUser();
 
@@ -487,14 +511,15 @@ public class ProfileFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike, v);
+        viewSelectedPost(resultSinglePost, myLike, v, username);
     }
 
-    public void viewSelectedPost(String infoPost, boolean myLike, View v) {
+    public void viewSelectedPost(String infoPost, boolean myLike, View v, String username) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
         bundle.putSerializable("origin", "otherUser");
         bundle.putSerializable("isLiked", myLike);
+        bundle.putSerializable("usernamePost", username);
         Navigation.findNavController(v).navigate(R.id.action_profileFragment_to_viewPostFragment, bundle);
     }
 }

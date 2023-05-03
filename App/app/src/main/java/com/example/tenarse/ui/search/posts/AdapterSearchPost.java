@@ -68,7 +68,7 @@ public class AdapterSearchPost extends RecyclerView.Adapter<RecyclerView.ViewHol
                     @Override
                     public void onClick(View v) {
                         if (mSearchPostFragment != null){
-                            mSearchPostFragment.selectPost(imgElement.getPost_img_id(), v);
+                            mSearchPostFragment.selectPost(imgElement.getPost_img_id(), v, imgElement.getUsername());
                         }
                     }
                 });
@@ -81,7 +81,7 @@ public class AdapterSearchPost extends RecyclerView.Adapter<RecyclerView.ViewHol
                     @Override
                     public void onClick(View v) {
                         if (mSearchPostFragment != null){
-                            mSearchPostFragment.selectPost(videoElement.getPost_video_id(), v);
+                            mSearchPostFragment.selectPost(videoElement.getPost_video_id(), v, videoElement.getUsername());
                         }
                     }
                 });

@@ -4,12 +4,10 @@ package com.example.tenarse.ui.user.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -89,11 +87,11 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         if (mUserFragment != null){
-                            mUserFragment.selectPost(imgElement.getPost_img_id(), v);
+                            mUserFragment.selectPost(imgElement.getPost_img_id(), v, imgElement.getUsername());
                         }
 
                         if (mProfileFragment != null) {
-                            mProfileFragment.selectPost(imgElement.getPost_img_id(), v);
+                            mProfileFragment.selectPost(imgElement.getPost_img_id(), v, imgElement.getUsername());
                         }
                     }
                 });
@@ -106,11 +104,11 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         if (mUserFragment != null){
-                            mUserFragment.selectPost(doubtElement.getDoubt_id(), v);
+                            mUserFragment.selectPost(doubtElement.getDoubt_id(), v, doubtElement.getUsername());
                         }
 
                         if (mProfileFragment != null) {
-                            mProfileFragment.selectPost(doubtElement.getDoubt_id(), v);
+                            mProfileFragment.selectPost(doubtElement.getDoubt_id(), v, doubtElement.getUsername());
                         }
                     }
                 });
@@ -125,11 +123,11 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         if (mUserFragment != null){
-                            mUserFragment.selectPost(videoElement.getPost_video_id(), v);
+                            mUserFragment.selectPost(videoElement.getPost_video_id(), v, videoElement.getUsername());
                         }
 
                         if (mProfileFragment != null) {
-                            mProfileFragment.selectPost(videoElement.getPost_video_id(), v);
+                            mProfileFragment.selectPost(videoElement.getPost_video_id(), v, videoElement.getUsername());
                         }
                     }
                 });

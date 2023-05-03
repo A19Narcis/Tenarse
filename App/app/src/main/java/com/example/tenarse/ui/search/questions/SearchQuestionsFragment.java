@@ -88,7 +88,9 @@ public class SearchQuestionsFragment extends Fragment {
                 for (int i = 0; i < resultSearchPostsArray.length(); i++) {
                     isLiked = false;
                     JSONObject post = resultSearchPostsArray.getJSONObject(i);
-                    ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), post.getString("owner"), post.getString("titol"), post.getString("text"),  post.getString("user_img"), post.getJSONArray("likes"));
+                    //SACAR USERNAME
+                    String realUsername = getUsernameFromID(post);
+                    ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), realUsername, post.getString("titol"), post.getString("text"),  post.getString("user_img"), post.getJSONArray("likes"));
                     for (int j = 0; j < listElementDoubt.getLikes().length() && !isLiked; j++) {
                         if (listElementDoubt.getLikes().get(j).toString().equals(dadesUser.getString("_id"))){
                             isLiked = true;
@@ -106,6 +108,26 @@ public class SearchQuestionsFragment extends Fragment {
         binding.rvSearchQuestions.setHasFixedSize(true);
         binding.rvSearchQuestions.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvSearchQuestions.setAdapter(myAdapter);
+    }
+
+    private String getUsernameFromID(JSONObject post) {
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameFromID";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("id_user", post.getString("owner"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = selectedUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return resultSearch;
     }
 
     public void addLike(String id) {
@@ -154,7 +176,7 @@ public class SearchQuestionsFragment extends Fragment {
         }
     }
 
-    public void selectPost(String id_post, View v) {
+    public void selectPost(String id_post, View v, String username) {
         globalDadesUser = GlobalDadesUser.getInstance();
         dadesUser = globalDadesUser.getDadesUser();
         //Recoger todos los datos de un post y verlos en un fragment nuevo
@@ -181,12 +203,12 @@ public class SearchQuestionsFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike, v);
+        viewSelectedPost(resultSinglePost, myLike, v, username);
     }
 
-    private void viewSelectedPost(String resultSinglePost, boolean myLike, View v){
+    private void viewSelectedPost(String resultSinglePost, boolean myLike, View v, String username){
         SearchFragment searchFragment = (SearchFragment) getParentFragment();
-        searchFragment.seeSelectedPost(resultSinglePost, myLike, v);
+        searchFragment.seeSelectedPost(resultSinglePost, myLike, v, username);
     }
 
     public void selectUser(String username, View v) {

@@ -105,7 +105,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 imageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mHomeFragment.selectPost(imgElement.getId(), v);
+                        mHomeFragment.selectPost(imgElement.getId(), v, imgElement.getUsername());
                     }
                 });
 
@@ -136,6 +136,8 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 ListElementDoubt doubtElement = (ListElementDoubt) dataList.get(position);
                 DoubtViewHolder doubtViewHolder = (DoubtViewHolder) holder;
                 doubtViewHolder.username.setText(doubtElement.getUsername());
+                Picasso.with(context).load(doubtElement.getUser_img_url().replace("localhost", "10.0.2.2")).into(doubtViewHolder.userImageView);
+
 
                 doubtViewHolder.username.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -149,14 +151,14 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 doubtViewHolder.description.setText(doubtElement.getDescription());
 
                 /* Cargar USER IMAGE BITMAT Hilo */
-                String urlUserDoubt = doubtElement.getUser_img_url().replace("localhost", "10.0.2.2");
+                /*String urlUserDoubt = doubtElement.getUser_img_url().replace("localhost", "10.0.2.2");
                 ImageView userImageViewDoubt = doubtViewHolder.userImageView;
-                new HomeViewModel.DownloadImageTask(userImageViewDoubt).execute(urlUserDoubt);
+                new HomeViewModel.DownloadImageTask(userImageViewDoubt).execute(urlUserDoubt);*/
 
                 doubtViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mHomeFragment.selectPost(doubtElement.getId(), v);
+                        mHomeFragment.selectPost(doubtElement.getId(), v, doubtElement.getUsername());
                     }
                 });
 
@@ -275,7 +277,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 videoViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mHomeFragment.selectPost(videoElement.getId(), v);
+                        mHomeFragment.selectPost(videoElement.getId(), v, videoElement.getUsername());
                     }
                 });
 

@@ -124,6 +124,15 @@ app.post('/getUser', (req, res) => {
     })
 })
 
+app.post('/getUsernameFromID', (req, res) => {
+    var id = req.body.id_user;
+
+    /*var id = "644785f8fdc077b15553ba12"*/
+
+    readDB.getUserByID(id, (dades_user) => {
+        res.send(dades_user.username)
+    })
+})
 
 app.post('/getSelectedUser', (req, res) => {
     var email_username_id = req.body.username
@@ -401,7 +410,7 @@ app.post('/newMessage', (req, res) => {
     let minutos = fecha.getMinutes();
     let horaActual = hora + ":" + minutos;
 
-    var chat_id = '6422957c931b6cd18c021533'
+    var chat_id = '64523a1cd720d23ed679f615'
     var message = {
         emisor: 'A19Narcis',
         txt_msg: '¡Buenas!',

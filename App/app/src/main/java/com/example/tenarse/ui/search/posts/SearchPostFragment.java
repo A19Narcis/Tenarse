@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.example.tenarse.databinding.FragmentSearchPostBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.search.SearchFragment;
 
 import org.json.JSONArray;
@@ -79,11 +80,13 @@ public class SearchPostFragment extends Fragment {
 
             for (int i = 0; i < resultSearchPostsArray.length(); i++) {
                 JSONObject post = resultSearchPostsArray.getJSONObject(i);
+                //SACAR USERNAME
+                String realUsername = getUsernameFromID(post);
                 if (post.getString("tipus").equals("image")){
-                    dataListSearch.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    dataListSearch.add(0, new ListElementImg(realUsername, post.getString("text"), post.getString("url_img"), post.getString("_id")));
                     myAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    dataListSearch.add(0, new ListElementVideo(post.getString("owner"), post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    dataListSearch.add(0, new ListElementVideo(realUsername, post.getString("text"), post.getString("url_video"), post.getString("_id")));
                     myAdapter.notifyItemInserted(0);
                 }
             }
@@ -96,7 +99,28 @@ public class SearchPostFragment extends Fragment {
         binding.rvSearchPosts.setAdapter(myAdapter);
     }
 
-    public void selectPost(String id_post, View view) {
+    private String getUsernameFromID(JSONObject post) {
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameFromID";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("id_user", post.getString("owner"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = selectedUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return resultSearch;
+    }
+
+
+    public void selectPost(String id_post, View view, String username) {
         globalDadesUser = GlobalDadesUser.getInstance();
         dadesUser = globalDadesUser.getDadesUser();
 
@@ -124,11 +148,11 @@ public class SearchPostFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike, view);
+        viewSelectedPost(resultSinglePost, myLike, view, username);
     }
 
-    private void viewSelectedPost(String resultSinglePost, boolean myLike, View view) {
+    private void viewSelectedPost(String resultSinglePost, boolean myLike, View view, String username) {
         SearchFragment searchFragment = (SearchFragment) getParentFragment();
-        searchFragment.seeSelectedPost(resultSinglePost, myLike, view);
+        searchFragment.seeSelectedPost(resultSinglePost, myLike, view, username);
     }
 }
