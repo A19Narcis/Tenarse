@@ -382,15 +382,12 @@ public class ViewPostFragment extends Fragment {
             binding.numeroComentarios.setText("Comentarios (" + new_dadesPost.getJSONArray("comentaris").length() + ")");
 
             if (refreshed){
-                System.out.println("NUEVO POST CON REFRESH");
-                System.out.println("----------------------");
                 for (int i = new_dadesPost.getJSONArray("comentaris").length(); i > numeroComentariosAntes; i--) {
                     JSONObject comentarioNuevo = (JSONObject) new_dadesPost.getJSONArray("comentaris").get(i-1);
                     comentarioList.add(new Comentario(comentarioNuevo.getString("user_img"), comentarioNuevo.getString("user"), comentarioNuevo.getString("coment_text")));
                     adapterComentarios.notifyItemInserted(comentarioList.size());
                 }
             } else {
-                System.out.println("NUEVO POST CON SUBIR BUTTON");
                 for (int i = new_dadesPost.getJSONArray("comentaris").length(); i > numeroComentariosAntes; i--) {
                     JSONObject comentarioNuevo = (JSONObject) new_dadesPost.getJSONArray("comentaris").get(i-1);
                     comentarioList.add(0, new Comentario(comentarioNuevo.getString("user_img"), comentarioNuevo.getString("user"), comentarioNuevo.getString("coment_text")));

@@ -142,8 +142,8 @@ public class ProfileFragment extends Fragment {
                     JSONObject body = new JSONObject();
 
                     try {
-                        body.put("user_following", dadesUsuari.getString("username"));
-                        body.put("user_followed", userInfo.getSearch_username());
+                        body.put("user_following", dadesUsuari.getString("_id"));
+                        body.put("user_followed", userInfo.getId_user());
                     } catch (JSONException e){
                         e.printStackTrace();
                     }
@@ -200,8 +200,8 @@ public class ProfileFragment extends Fragment {
                             JSONObject body = new JSONObject();
 
                             try {
-                                body.put("user_following", dadesUsuari.getString("username"));
-                                body.put("user_removed", userInfo.getSearch_username());
+                                body.put("user_following", dadesUsuari.getString("_id"));
+                                body.put("user_removed", userInfo.getId_user());
                             } catch (JSONException e){
                                 e.printStackTrace();
                             }
@@ -267,7 +267,7 @@ public class ProfileFragment extends Fragment {
             JSONArray usersSiguiendo = dadesUsuari.getJSONArray("followings");
             for (int i = 0; i < usersSiguiendo.length(); i++) {
                 JSONObject user = usersSiguiendo.getJSONObject(i);
-                if (user.getString("user").equals(userInfo.getSearch_username())){
+                if (user.getString("user").equals(userInfo.getId_user())){
                     binding.followButton.setBackgroundColor(Color.WHITE);
                     binding.followButton.setTextColor(Color.BLACK);
                     binding.followButton.setText("Siguiendo ✓");
@@ -278,7 +278,7 @@ public class ProfileFragment extends Fragment {
         }
 
         try {
-            if (dadesUsuari.getString("username").equals(userInfo.getSearch_username())){
+            if (dadesUsuari.getString("_id").equals(userInfo.getId_user())){
                 binding.followButton.setVisibility(View.GONE);
             }
         } catch (JSONException e) {
