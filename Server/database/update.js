@@ -8,10 +8,10 @@ const readDB = require('./read')
 
 
 const addUserPost = function (post, callback) {
-    var username = post.owner;
-    readDB.getUser(username, function (dades_user) {
+    var id_user = post.owner;
+    readDB.getUserByID(id_user, function (dades_user) {
         if (dades_user) {
-            User.updateOne({ username: dades_user.username }, { $push: { publicacions: post } })
+            User.updateOne({ _id: dades_user._id }, { $push: { publicacions: post } })
                 .then(result => {
                     callback();
                 })
