@@ -157,11 +157,11 @@ app.post('/newFollowing', (req, res) => {
 
     var userFollowedDades = ''
 
-    readDB.getUser(user_followed, (dades_user) => {
+    readDB.getUserByID(user_followed, (dades_user) => {
         userFollowedDades = dades_user
     }).then(() => {
         followingSchema = {
-            user: userFollowedDades.username
+            user: userFollowedDades._id
         }
     }).then(() => {
         updateDB.addFollowingUser(followingSchema, userFollowedDades, user_following, () => {
