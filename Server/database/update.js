@@ -50,7 +50,8 @@ const addLikePost = function(id_publi, id_user, callback) {
     readDB.getPublicacio(id_publi, function (dades_publi) {
         if (dades_publi) {
             Promise.all([
-                Post.updateOne({ _id: id_publi }, { $push: { likes: id_user } })
+                Post.updateOne({ _id: id_publi }, { $push: { likes: id_user } }),
+                User.updateOne({ 'publicacions._id': id_publi }, { $push: { 'publicacions.$.likes': id_user } })
             ]).then(() => {
                 callback();
             }).catch((err) => {
@@ -65,7 +66,8 @@ const removeLikePost = function(id_publi, id_user, callback) {
     readDB.getPublicacio(id_publi, function (dades_publi) {
         if (dades_publi) {
             Promise.all([
-                Post.updateOne({ _id: id_publi }, { $pull: { likes: id_user } })
+                Post.updateOne({ _id: id_publi }, { $pull: { likes: id_user } }),
+                User.updateOne({ 'publicacions._id': id_publi }, { $pull: { 'publicacions.$.likes': id_user } })
             ]).then(() => {
                 callback();
             }).catch((err) => {
@@ -77,14 +79,14 @@ const removeLikePost = function(id_publi, id_user, callback) {
 
 /* Afegir un following i, per tant, també un follower a la persona que has seguit */
 const addFollowingUser = function (following, user_followed, user, callback) {
-    readDB.getUser(user, function (dades_user) {
+    readDB.getUserByID(user, function (dades_user) {
         if (dades_user) {
-            //Afegir following a A19Narcis
+            //Afegir following
             User.updateOne({ _id: dades_user._id }, { $push: { followings: following } })
                 .then(() => {
-                    //Agefir follower a _DevOps_
+                    //Agefir follower
                     var follower = {
-                        user: dades_user.username
+                        user: dades_user._id
                     }
                     User.updateOne({ _id: user_followed._id }, { $push: { followers: follower } })
                         .then(() => {
@@ -99,9 +101,9 @@ const addFollowingUser = function (following, user_followed, user, callback) {
 
 /* Treure un following i, per tant, també un follower a la persona que has deixat de seguir */
 const remFollowingUser = function (user_following, user_removed, callback) {
-    User.updateOne({ username: user_following }, { $pull: { followings: { user: user_removed } } })
+    User.updateOne({ _id: user_following }, { $pull: { followings: { user: user_removed } } })
         .then(() => {
-            return User.updateOne({ username: user_removed }, { $pull: { followers: { user: user_following } } })
+            return User.updateOne({ _id: user_removed }, { $pull: { followers: { user: user_following } } })
         }).then(() => {
             callback();
         })
@@ -118,6 +120,8 @@ const updateUser = function (id_user, newDadesUser, callback) {
             fecha_nac: newDadesUser.fecha_nac
         }
     ).then(() => {
+        
+    }).then(() => {
         readDB.getUserByID(id_user, (newDadesUser) => {
             callback(newDadesUser)
         })
