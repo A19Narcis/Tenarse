@@ -413,6 +413,22 @@ app.post('/newMessage', (req, res) => {
     })
 });
 
+app.post('/getSuggestedUsersChat', (req, res) => {
+    readDB.getUserByID("6448f52dba9f0866d1851bb6", (users) => {
+        let usersArr = [];
+        for (let i = 0; i < users.followers.length; i++) {
+            let flag = false;
+            for (let j = 0; j < users.followings.length && !flag; j++) {
+                if(users.followers[i].user === users.followings[j].user){
+                    usersArr.push(users.followers[i].user)
+                    flag = true;
+                }
+            }
+        }
+        res.send(usersArr)
+    });
+});
+
 //Crear el chat
 app.post('/getChats', (req, res) => {
     readDB.getChat(req.user_id, () => {

@@ -44,7 +44,11 @@
     <fragment
         android:id="@+id/navigation_message"
         android:name="com.example.tenarse.ui.message.MessageFragment"
-        android:label="UserFragment" />
+        android:label="UserFragment" >
+        <action
+            android:id="@+id/action_navigation_message_to_newChat"
+            app:destination="@id/newChat" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_user"
@@ -92,5 +96,9 @@
         android:name="com.example.tenarse.ui.post.ViewPostFragment"
         android:label="fragment_view_post"
         tools:layout="@layout/fragment_view_post" />
+    <fragment
+        android:id="@+id/newChat"
+        android:name="com.example.tenarse.ui.newchat.newChat"
+        android:label="newChat" />
 
 </navigation>
