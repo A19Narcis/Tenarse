@@ -70,6 +70,7 @@ public class FragmentAddVideos extends Fragment {
     CardView cardView;
     String pathVideo;
     EditText postText;
+    TextView errorText;
     AutoCompleteTextView autoCompleteTextView;
 
     ArrayAdapter<String> adapter;
@@ -117,6 +118,7 @@ public class FragmentAddVideos extends Fragment {
         imageView = rootView.findViewById(R.id.preopen_video);
         videoView = rootView.findViewById(R.id.rv_post_video);
         postText = rootView.findViewById(R.id.postText);
+        errorText = rootView.findViewById(R.id.errorText);
         imageView.setVisibility(View.GONE);
 
         autoCompleteTextView = rootView.findViewById(R.id.autoCompleteVideo);
@@ -154,11 +156,15 @@ public class FragmentAddVideos extends Fragment {
                 actionId = actionID;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     String userInput = autoCompleteTextView.getText().toString();
-                    System.out.println(userInput);
-                    if (userInput.length() > 0){
+                    if (userInput.length() > 0 && userInput.startsWith("#")){
+                        if (errorText.getVisibility() == View.VISIBLE){
+                            errorText.setVisibility(View.GONE);
+                        }
                         arrayRecycler.add(userInput);
                         hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
                         autoCompleteTextView.setText("");
+                    } else if (!userInput.startsWith("#")) {
+                        errorText.setVisibility(View.VISIBLE);
                     }
                     return true;
                 }

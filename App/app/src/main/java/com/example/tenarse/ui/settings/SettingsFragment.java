@@ -189,7 +189,7 @@ public class SettingsFragment extends Fragment{
 
 
                 //Ver si el nuevo Email / Username es valido
-                String resultGetUser = "";
+                String resultGetUser = "false";
                 if (newUsernameInput) {
                     String url_checkDades = "http://10.0.2.2:3000/checkUserExists";
 
@@ -216,7 +216,7 @@ public class SettingsFragment extends Fragment{
                     newEmailInput = true;
                 }
 
-                String resultGetUserEmail = "";
+                String resultGetUserEmail = "false";
                 if (newEmailInput) {
                     String url_checkDades = "http://10.0.2.2:3000/checkEmailExists";
                     JSONObject bodyCheck = new JSONObject();
@@ -302,9 +302,7 @@ public class SettingsFragment extends Fragment{
                     });
 
                 }else {
-
-
-                    if (infoValida && (resultGetUser.contains("false") && resultGetUserEmail.contains("false")) || ((start_email.equals(newEmail) || start_username.equals(newUsername)))) {
+                    if (infoValida && (resultGetUser.contains("false") && resultGetUserEmail.contains("false")) || ((start_email.equals(newEmail) && start_username.equals(newUsername)))) {
                         // Todos los campos son válidos
                         JSONObject body = new JSONObject();
 

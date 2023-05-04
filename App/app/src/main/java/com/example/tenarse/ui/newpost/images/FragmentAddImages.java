@@ -2,6 +2,7 @@ package com.example.tenarse.ui.newpost.images;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -71,6 +72,8 @@ public class FragmentAddImages extends Fragment{
 
     Button submitBtnImg;
 
+    TextView errorText;
+
     EditText postText;
     ArrayList<String> arrayRecycler = new ArrayList<>();
 
@@ -79,6 +82,7 @@ public class FragmentAddImages extends Fragment{
     ApiService apiService;
     private static final int GALLERY_REQUEST_CODE = 1;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,6 +96,7 @@ public class FragmentAddImages extends Fragment{
         scrollView = rootView.findViewById(R.id.scrollV_add_images);
         submitBtnImg = rootView.findViewById(R.id.submitBtnImg);
         postText = rootView.findViewById(R.id.postText);
+        errorText = rootView.findViewById(R.id.errorText);
 
         autoCompleteTextView = rootView.findViewById(R.id.autoCompleteImg);
         adapter = new ArrayAdapter<String>(getContext(),
@@ -128,11 +133,15 @@ public class FragmentAddImages extends Fragment{
                 actionId = actionID;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     String userInput = autoCompleteTextView.getText().toString();
-                    System.out.println(userInput);
-                    if (userInput.length() > 0){
+                    if (userInput.length() > 0 && userInput.startsWith("#")){
+                        if (errorText.getVisibility() == View.VISIBLE){
+                            errorText.setVisibility(View.GONE);
+                        }
                         arrayRecycler.add(userInput);
                         hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
                         autoCompleteTextView.setText("");
+                    } else if (!userInput.startsWith("#")) {
+                        errorText.setVisibility(View.VISIBLE);
                     }
                     return true;
                 }
@@ -250,7 +259,6 @@ public class FragmentAddImages extends Fragment{
             String fileName = pathImg.substring(pathImg.lastIndexOf("/") + 1);
             pathImg = getContext().getCacheDir() + "/" + fileName;
             image.setImageURI(resultUri);
-            System.out.println(pathImg);
 
             ViewGroup.LayoutParams layoutParams = cardView.getLayoutParams();
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;

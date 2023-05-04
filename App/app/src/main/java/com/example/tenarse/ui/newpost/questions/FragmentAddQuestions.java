@@ -55,6 +55,7 @@ public class FragmentAddQuestions extends Fragment {
     ArrayAdapter<String> adapter;
     RecyclerView recyclerView;
     HashtagAdapter hashtagAdapter;
+    TextView errorText;
     ArrayList<String> arrayRecycler = new ArrayList<>();
 
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
@@ -73,6 +74,8 @@ public class FragmentAddQuestions extends Fragment {
         adapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.opciones_autocompletado));
         autoCompleteTextView.setAdapter(adapter);
+        errorText = rootView.findViewById(R.id.errorText);
+
 
         hashtagAdapter = new HashtagAdapter(arrayRecycler, adapter, getContext());
         recyclerView = rootView.findViewById(R.id.add_recyclerView_doubt);
@@ -102,11 +105,15 @@ public class FragmentAddQuestions extends Fragment {
                 actionId = actionID;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     String userInput = autoCompleteTextView.getText().toString();
-                    System.out.println(userInput);
-                    if (userInput.length() > 0){
+                    if (userInput.length() > 0 && userInput.startsWith("#")){
+                        if (errorText.getVisibility() == View.VISIBLE){
+                            errorText.setVisibility(View.GONE);
+                        }
                         arrayRecycler.add(userInput);
                         hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
                         autoCompleteTextView.setText("");
+                    } else if (!userInput.startsWith("#")) {
+                        errorText.setVisibility(View.VISIBLE);
                     }
                     return true;
                 }
