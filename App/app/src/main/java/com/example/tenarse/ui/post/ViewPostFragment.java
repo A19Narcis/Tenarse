@@ -67,6 +67,7 @@ public class ViewPostFragment extends Fragment {
 
     private boolean isLiked;
     private String usernamePost;
+    private String urlImg;
     private JSONObject dadesPost;
 
     @SuppressLint("SetTextI18n")
@@ -96,6 +97,7 @@ public class ViewPostFragment extends Fragment {
             originFragment = args.getString("origin");
             isLiked = args.getBoolean("isLiked");
             usernamePost = args.getString("usernamePost");
+            urlImg = args.getString("url_img");
         }
 
         System.out.println(usernamePost);
@@ -119,11 +121,13 @@ public class ViewPostFragment extends Fragment {
         try {
             dadesPost = new JSONObject(infoPost);
             binding.rvUsername.setText(usernamePost);
-            String userImg = dadesPost.getString("user_img").replace("localhost", "10.0.2.2");
+            String userImg = urlImg.replace("localhost", "10.0.2.2");
+            System.out.println(userImg);
+            Picasso.with(getContext()).invalidate(userImg);
             Picasso.with(getContext()).load(userImg).into(binding.rvUserImage);
 
             //Veure l'icone de borrar 'post' si es teu el post
-            if (!dadesUsuari.getString("username").equals(dadesPost.getString("owner")) || !originFragment.equals("perfil")){
+            if (!dadesUsuari.getString("_id").equals(dadesPost.getString("owner")) || !originFragment.equals("perfil")){
                 binding.removeButton.setVisibility(View.GONE);
             } else {
                 binding.removeButton.setOnClickListener(new View.OnClickListener() {
@@ -256,7 +260,6 @@ public class ViewPostFragment extends Fragment {
                         JSONObject commentBody = new JSONObject();
                         JSONObject innerComentari = new JSONObject();
                         try {
-                            innerComentari.put("user_img", dadesUsuari.getString("url_img"));
                             innerComentari.put("user", dadesUsuari.getString("_id"));
                             innerComentari.put("coment_text", binding.editTextComentario.getText().toString());
                             commentBody.put("id_publi", dadesPost.getString("_id"));
@@ -390,7 +393,8 @@ public class ViewPostFragment extends Fragment {
                     JSONObject comentarioNuevo = (JSONObject) new_dadesPost.getJSONArray("comentaris").get(i-1);
                     //SACAR USERNAME
                     String realUsername = getUsernameFromID(comentarioNuevo);
-                    comentarioList.add(new Comentario(comentarioNuevo.getString("user_img"), realUsername, comentarioNuevo.getString("coment_text")));
+                    JSONObject dadesRealUsername = new JSONObject(realUsername);
+                    comentarioList.add(new Comentario(dadesRealUsername.getString("url_img"), dadesRealUsername.getString("username"), comentarioNuevo.getString("coment_text")));
                     adapterComentarios.notifyItemInserted(comentarioList.size());
                 }
             } else {
@@ -398,7 +402,8 @@ public class ViewPostFragment extends Fragment {
                     JSONObject comentarioNuevo = (JSONObject) new_dadesPost.getJSONArray("comentaris").get(i-1);
                     //SACAR USERNAME
                     String realUsername = getUsernameFromID(comentarioNuevo);
-                    comentarioList.add(0, new Comentario(comentarioNuevo.getString("user_img"), realUsername, comentarioNuevo.getString("coment_text")));
+                    JSONObject dadesRealUsername = new JSONObject(realUsername);
+                    comentarioList.add(0, new Comentario(dadesRealUsername.getString("url_img"), dadesRealUsername.getString("username"), comentarioNuevo.getString("coment_text")));
                     adapterComentarios.notifyItemInserted(0);
                     binding.recyclerViewComentarios.requestLayout();
                 }
@@ -412,7 +417,7 @@ public class ViewPostFragment extends Fragment {
     }
 
     private String getUsernameFromID(JSONObject post) {
-        String url_selectUser = "http://10.0.2.2:3000/getUsernameFromID";
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", post.getString("user"));

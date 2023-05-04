@@ -164,13 +164,13 @@ app.post('/getUser', (req, res) => {
     })
 })
 
-app.post('/getUsernameFromID', (req, res) => {
+app.post('/getUsernameAndImageFromID', (req, res) => {
     var id = req.body.id_user;
 
     /*var id = "644785f8fdc077b15553ba12"*/
 
     readDB.getUserByID(id, (dades_user) => {
-        res.send(dades_user.username)
+        res.send({username: dades_user.username, url_img: dades_user.url_img})
     })
 })
 
@@ -319,7 +319,6 @@ function addPost (body, postUrl) {
             url_video: '',
             comentaris: body.comments,
             owner: body.owner,
-            user_img: body.user_img,
             hora: tiempoActual
         }
         break;
@@ -333,7 +332,6 @@ function addPost (body, postUrl) {
             url_video: '',
             comentaris: body.comments,
             owner: body.owner,
-            user_img: body.user_img,
             hora: tiempoActual
         }
         break;
@@ -347,7 +345,6 @@ function addPost (body, postUrl) {
             url_video: URLServer + postUrl,
             comentaris: body.comments,
             owner: body.owner,
-            user_img: body.user_img,
             hora: tiempoActual
         }
         break;
@@ -379,8 +376,7 @@ app.post('/addNewComment', (req, res) => {
     
     /*const id_publi = '644624407cd0eca623e9d7c1'
     const comentari = {
-        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-        user: 'A19Narcis',
+        user: '6448e116ee402c11b13bcb4a',
         coment_text: 'Te recomiendo probar ChatGPT'
     }*/
 

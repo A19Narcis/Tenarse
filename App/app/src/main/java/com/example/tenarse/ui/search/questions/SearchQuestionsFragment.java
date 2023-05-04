@@ -88,9 +88,10 @@ public class SearchQuestionsFragment extends Fragment {
                 for (int i = 0; i < resultSearchPostsArray.length(); i++) {
                     isLiked = false;
                     JSONObject post = resultSearchPostsArray.getJSONObject(i);
-                    //SACAR USERNAME
-                    String realUsername = getUsernameFromID(post);
-                    ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), realUsername, post.getString("titol"), post.getString("text"),  post.getString("user_img"), post.getJSONArray("likes"));
+                    //SACAR USERNAME & IMAGE URL
+                    String realUsername = getUsernameandImageFromID(post);
+                    JSONObject username_image = new JSONObject(realUsername);
+                    ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), username_image.getString("username"), post.getString("titol"), post.getString("text"),  username_image.getString("url_img"), post.getJSONArray("likes"));
                     for (int j = 0; j < listElementDoubt.getLikes().length() && !isLiked; j++) {
                         if (listElementDoubt.getLikes().get(j).toString().equals(dadesUser.getString("_id"))){
                             isLiked = true;
@@ -110,8 +111,8 @@ public class SearchQuestionsFragment extends Fragment {
         binding.rvSearchQuestions.setAdapter(myAdapter);
     }
 
-    private String getUsernameFromID(JSONObject post) {
-        String url_selectUser = "http://10.0.2.2:3000/getUsernameFromID";
+    private String getUsernameandImageFromID(JSONObject post) {
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", post.getString("owner"));
@@ -176,7 +177,7 @@ public class SearchQuestionsFragment extends Fragment {
         }
     }
 
-    public void selectPost(String id_post, View v, String username) {
+    public void selectPost(String id_post, View v, String username, String url_img) {
         globalDadesUser = GlobalDadesUser.getInstance();
         dadesUser = globalDadesUser.getDadesUser();
         //Recoger todos los datos de un post y verlos en un fragment nuevo
@@ -203,12 +204,12 @@ public class SearchQuestionsFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike, v, username);
+        viewSelectedPost(resultSinglePost, myLike, v, username, url_img);
     }
 
-    private void viewSelectedPost(String resultSinglePost, boolean myLike, View v, String username){
+    private void viewSelectedPost(String resultSinglePost, boolean myLike, View v, String username, String url_img){
         SearchFragment searchFragment = (SearchFragment) getParentFragment();
-        searchFragment.seeSelectedPost(resultSinglePost, myLike, v, username);
+        searchFragment.seeSelectedPost(resultSinglePost, myLike, v, username, url_img);
     }
 
     public void selectUser(String username, View v) {

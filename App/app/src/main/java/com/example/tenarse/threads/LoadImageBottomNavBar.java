@@ -42,7 +42,6 @@ public class LoadImageBottomNavBar extends AsyncTask<String, Void, Bitmap> {
     protected Bitmap doInBackground(String... params) {
         String imageUrl = params[0];
         imageUrl = imageUrl.replace("\\", "/");
-        System.out.println("IMAGE URL: " + imageUrl);
         Bitmap bitmap = null;
         try {
             int targetSize = (int) (context.getResources().getDisplayMetrics().density * 50);

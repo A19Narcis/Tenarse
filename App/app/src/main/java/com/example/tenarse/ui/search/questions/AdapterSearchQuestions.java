@@ -62,7 +62,7 @@ public class AdapterSearchQuestions extends RecyclerView.Adapter<RecyclerView.Vi
         doubtViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSearchQuestionsFragment.selectPost(doubtElement.getId(), v, doubtElement.getUsername());
+                mSearchQuestionsFragment.selectPost(doubtElement.getId(), v, doubtElement.getUsername(), doubtElement.getUser_img_url());
             }
         });
 

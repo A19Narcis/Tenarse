@@ -131,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void updateUserImageBottom(){
-        System.out.println("BUENAS ESTOY ENTRANDO, PERMISO");
         JSONObject newDadesUsuari = globalDadesUser.getDadesUser();
         Menu menu = navView.getMenu();
         MenuItem menuItem = menu.findItem(R.id.navigation_user);

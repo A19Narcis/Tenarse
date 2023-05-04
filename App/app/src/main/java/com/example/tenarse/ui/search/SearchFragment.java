@@ -33,7 +33,7 @@ public class SearchFragment extends Fragment {
     private final int POST_SELECTED = 2;
     private final int QUESTION_SELECTED = 3;
 
-    private int selected_image = USER_SELECTED;
+    private int selected_image;
 
     private SearchPostFragment searchPostFragment;
     private SearchQuestionsFragment searchQuestionsFragment;
@@ -49,6 +49,7 @@ public class SearchFragment extends Fragment {
 
         //Se ve el fragment de usuarios cuando accede al fragment
         binding.buscador.setQueryHint("Busca usuarios");
+        selected_image = USER_SELECTED;
         SearchUsersFragment searchUsersFragment = new SearchUsersFragment();
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -121,8 +122,10 @@ public class SearchFragment extends Fragment {
                     switch (selected_image){
                         case USER_SELECTED:
                             if (searchUsersFragmentClicked == null){
+                                System.out.println("1");
                                 searchUsersFragment.buscarQuery(query);
                             } else {
+                                System.out.println("2");
                                 searchUsersFragmentClicked.buscarQuery(query);
                             }
                             break;
@@ -162,12 +165,13 @@ public class SearchFragment extends Fragment {
         Navigation.findNavController(view).navigate(R.id.action_navigation_search_to_profileFragment, bundle);
     }
 
-    public void seeSelectedPost(String resultSinglePost, boolean myLike, View view, String username) {
+    public void seeSelectedPost(String resultSinglePost, boolean myLike, View view, String username, String url_img) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", resultSinglePost);
         bundle.putSerializable("origin", "search");
         bundle.putSerializable("isLiked", myLike);
         bundle.putSerializable("usernamePost", username);
+        bundle.putSerializable("url_img", url_img);
         Navigation.findNavController(view).navigate(R.id.action_navigation_search_to_viewPostFragment, bundle);
     }
 }

@@ -192,11 +192,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject post = jsonArray.getJSONObject(i);
                 //El owner llega como una ID, con esta ID sacamos el username
-                //SACAR USERNAME
-                String realUsername = getUsernameFromID(post);
+                //SACAR USERNAME & IMAGE URL
+                String realUsername = getUsernameandImageFromID(post);
+                JSONObject username_image = new JSONObject(realUsername);
                 if (post.getString("tipus").equals("image")){
                     isLiked = false;
-                    ListElementImg listElementImg = new ListElementImg(post.getString("_id"), realUsername, post.getString("text"), post.getString("url_img"), post.getString("user_img"), post.getJSONArray("likes"));
+                    ListElementImg listElementImg = new ListElementImg(post.getString("_id"), username_image.getString("username"), post.getString("text"), post.getString("url_img"), username_image.getString("url_img"), post.getJSONArray("likes"));
                     for (int j = 0; j < listElementImg.getLikes().length() && !isLiked; j++) {
                         if (listElementImg.getLikes().get(j).toString().equals(dadesUser.getString("_id"))) {
                             isLiked = true;
@@ -207,7 +208,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
                     isLiked = false;
-                    ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), realUsername, post.getString("titol"), post.getString("text"),  post.getString("user_img"), post.getJSONArray("likes"));
+                    ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), username_image.getString("username"), post.getString("titol"), post.getString("text"),  username_image.getString("url_img"), post.getJSONArray("likes"));
                     listElementDoubt.setLiked(false);
                     for (int j = 0; j < listElementDoubt.getLikes().length() && !isLiked; j++) {
                         if (listElementDoubt.getLikes().get(j).toString().equals(dadesUser.getString("_id"))){
@@ -219,7 +220,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
                     isLiked = false;
-                    ListElementVideo listElementVideo = new ListElementVideo(post.getString("_id"), realUsername, post.getString("user_img"), post.getString("url_video"), post.getString("text"), post.getJSONArray("likes"));
+                    ListElementVideo listElementVideo = new ListElementVideo(post.getString("_id"), username_image.getString("username"), username_image.getString("url_img"), post.getString("url_video"), post.getString("text"), post.getJSONArray("likes"));
                     listElementVideo.setLiked(false);
                     for (int j = 0; j < listElementVideo.getLikes().length() && !isLiked; j++) {
                         if (listElementVideo.getLikes().get(j).toString().equals(dadesUser.getString("_id"))){
@@ -244,8 +245,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-    private String getUsernameFromID(JSONObject post) {
-        String url_selectUser = "http://10.0.2.2:3000/getUsernameFromID";
+
+    private String getUsernameandImageFromID(JSONObject post) {
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", post.getString("owner"));
@@ -327,7 +329,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         fragmentTransaction.commit();*/
     }
 
-    public void selectPost(String idPost, View view, String username){
+    public void selectPost(String idPost, View view, String username, String url_img){
         //Recoger todos los datos de un post y verlos en un fragment nuevo
         String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + idPost;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
@@ -352,17 +354,18 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike, view, username);
+        viewSelectedPost(resultSinglePost, myLike, view, username, url_img);
 
     }
 
-    public void viewSelectedPost(String infoPost, boolean myLike, View view, String username) {
+    public void viewSelectedPost(String infoPost, boolean myLike, View view, String username, String url_img) {
         //Carregar el nou fragment amb les seves dades
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
         bundle.putSerializable("origin", "home");
         bundle.putSerializable("isLiked", myLike);
         bundle.putSerializable("usernamePost", username);
+        bundle.putSerializable("url_img", url_img);
         Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_viewPostFragment, bundle);
 
         /*FragmentManager fragmentManager = getParentFragmentManager();

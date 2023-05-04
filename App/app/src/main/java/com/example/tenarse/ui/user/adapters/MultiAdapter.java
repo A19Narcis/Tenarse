@@ -87,11 +87,11 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         if (mUserFragment != null){
-                            mUserFragment.selectPost(imgElement.getPost_img_id(), v, imgElement.getUsername());
+                            mUserFragment.selectPost(imgElement.getPost_img_id(), v, imgElement.getUsername(), imgElement.getUser_img_url());
                         }
 
                         if (mProfileFragment != null) {
-                            mProfileFragment.selectPost(imgElement.getPost_img_id(), v, imgElement.getUsername());
+                            mProfileFragment.selectPost(imgElement.getPost_img_id(), v, imgElement.getUsername(), imgElement.getUser_img_url());
                         }
                     }
                 });
@@ -104,11 +104,11 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         if (mUserFragment != null){
-                            mUserFragment.selectPost(doubtElement.getDoubt_id(), v, doubtElement.getUsername());
+                            mUserFragment.selectPost(doubtElement.getDoubt_id(), v, doubtElement.getUsername(), doubtElement.getUser_img_url());
                         }
 
                         if (mProfileFragment != null) {
-                            mProfileFragment.selectPost(doubtElement.getDoubt_id(), v, doubtElement.getUsername());
+                            mProfileFragment.selectPost(doubtElement.getDoubt_id(), v, doubtElement.getUsername(), doubtElement.getUser_img_url());
                         }
                     }
                 });
@@ -123,11 +123,11 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         if (mUserFragment != null){
-                            mUserFragment.selectPost(videoElement.getPost_video_id(), v, videoElement.getUsername());
+                            mUserFragment.selectPost(videoElement.getPost_video_id(), v, videoElement.getUsername(), videoElement.getUser_img_url());
                         }
 
                         if (mProfileFragment != null) {
-                            mProfileFragment.selectPost(videoElement.getPost_video_id(), v, videoElement.getUsername());
+                            mProfileFragment.selectPost(videoElement.getPost_video_id(), v, videoElement.getUsername(), videoElement.getUser_img_url());
                         }
                     }
                 });

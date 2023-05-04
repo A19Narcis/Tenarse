@@ -104,7 +104,6 @@ public class FragmentAddQuestions extends Fragment {
                     body.put("text", bodyQuestion.getText().toString());
                     body.put("comments", comments);
                     body.put("owner", dadesUsuari.getString("_id"));
-                    body.put("user_img", dadesUsuari.getString("url_img"));
                     body.put("hashtags", hashtags);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);

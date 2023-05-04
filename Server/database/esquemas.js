@@ -5,10 +5,6 @@ mongoose.set('strictQuery', false);
 
 /* PUBLICACIONS */
 const comSchema = new mongoose.Schema({
-    user_img: {
-        type: String,
-        required: true
-    },
     user: {
         type: String,
         required: true
@@ -51,10 +47,6 @@ const publiSchema = new mongoose.Schema({
         type: [comSchema],
     },
     owner: {
-        type: String,
-        required: true
-    },
-    user_img: {
         type: String,
         required: true
     },

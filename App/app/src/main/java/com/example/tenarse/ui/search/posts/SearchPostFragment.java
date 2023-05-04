@@ -82,11 +82,12 @@ public class SearchPostFragment extends Fragment {
                 JSONObject post = resultSearchPostsArray.getJSONObject(i);
                 //SACAR USERNAME
                 String realUsername = getUsernameFromID(post);
+                JSONObject jsonRealDades = new JSONObject(realUsername);
                 if (post.getString("tipus").equals("image")){
-                    dataListSearch.add(0, new ListElementImg(realUsername, post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    dataListSearch.add(0, new ListElementImg(jsonRealDades.getString("username"), post.getString("text"), post.getString("url_img"), post.getString("_id"), jsonRealDades.getString("url_img")));
                     myAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    dataListSearch.add(0, new ListElementVideo(realUsername, post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    dataListSearch.add(0, new ListElementVideo(jsonRealDades.getString("username"), post.getString("text"), post.getString("url_video"), post.getString("_id"), jsonRealDades.getString("url_img")));
                     myAdapter.notifyItemInserted(0);
                 }
             }
@@ -100,7 +101,7 @@ public class SearchPostFragment extends Fragment {
     }
 
     private String getUsernameFromID(JSONObject post) {
-        String url_selectUser = "http://10.0.2.2:3000/getUsernameFromID";
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", post.getString("owner"));
@@ -120,7 +121,7 @@ public class SearchPostFragment extends Fragment {
     }
 
 
-    public void selectPost(String id_post, View view, String username) {
+    public void selectPost(String id_post, View view, String username, String url_img) {
         globalDadesUser = GlobalDadesUser.getInstance();
         dadesUser = globalDadesUser.getDadesUser();
 
@@ -148,11 +149,11 @@ public class SearchPostFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike, view, username);
+        viewSelectedPost(resultSinglePost, myLike, view, username, url_img);
     }
 
-    private void viewSelectedPost(String resultSinglePost, boolean myLike, View view, String username) {
+    private void viewSelectedPost(String resultSinglePost, boolean myLike, View view, String username, String url_img) {
         SearchFragment searchFragment = (SearchFragment) getParentFragment();
-        searchFragment.seeSelectedPost(resultSinglePost, myLike, view, username);
+        searchFragment.seeSelectedPost(resultSinglePost, myLike, view, username, url_img);
     }
 }

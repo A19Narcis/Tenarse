@@ -105,7 +105,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 imageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mHomeFragment.selectPost(imgElement.getId(), v, imgElement.getUsername());
+                        mHomeFragment.selectPost(imgElement.getId(), v, imgElement.getUsername(), imgElement.getUser_img_url());
                     }
                 });
 
@@ -158,7 +158,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 doubtViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mHomeFragment.selectPost(doubtElement.getId(), v, doubtElement.getUsername());
+                        mHomeFragment.selectPost(doubtElement.getId(), v, doubtElement.getUsername(), doubtElement.getUser_img_url());
                     }
                 });
 
@@ -277,7 +277,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 videoViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mHomeFragment.selectPost(videoElement.getId(), v, videoElement.getUsername());
+                        mHomeFragment.selectPost(videoElement.getId(), v, videoElement.getUsername(), videoElement.getUser_img_url());
                     }
                 });
 
