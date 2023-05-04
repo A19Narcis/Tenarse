@@ -1,7 +1,6 @@
 package com.example.tenarse.httpRetrofit;
 
 import okhttp3.MultipartBody;
-import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -18,4 +17,8 @@ public interface ApiService {
     @Multipart
     @POST("/uploadfile")
     Call<ResponseBody> postVideo(@Part MultipartBody.Part video, @Part("postImage") RequestBody name, @Part("PostJson") RequestBody jsonBody);
+
+    @Multipart
+    @POST("/updateUserWithImage")
+    Call<ResponseBody> updateUserWithImage(@Part MultipartBody.Part image, @Part("postImage") RequestBody name, @Part("PostJson") RequestBody jsonBody);
 }

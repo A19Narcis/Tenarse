@@ -21,6 +21,10 @@ import com.example.tenarse.ui.search.questions.SearchQuestionsFragment;
 import com.example.tenarse.ui.search.users.ListElementUser;
 import com.example.tenarse.ui.search.users.SearchUsersFragment;
 
+import org.json.JSONObject;
+
+import java.io.Serializable;
+
 public class SearchFragment extends Fragment {
 
     private FragmentSearchBinding binding;
@@ -152,9 +156,9 @@ public class SearchFragment extends Fragment {
         binding = null;
     }
 
-    public void seeProfileUser(ListElementUser userClick, View view) {
+    public void seeProfileUser(JSONObject dadesUser, View view) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userInfo", userClick);
+        bundle.putString("userInfo", dadesUser.toString());
         Navigation.findNavController(view).navigate(R.id.action_navigation_search_to_profileFragment, bundle);
     }
 

@@ -82,8 +82,6 @@ public class UserFragment extends Fragment {
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        System.out.println("DADES CUANDO ENTRO USER: " + dadesUsuari.toString());
-
         try {
             refreshUserInfo(dadesUsuari.getString("_id"));
         } catch (JSONException e) {
@@ -160,6 +158,7 @@ public class UserFragment extends Fragment {
 
         try {
             if (!dadesUsuari.getString("username").equals("false")){
+                Picasso.with(getContext()).invalidate(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
                 Picasso.with(getContext()).load(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
             }
         } catch (JSONException e) {
@@ -249,6 +248,7 @@ public class UserFragment extends Fragment {
             JSONObject newDadesUser = new JSONObject(resultSearch);
             //Canviar els valors antics de l'usuari
             binding.userName.setText("@" + newDadesUser.getString("username"));
+            Picasso.with(getContext()).invalidate(newDadesUser.getString("url_img").replace("localhost", "10.0.2.2"));
             Picasso.with(getContext()).load(newDadesUser.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
             int new_numero_followings = newDadesUser.getJSONArray("followings").length();
             if (new_numero_followings >= 10000 && new_numero_followings < 999950) {

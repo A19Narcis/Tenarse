@@ -91,6 +91,7 @@ app.post('/updateUser', (req, res) => {
         email: req.body.email,
         username: req.body.username,
         nombre: req.body.name,
+        url_img: req.body.url_img,
         apellidos: req.body.surname,
         fecha_nac: req.body.date
     }
@@ -99,6 +100,45 @@ app.post('/updateUser', (req, res) => {
         res.send(newDadesUpdated)
     })
 })
+
+
+
+
+var storageImageUser = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/user_img')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname + '.png')
+    }
+})
+
+var uploadImageUser = multer({ storage: storageImageUser });
+
+app.post('/updateUserWithImage', uploadImageUser.single('post'), (req, res, next) => {
+    let body = JSON.parse(req.body.PostJson);
+    
+    const id = body._id
+    
+
+    let URLServer = "http://localhost:3000/";
+
+    const newDadesUser = {
+        email: body.email,
+        username: body.username,
+        nombre: body.nombre,
+        apellidos: body.apellidos,
+        url_img: URLServer + req.file.path,
+        fecha_nac: body.fecha_nac
+    }
+
+    updateDB.updateUser(id, newDadesUser, (newDadesUpdated) => {
+        res.send(newDadesUpdated)
+    })
+})
+
+
+
 
 app.post('/getUser', (req, res) => {
     var email_username = req.body.email_username

@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean isLogged = false;
 
+    BottomNavigationView navView;
+
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
     JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+        navView = findViewById(R.id.nav_view);
         navView.setItemIconTintList(null);
         navView.setItemBackgroundResource(android.R.color.transparent);
 
@@ -102,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(lastActivity);
                 globalDadesUser.setDadesUser(jsonObject);
                 dadesUsuari = globalDadesUser.getDadesUser();
-
                 Menu menu = navView.getMenu();
                 MenuItem menuItem = menu.findItem(R.id.navigation_user);
                 LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
@@ -127,6 +128,20 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
     }
+
+
+    public void updateUserImageBottom(){
+        System.out.println("BUENAS ESTOY ENTRANDO, PERMISO");
+        JSONObject newDadesUsuari = globalDadesUser.getDadesUser();
+        Menu menu = navView.getMenu();
+        MenuItem menuItem = menu.findItem(R.id.navigation_user);
+        LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
+        try {
+            loadImageBottomNavBar.execute(newDadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    };
 
     @Override
     protected void onPause() {

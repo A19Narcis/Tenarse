@@ -2,7 +2,9 @@ package com.example.tenarse.ui.search.posts;
 
 import androidx.annotation.NonNull;
 
-public class ListElementVideo {
+import java.io.Serializable;
+
+public class ListElementVideo implements Serializable {
     public String user_img_url;
     public String username;
     public String post_video_url;

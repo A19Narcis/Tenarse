@@ -41,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -301,17 +302,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
 
         try {
-            JSONObject dadesLogin = new JSONObject(resultSearch);
-            ListElementUser userSelected = new ListElementUser(dadesLogin.getString("_id"), dadesLogin.getString("url_img"), dadesLogin.getString("username"), dadesLogin.getString("nombre") + " " + dadesLogin.getString("apellidos"), dadesLogin.getJSONArray("followers").length(), dadesLogin.getJSONArray("followings").length(), dadesLogin.getJSONArray("publicacions"));
-            viewSelectedUser(userSelected, view);
+            JSONObject dadesUser = new JSONObject(resultSearch);
+            viewSelectedUser(dadesUser, view);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void viewSelectedUser(ListElementUser userSelected, View view) {
+    public void viewSelectedUser(JSONObject dadesUser, View view) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userInfo", userSelected);
+        bundle.putString("userInfo", dadesUser.toString());
         Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_profileFragment, bundle);
 
 

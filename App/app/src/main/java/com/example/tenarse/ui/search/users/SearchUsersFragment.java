@@ -122,16 +122,15 @@ public class SearchUsersFragment extends Fragment{
         }
 
         try {
-            JSONObject dadesLogin = new JSONObject(resultSearch);
-            ListElementUser userSelected = new ListElementUser(dadesLogin.getString("_id"), dadesLogin.getString("url_img"), dadesLogin.getString("username"), dadesLogin.getString("nombre") + " " + dadesLogin.getString("apellidos"), dadesLogin.getJSONArray("followers").length(), dadesLogin.getJSONArray("followings").length(), dadesLogin.getJSONArray("publicacions"));
-            viewSelectedUser(userSelected, v);
+            JSONObject dadesUser = new JSONObject(resultSearch);
+            viewSelectedUser(dadesUser, v);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void viewSelectedUser(ListElementUser userSelected, View view) {
+    public void viewSelectedUser(JSONObject dadesUser, View view) {
         SearchFragment searchFragment = (SearchFragment) getParentFragment();
-        searchFragment.seeProfileUser(userSelected, view);
+        searchFragment.seeProfileUser(dadesUser, view);
     }
 }

@@ -2,7 +2,9 @@ package com.example.tenarse.ui.search.questions;
 
 import org.json.JSONArray;
 
-public class ListElementDoubt {
+import java.io.Serializable;
+
+public class ListElementDoubt implements Serializable {
 
     public String id;
     public String user_img_url;
