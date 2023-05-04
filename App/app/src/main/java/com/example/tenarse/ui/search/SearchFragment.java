@@ -143,7 +143,6 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (!newText.equals("")){
-                    System.out.println("");
                 }
                 return true;
             }

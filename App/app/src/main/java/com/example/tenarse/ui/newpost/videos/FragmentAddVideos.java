@@ -13,9 +13,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -23,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -141,6 +144,25 @@ public class FragmentAddVideos extends Fragment {
                 autoCompleteTextView.setHint(autoCompleteTextView.getHint());
                 // Cierra la lista de autocompletado
                 autoCompleteTextView.dismissDropDown();
+            }
+        });
+
+        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                int actionID = 6;
+                actionId = actionID;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String userInput = autoCompleteTextView.getText().toString();
+                    System.out.println(userInput);
+                    if (userInput.length() > 0){
+                        arrayRecycler.add(userInput);
+                        hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
+                        autoCompleteTextView.setText("");
+                    }
+                    return true;
+                }
+                return false;
             }
         });
 

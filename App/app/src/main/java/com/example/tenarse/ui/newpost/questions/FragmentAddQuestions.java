@@ -3,10 +3,14 @@ package com.example.tenarse.ui.newpost.questions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -36,6 +40,7 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -87,6 +92,25 @@ public class FragmentAddQuestions extends Fragment {
                 autoCompleteTextView.setHint(autoCompleteTextView.getHint());
                 // Cierra la lista de autocompletado
                 autoCompleteTextView.dismissDropDown();
+            }
+        });
+
+        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                int actionID = 6;
+                actionId = actionID;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String userInput = autoCompleteTextView.getText().toString();
+                    System.out.println(userInput);
+                    if (userInput.length() > 0){
+                        arrayRecycler.add(userInput);
+                        hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
+                        autoCompleteTextView.setText("");
+                    }
+                    return true;
+                }
+                return false;
             }
         });
 
