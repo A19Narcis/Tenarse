@@ -56,6 +56,7 @@ public class FragmentAddQuestions extends Fragment {
     RecyclerView recyclerView;
     HashtagAdapter hashtagAdapter;
     TextView errorText;
+    TextView errorFaltanCampos;
     ArrayList<String> arrayRecycler = new ArrayList<>();
 
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
@@ -75,6 +76,7 @@ public class FragmentAddQuestions extends Fragment {
                 android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.opciones_autocompletado));
         autoCompleteTextView.setAdapter(adapter);
         errorText = rootView.findViewById(R.id.errorText);
+        errorFaltanCampos = rootView.findViewById(R.id.errorFaltanCampos);
 
 
         hashtagAdapter = new HashtagAdapter(arrayRecycler, adapter, getContext());
@@ -95,6 +97,9 @@ public class FragmentAddQuestions extends Fragment {
                 autoCompleteTextView.setHint(autoCompleteTextView.getHint());
                 // Cierra la lista de autocompletado
                 autoCompleteTextView.dismissDropDown();
+                if (errorText.getVisibility() == View.VISIBLE){
+                    errorText.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -126,58 +131,66 @@ public class FragmentAddQuestions extends Fragment {
         submitBtnQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                JSONObject body = new JSONObject();
-                JSONArray comments = new JSONArray();
-                JSONArray hashtags = new JSONArray(arrayRecycler);
-                try {
-                    body.put("type", "doubt");
-                    body.put("title", title.getText().toString());
-                    body.put("text", bodyQuestion.getText().toString());
-                    body.put("comments", comments);
-                    body.put("owner", dadesUsuari.getString("_id"));
-                    body.put("hashtags", hashtags);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
 
-                MyAsyncTaskQuestion addQuestionTask = new MyAsyncTaskQuestion(url_register, body);
-                addQuestionTask.execute();
-                String resultAddQuestion = null;
-                try {
-                    resultAddQuestion = addQuestionTask.get();
-                } catch (ExecutionException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                if (!resultAddQuestion.contains("false")){
-                    Toast.makeText(getContext(), "¡Post subido!", Toast.LENGTH_SHORT).show();
-
-                    /* RECARGAR FRAGMENT */
-                    NewpostFragment newpostFragment = (NewpostFragment) getParentFragment();
-                    newpostFragment.postUploaded();
-
-                    //Update global dades
-                    String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
-                    JSONObject jsonBody = new JSONObject();
-                    try {
-                        jsonBody.put("username", dadesUsuari.getString("username"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                if (title.getText().toString().length() == 0 || bodyQuestion.getText().toString().length() == 0){
+                    errorFaltanCampos.setVisibility(View.VISIBLE);
+                } else {
+                    if (errorFaltanCampos.getVisibility() == View.VISIBLE){
+                        errorFaltanCampos.setVisibility(View.GONE);
                     }
-                    MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
-                    selectedUser.execute();
-                    String resultSearch = null;
+                    JSONObject body = new JSONObject();
+                    JSONArray comments = new JSONArray();
+                    JSONArray hashtags = new JSONArray(arrayRecycler);
                     try {
-                        resultSearch = selectedUser.get();
+                        body.put("type", "doubt");
+                        body.put("title", title.getText().toString());
+                        body.put("text", bodyQuestion.getText().toString());
+                        body.put("comments", comments);
+                        body.put("owner", dadesUsuari.getString("_id"));
+                        body.put("hashtags", hashtags);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    MyAsyncTaskQuestion addQuestionTask = new MyAsyncTaskQuestion(url_register, body);
+                    addQuestionTask.execute();
+                    String resultAddQuestion = null;
+                    try {
+                        resultAddQuestion = addQuestionTask.get();
                     } catch (ExecutionException | InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+                    if (!resultAddQuestion.contains("false")){
+                        Toast.makeText(getContext(), "¡Post subido!", Toast.LENGTH_SHORT).show();
 
-                    try {
-                        JSONObject newDadesLogin = new JSONObject(resultSearch);
-                        GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-                        globalDadesUser.setDadesUser(newDadesLogin);
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        /* RECARGAR FRAGMENT */
+                        NewpostFragment newpostFragment = (NewpostFragment) getParentFragment();
+                        newpostFragment.postUploaded();
+
+                        //Update global dades
+                        String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
+                        JSONObject jsonBody = new JSONObject();
+                        try {
+                            jsonBody.put("username", dadesUsuari.getString("username"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+                        selectedUser.execute();
+                        String resultSearch = null;
+                        try {
+                            resultSearch = selectedUser.get();
+                        } catch (ExecutionException | InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        try {
+                            JSONObject newDadesLogin = new JSONObject(resultSearch);
+                            GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+                            globalDadesUser.setDadesUser(newDadesLogin);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             }

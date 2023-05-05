@@ -250,7 +250,7 @@ public class SettingsFragment extends Fragment{
                         json.put("_id", actualDadesUser.getString("_id"));
                         json.put("email", newEmail);
                         json.put("username", newUsername);
-                        json.put("url_img", actualDadesUser.getString("url_img"));
+                        json.put("url_img", "http://localhost:3000/uploads\\user_img\\" + actualDadesUser.getString("_id") + ".png");
                         json.put("nombre", newNombre);
                         json.put("apellidos", newApellidos);
                         json.put("fecha_nac", newFehca);
@@ -275,6 +275,7 @@ public class SettingsFragment extends Fragment{
                             //Actualizar datos usuario
                             GlobalDadesUser.getInstance().setDadesUser(json);
 
+                            System.out.println("NUEVOS DATOS: " + GlobalDadesUser.getInstance().getDadesUser());
 
                             ((MainActivity) getActivity()).updateUserImageBottom();
 
