@@ -3,10 +3,14 @@ package com.example.tenarse.ui.newpost.questions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -36,6 +40,7 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -50,6 +55,7 @@ public class FragmentAddQuestions extends Fragment {
     ArrayAdapter<String> adapter;
     RecyclerView recyclerView;
     HashtagAdapter hashtagAdapter;
+    TextView errorText;
     ArrayList<String> arrayRecycler = new ArrayList<>();
 
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
@@ -68,6 +74,8 @@ public class FragmentAddQuestions extends Fragment {
         adapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.opciones_autocompletado));
         autoCompleteTextView.setAdapter(adapter);
+        errorText = rootView.findViewById(R.id.errorText);
+
 
         hashtagAdapter = new HashtagAdapter(arrayRecycler, adapter, getContext());
         recyclerView = rootView.findViewById(R.id.add_recyclerView_doubt);
@@ -90,6 +98,29 @@ public class FragmentAddQuestions extends Fragment {
             }
         });
 
+        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                int actionID = 6;
+                actionId = actionID;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String userInput = autoCompleteTextView.getText().toString();
+                    if (userInput.length() > 0 && userInput.startsWith("#")){
+                        if (errorText.getVisibility() == View.VISIBLE){
+                            errorText.setVisibility(View.GONE);
+                        }
+                        arrayRecycler.add(userInput);
+                        hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
+                        autoCompleteTextView.setText("");
+                    } else if (!userInput.startsWith("#")) {
+                        errorText.setVisibility(View.VISIBLE);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
         String url_register = "http://10.0.2.2:3000/addPostDubt";
 
         submitBtnQuestion.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +135,6 @@ public class FragmentAddQuestions extends Fragment {
                     body.put("text", bodyQuestion.getText().toString());
                     body.put("comments", comments);
                     body.put("owner", dadesUsuari.getString("_id"));
-                    body.put("user_img", dadesUsuari.getString("url_img"));
                     body.put("hashtags", hashtags);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);

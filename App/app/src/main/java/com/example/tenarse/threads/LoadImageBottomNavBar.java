@@ -22,6 +22,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.tenarse.R;
 
 import java.util.concurrent.ExecutionException;
@@ -40,12 +41,14 @@ public class LoadImageBottomNavBar extends AsyncTask<String, Void, Bitmap> {
     @Override
     protected Bitmap doInBackground(String... params) {
         String imageUrl = params[0];
+        imageUrl = imageUrl.replace("\\", "/");
         Bitmap bitmap = null;
         try {
             int targetSize = (int) (context.getResources().getDisplayMetrics().density * 50);
             bitmap = Glide.with(context.getApplicationContext())
                     .asBitmap()
                     .load(imageUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .override(targetSize, targetSize)
                     .centerCrop()
                     .into(targetSize, targetSize)

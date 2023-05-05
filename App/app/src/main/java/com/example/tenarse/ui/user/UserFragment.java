@@ -158,6 +158,7 @@ public class UserFragment extends Fragment {
 
         try {
             if (!dadesUsuari.getString("username").equals("false")){
+                Picasso.with(getContext()).invalidate(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
                 Picasso.with(getContext()).load(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
             }
         } catch (JSONException e) {
@@ -175,14 +176,17 @@ public class UserFragment extends Fragment {
             JSONArray publicacions = new JSONArray(dadesUsuari.getString("publicacions"));
             for (int i = 0; i < publicacions.length(); i++) {
                 JSONObject post = publicacions.getJSONObject(i);
+                //SACAR USERNAME
+                String realUsername = getUsernameFromID(post);
+                JSONObject readDadesUser = new JSONObject(realUsername);
                 if (post.getString("tipus").equals("image")){
-                    dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    dataList.add(0, new ListElementImg(readDadesUser.getString("username"), post.getString("text"), post.getString("url_img"), post.getString("_id"), readDadesUser.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    dataList.add(0, new ListElementVideo(readDadesUser.getString("username"), post.getString("text"), post.getString("url_video"), post.getString("_id"), readDadesUser.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
-                    dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    dataList.add(0, new ListElementDoubt(readDadesUser.getString("username"), post.getString("titol"), post.getString("text"), post.getString("_id"), readDadesUser.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 }
             }
@@ -246,6 +250,7 @@ public class UserFragment extends Fragment {
             JSONObject newDadesUser = new JSONObject(resultSearch);
             //Canviar els valors antics de l'usuari
             binding.userName.setText("@" + newDadesUser.getString("username"));
+            Picasso.with(getContext()).invalidate(newDadesUser.getString("url_img").replace("localhost", "10.0.2.2"));
             Picasso.with(getContext()).load(newDadesUser.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
             int new_numero_followings = newDadesUser.getJSONArray("followings").length();
             if (new_numero_followings >= 10000 && new_numero_followings < 999950) {
@@ -276,14 +281,17 @@ public class UserFragment extends Fragment {
 
             for (int i = 0; i < new_publicacions.length(); i++) {
                 JSONObject post = new_publicacions.getJSONObject(i);
+                //SACAR USERNAME & URL IMG
+                String realUsername = getUsernameFromID(post);
+                JSONObject realDades = new JSONObject(realUsername);
                 if (post.getString("tipus").equals("image")){
-                    new_dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementImg(realDades.getString("username"), post.getString("text"), post.getString("url_img"), post.getString("_id"), realDades.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    new_dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementVideo(realDades.getString("username"), post.getString("text"), post.getString("url_video"), post.getString("_id"), realDades.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
-                    new_dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementDoubt(realDades.getString("username"), post.getString("titol"), post.getString("text"), post.getString("_id"), realDades.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 }
             }
@@ -303,13 +311,33 @@ public class UserFragment extends Fragment {
         //******* UPDATE DATOS USER **********
     }
 
+    private String getUsernameFromID(JSONObject post) {
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("id_user", post.getString("owner"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = selectedUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return resultSearch;
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
-    public void selectPost(String idPost, View v){
+    public void selectPost(String idPost, View v, String username, String url_img){
         //Recoger todos los datos de un post y verlos en un fragment nuevo
         String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + idPost;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
@@ -334,15 +362,17 @@ public class UserFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike, v);
+        viewSelectedPost(resultSinglePost, myLike, v, username, url_img);
 
     }
 
-    public void viewSelectedPost(String infoPost, boolean myLike, View v) {
+    public void viewSelectedPost(String infoPost, boolean myLike, View v, String username, String url_img) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
         bundle.putSerializable("origin", "perfil");
         bundle.putSerializable("isLiked", myLike);
+        bundle.putSerializable("usernamePost", username);
+        bundle.putSerializable("url_img", url_img);
         Navigation.findNavController(v).navigate(R.id.action_navigation_user_to_viewPostFragment, bundle);
 
 

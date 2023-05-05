@@ -7,11 +7,12 @@ public class ListElementDoubt {
     public String description;
     public String doubt_id;
 
-    public ListElementDoubt(String username, String title, String descr, String doubt_id){
+    public ListElementDoubt(String username, String title, String descr, String doubt_id, String user_img_url){
         this.username = username;
         this.title = title;
         this.description = descr;
         this.doubt_id = doubt_id;
+        this.user_img_url = user_img_url;
     }
 
     public String getDoubt_id() {

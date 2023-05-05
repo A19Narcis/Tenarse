@@ -9,12 +9,14 @@ public class ListElementImg implements Serializable {
     public String post_img_text;
     public String post_img_id;
 
-    public ListElementImg(String username, String text, String post_url, String post_img_id){
+    public ListElementImg(String username, String text, String post_url, String post_img_id, String user_img_url){
         this.username = username;
         this.post_img_text = text;
         this.post_img_url = post_url;
         this.post_img_id = post_img_id;
+        this.user_img_url = user_img_url;
     }
+
 
     public String getPost_img_id() {
         return post_img_id;

@@ -9,11 +9,12 @@ public class ListElementVideo {
     public String post_video_text;
     public String post_video_id;
 
-    public ListElementVideo(String username, String text, String post_url, String post_img_id){
+    public ListElementVideo(String username, String text, String post_url, String post_img_id, String user_img_url){
         this.username = username;
         this.post_video_text = text;
         this.post_video_url = post_url;
         this.post_video_id = post_img_id;
+        this.user_img_url = user_img_url;
     }
 
     @NonNull

@@ -16,8 +16,6 @@ import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,8 +34,6 @@ import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
-import com.example.tenarse.ui.post.ViewPostFragment;
-import com.example.tenarse.ui.profile.ProfileFragment;
 import com.example.tenarse.ui.search.users.ListElementUser;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -45,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -194,9 +191,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject post = jsonArray.getJSONObject(i);
+                //El owner llega como una ID, con esta ID sacamos el username
+                //SACAR USERNAME & IMAGE URL
+                String realUsername = getUsernameandImageFromID(post);
+                JSONObject username_image = new JSONObject(realUsername);
                 if (post.getString("tipus").equals("image")){
                     isLiked = false;
-                    ListElementImg listElementImg = new ListElementImg(post.getString("_id"), post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("user_img"), post.getJSONArray("likes"));
+                    ListElementImg listElementImg = new ListElementImg(post.getString("_id"), username_image.getString("username"), post.getString("text"), post.getString("url_img"), username_image.getString("url_img"), post.getJSONArray("likes"));
                     for (int j = 0; j < listElementImg.getLikes().length() && !isLiked; j++) {
                         if (listElementImg.getLikes().get(j).toString().equals(dadesUser.getString("_id"))) {
                             isLiked = true;
@@ -207,7 +208,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
                     isLiked = false;
-                    ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), post.getString("owner"), post.getString("titol"), post.getString("text"),  post.getString("user_img"), post.getJSONArray("likes"));
+                    ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), username_image.getString("username"), post.getString("titol"), post.getString("text"),  username_image.getString("url_img"), post.getJSONArray("likes"));
                     listElementDoubt.setLiked(false);
                     for (int j = 0; j < listElementDoubt.getLikes().length() && !isLiked; j++) {
                         if (listElementDoubt.getLikes().get(j).toString().equals(dadesUser.getString("_id"))){
@@ -219,7 +220,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
                     isLiked = false;
-                    ListElementVideo listElementVideo = new ListElementVideo(post.getString("_id"), post.getString("owner"), post.getString("user_img"), post.getString("url_video"), post.getString("text"), post.getJSONArray("likes"));
+                    ListElementVideo listElementVideo = new ListElementVideo(post.getString("_id"), username_image.getString("username"), username_image.getString("url_img"), post.getString("url_video"), post.getString("text"), post.getJSONArray("likes"));
                     listElementVideo.setLiked(false);
                     for (int j = 0; j < listElementVideo.getLikes().length() && !isLiked; j++) {
                         if (listElementVideo.getLikes().get(j).toString().equals(dadesUser.getString("_id"))){
@@ -242,6 +243,27 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         } catch (ExecutionException | InterruptedException | JSONException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    private String getUsernameandImageFromID(JSONObject post) {
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("id_user", post.getString("owner"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = selectedUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return resultSearch;
     }
 
     @Override
@@ -282,17 +304,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
 
         try {
-            JSONObject dadesLogin = new JSONObject(resultSearch);
-            ListElementUser userSelected = new ListElementUser(dadesLogin.getString("_id"), dadesLogin.getString("url_img"), dadesLogin.getString("username"), dadesLogin.getString("nombre") + " " + dadesLogin.getString("apellidos"), dadesLogin.getJSONArray("followers").length(), dadesLogin.getJSONArray("followings").length(), dadesLogin.getJSONArray("publicacions"));
-            viewSelectedUser(userSelected, view);
+            JSONObject dadesUser = new JSONObject(resultSearch);
+            viewSelectedUser(dadesUser, view);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void viewSelectedUser(ListElementUser userSelected, View view) {
+    public void viewSelectedUser(JSONObject dadesUser, View view) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userInfo", userSelected);
+        bundle.putString("userInfo", dadesUser.toString());
         Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_profileFragment, bundle);
 
 
@@ -308,7 +329,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         fragmentTransaction.commit();*/
     }
 
-    public void selectPost(String idPost, View view){
+    public void selectPost(String idPost, View view, String username, String url_img){
         //Recoger todos los datos de un post y verlos en un fragment nuevo
         String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + idPost;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
@@ -333,16 +354,18 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike, view);
+        viewSelectedPost(resultSinglePost, myLike, view, username, url_img);
 
     }
 
-    public void viewSelectedPost(String infoPost, boolean myLike, View view) {
+    public void viewSelectedPost(String infoPost, boolean myLike, View view, String username, String url_img) {
         //Carregar el nou fragment amb les seves dades
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
         bundle.putSerializable("origin", "home");
         bundle.putSerializable("isLiked", myLike);
+        bundle.putSerializable("usernamePost", username);
+        bundle.putSerializable("url_img", url_img);
         Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_viewPostFragment, bundle);
 
         /*FragmentManager fragmentManager = getParentFragmentManager();

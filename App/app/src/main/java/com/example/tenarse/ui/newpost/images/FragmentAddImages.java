@@ -2,6 +2,7 @@ package com.example.tenarse.ui.newpost.images;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,9 +10,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -19,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
@@ -68,6 +72,8 @@ public class FragmentAddImages extends Fragment{
 
     Button submitBtnImg;
 
+    TextView errorText;
+
     EditText postText;
     ArrayList<String> arrayRecycler = new ArrayList<>();
 
@@ -76,6 +82,7 @@ public class FragmentAddImages extends Fragment{
     ApiService apiService;
     private static final int GALLERY_REQUEST_CODE = 1;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,6 +96,7 @@ public class FragmentAddImages extends Fragment{
         scrollView = rootView.findViewById(R.id.scrollV_add_images);
         submitBtnImg = rootView.findViewById(R.id.submitBtnImg);
         postText = rootView.findViewById(R.id.postText);
+        errorText = rootView.findViewById(R.id.errorText);
 
         autoCompleteTextView = rootView.findViewById(R.id.autoCompleteImg);
         adapter = new ArrayAdapter<String>(getContext(),
@@ -115,6 +123,29 @@ public class FragmentAddImages extends Fragment{
                 autoCompleteTextView.setHint(autoCompleteTextView.getHint());
                 // Cierra la lista de autocompletado
                 autoCompleteTextView.dismissDropDown();
+            }
+        });
+
+        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                int actionID = 6;
+                actionId = actionID;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String userInput = autoCompleteTextView.getText().toString();
+                    if (userInput.length() > 0 && userInput.startsWith("#")){
+                        if (errorText.getVisibility() == View.VISIBLE){
+                            errorText.setVisibility(View.GONE);
+                        }
+                        arrayRecycler.add(userInput);
+                        hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
+                        autoCompleteTextView.setText("");
+                    } else if (!userInput.startsWith("#")) {
+                        errorText.setVisibility(View.VISIBLE);
+                    }
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -154,7 +185,6 @@ public class FragmentAddImages extends Fragment{
                     json.put("text", postText.getText().toString());
                     json.put("comments", comments);
                     json.put("owner", jsonGDU.getString("_id"));
-                    json.put("user_img", jsonGDU.getString("url_img"));
                     json.put("hashtags", hashtags);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -229,7 +259,6 @@ public class FragmentAddImages extends Fragment{
             String fileName = pathImg.substring(pathImg.lastIndexOf("/") + 1);
             pathImg = getContext().getCacheDir() + "/" + fileName;
             image.setImageURI(resultUri);
-            System.out.println(pathImg);
 
             ViewGroup.LayoutParams layoutParams = cardView.getLayoutParams();
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;

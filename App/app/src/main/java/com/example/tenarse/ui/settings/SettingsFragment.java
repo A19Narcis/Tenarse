@@ -1,43 +1,36 @@
 package com.example.tenarse.ui.settings;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.tenarse.AnimationScreen;
 import com.example.tenarse.Login;
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
-import com.example.tenarse.databinding.FragmentHomeBinding;
-import com.example.tenarse.databinding.FragmentNotificacionesBinding;
 import com.example.tenarse.databinding.FragmentSettingsBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
+import com.example.tenarse.httpRetrofit.ApiService;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.register.MyAsyncTaskRegister;
+import com.example.tenarse.widgets.CropperActivity;
 import com.example.tenarse.widgets.DatePickerFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -46,7 +39,18 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.concurrent.ExecutionException;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class SettingsFragment extends Fragment{
 
@@ -62,10 +66,20 @@ public class SettingsFragment extends Fragment{
     private String start_email;
     private String start_username;
 
+    private String pathImg;
+
+    private boolean imgEditada = false;
+
+    private static final int GALLERY_REQUEST_CODE = 1;
+
+    ApiService apiService;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        initRetrofitClient();
 
         //Cargar los datos del usuario en los editText
         try {
@@ -104,6 +118,13 @@ public class SettingsFragment extends Fragment{
             }
         });
 
+        binding.cardViewSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+            }
+        });
 
         binding.logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,7 +164,7 @@ public class SettingsFragment extends Fragment{
                 boolean infoValida = true;
 
                 // Verificar que no hay campos vacíos o com emoticonos
-                if ((newEmail.isEmpty() || newEmail.matches(regexEmoticionos)) ||  (newUsername.isEmpty() || newUsername.matches(regexEmoticionos)) || (newNombre.isEmpty() || newNombre.matches(regexEmoticionos)) || (newApellidos.isEmpty() || newApellidos.matches(regexEmoticionos)) || newFehca.isEmpty()) {
+                if ((newEmail.isEmpty() || newEmail.matches(regexEmoticionos)) || (newUsername.isEmpty() || newUsername.matches(regexEmoticionos)) || (newNombre.isEmpty() || newNombre.matches(regexEmoticionos)) || (newApellidos.isEmpty() || newApellidos.matches(regexEmoticionos)) || newFehca.isEmpty()) {
                     infoValida = false;
                     System.out.println("Vacio o Emojis");
                 }
@@ -162,14 +183,14 @@ public class SettingsFragment extends Fragment{
                 boolean newUsernameInput = false;
                 boolean newEmailInput = false;
 
-                if (!newUsername.equals(start_username)){
+                if (!newUsername.equals(start_username)) {
                     newUsernameInput = true;
                 }
 
 
                 //Ver si el nuevo Email / Username es valido
-                String resultGetUser = "";
-                if (newUsernameInput){
+                String resultGetUser = "false";
+                if (newUsernameInput) {
                     String url_checkDades = "http://10.0.2.2:3000/checkUserExists";
 
                     JSONObject bodyCheck = new JSONObject();
@@ -191,12 +212,12 @@ public class SettingsFragment extends Fragment{
                     }
                 }
 
-                if (!newEmail.equals(start_email)){
+                if (!newEmail.equals(start_email)) {
                     newEmailInput = true;
                 }
 
-                String resultGetUserEmail = "";
-                if (newEmailInput){
+                String resultGetUserEmail = "false";
+                if (newEmailInput) {
                     String url_checkDades = "http://10.0.2.2:3000/checkEmailExists";
                     JSONObject bodyCheck = new JSONObject();
 
@@ -216,74 +237,138 @@ public class SettingsFragment extends Fragment{
                     }
                 }
 
+                if (imgEditada){
+                    File file = new File(pathImg);
 
-                if (infoValida && (resultGetUser.contains("false") && resultGetUserEmail.contains("false")) || ((start_email.equals(newEmail) || start_username.equals(newUsername)))){
-                    // Todos los campos son válidos
-                    JSONObject body = new JSONObject();
+                    String idUser = "null";
+                    GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+                    JSONObject jsonGDU = globalDadesUser.getDadesUser();
+                    JSONObject json = new JSONObject();
 
                     try {
-                        body.put("id_user", actualDadesUser.getString("_id"));
-                        body.put("email", newEmail);
-                        body.put("username", newUsername);
-                        body.put("name", newNombre);
-                        body.put("surname", newApellidos);
-                        body.put("date", newFehca);
-                    } catch (JSONException e){
+                        idUser = jsonGDU.getString("_id");
+                        json.put("_id", actualDadesUser.getString("_id"));
+                        json.put("email", newEmail);
+                        json.put("username", newUsername);
+                        json.put("url_img", actualDadesUser.getString("url_img"));
+                        json.put("nombre", newNombre);
+                        json.put("apellidos", newApellidos);
+                        json.put("fecha_nac", newFehca);
+                        json.put("followers",  actualDadesUser.getJSONArray("followers"));
+                        json.put("followings",  actualDadesUser.getJSONArray("followings"));
+                        json.put("publicacions",  actualDadesUser.getJSONArray("publicacions"));
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
-                    String url_updateDades = "http://10.0.2.2:3000/updateUser";
-                    MyAsyncTaskRegister updateUser = new MyAsyncTaskRegister(url_updateDades, body);
-                    updateUser.execute();
-                    String resultUpdate = null;
-                    try {
-                        resultUpdate = updateUser.get();
-                    } catch (ExecutionException | InterruptedException e) {
-                        throw new RuntimeException(e);
+                    // Crear un RequestBody a partir del JSON
+                    RequestBody jsonBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
+                    RequestBody postImg = RequestBody.create(MediaType.parse("image/*"), file);
+                    MultipartBody.Part body = MultipartBody.Part.createFormData("post", idUser, postImg);
+                    RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "postImage");
+
+                    Call<ResponseBody> req = apiService.updateUserWithImage(body, name, jsonBody);
+
+                    req.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            //Actualizar datos usuario
+                            GlobalDadesUser.getInstance().setDadesUser(json);
+
+
+                            ((MainActivity) getActivity()).updateUserImageBottom();
+
+                            Snackbar snackbar = Snackbar.make(binding.getRoot(), "Datos actualizados.", Snackbar.LENGTH_LONG);
+
+                            // Cambiar el color de fondo
+                            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
+
+                            // Cambiar el color del texto
+                            TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                            textView.setTextColor(Color.WHITE);
+
+                            // Obtener el TextView dentro de Snackbar
+                            TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                            textoSnackbar.setGravity(Gravity.CENTER);
+
+                            // Mostrar Snackbar personalizado
+                            snackbar.show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+
+                }else {
+                    if (infoValida && (resultGetUser.contains("false") && resultGetUserEmail.contains("false")) || ((start_email.equals(newEmail) && start_username.equals(newUsername)))) {
+                        // Todos los campos son válidos
+                        JSONObject body = new JSONObject();
+
+                        try {
+                            body.put("id_user", actualDadesUser.getString("_id"));
+                            body.put("email", newEmail);
+                            body.put("username", newUsername);
+                            body.put("name", newNombre);
+                            body.put("surname", newApellidos);
+                            body.put("date", newFehca);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        String url_updateDades = "http://10.0.2.2:3000/updateUser";
+                        MyAsyncTaskRegister updateUser = new MyAsyncTaskRegister(url_updateDades, body);
+                        updateUser.execute();
+                        String resultUpdate = null;
+                        try {
+                            resultUpdate = updateUser.get();
+                        } catch (ExecutionException | InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        binding.errorTextUpdate.setVisibility(View.GONE);
+                        binding.userExisteUpdate.setVisibility(View.GONE);
+
+                        try {
+                            JSONObject updatedDades = new JSONObject(resultUpdate);
+                            GlobalDadesUser.getInstance().setDadesUser(updatedDades);
+                            System.out.println("DADES NOVES: " + updatedDades.toString());
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        Snackbar snackbar = Snackbar.make(binding.getRoot(), "Datos actualizados.", Snackbar.LENGTH_LONG);
+
+                        // Cambiar el color de fondo
+                        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
+
+                        // Cambiar el color del texto
+                        TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                        textView.setTextColor(Color.WHITE);
+
+                        // Obtener el TextView dentro de Snackbar
+                        TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                        textoSnackbar.setGravity(Gravity.CENTER);
+
+                        // Mostrar Snackbar personalizado
+                        snackbar.show();
+
+                    } else if (!infoValida) {
+                        binding.errorTextUpdate.setVisibility(View.VISIBLE);
+                        binding.userExisteUpdate.setVisibility(View.GONE);
+                    } else if (resultGetUser.contains("true") || resultGetUserEmail.contains("true")) {
+                        //Ese usuario ya existe
+                        binding.userExisteUpdate.setVisibility(View.VISIBLE);
+                        binding.errorTextUpdate.setVisibility(View.GONE);
                     }
 
-                    binding.errorTextUpdate.setVisibility(View.GONE);
-                    binding.userExisteUpdate.setVisibility(View.GONE);
-
-                    try {
-                        JSONObject updatedDades = new JSONObject(resultUpdate);
-                        GlobalDadesUser.getInstance().setDadesUser(updatedDades);
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    Snackbar snackbar = Snackbar.make(binding.getRoot(), "Datos actualizados.", Snackbar.LENGTH_LONG);
-
-                    // Cambiar el color de fondo
-                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
-
-                    // Cambiar el color del texto
-                    TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                    textView.setTextColor(Color.WHITE);
-
-                    // Obtener el TextView dentro de Snackbar
-                    TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                    textoSnackbar.setGravity(Gravity.CENTER);
-
-                    // Mostrar Snackbar personalizado
-                    snackbar.show();
-
-                } else if (!infoValida){
-                    binding.errorTextUpdate.setVisibility(View.VISIBLE);
-                    binding.userExisteUpdate.setVisibility(View.GONE);
-                } else if (resultGetUser.contains("true") || resultGetUserEmail.contains("true")){
-                    //Ese usuario ya existe
-                    binding.userExisteUpdate.setVisibility(View.VISIBLE);
-                    binding.errorTextUpdate.setVisibility(View.GONE);
                 }
-
-
             }
         });
 
         return root;
     }
-
 
 
     @Override
@@ -309,6 +394,49 @@ public class SettingsFragment extends Fragment{
         });
 
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            // Obtener la imagen seleccionada de la galería
+            Uri selectedImage = data.getData();
+
+            // Establecer la imagen seleccionada en el ImageView
+            ViewGroup.LayoutParams layoutParams = binding.newFotoPerfil.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            binding.newFotoPerfil.setLayoutParams(layoutParams);
+
+            binding.newFotoPerfil.setImageURI(selectedImage);
+            Intent intent = new Intent(getActivity(), CropperActivity.class);
+            intent.putExtra("DATA", selectedImage.toString());
+            startActivityForResult(intent, 101);
+        } else if (resultCode == -1 && requestCode == 101) {
+            pathImg = data.getStringExtra("RESULT");
+
+            Uri resultUri=null;
+            if(pathImg!=null){
+                resultUri=Uri.parse(pathImg);
+            }
+            String fileName = pathImg.substring(pathImg.lastIndexOf("/") + 1);
+            pathImg = getContext().getCacheDir() + "/" + fileName;
+            binding.newFotoPerfil.setImageURI(resultUri);
+            System.out.println(pathImg);
+
+            /*.LayoutParams layoutParams = binding.cardViewSettings.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            binding.cardViewSettings.setLayoutParams(layoutParams);*/
+            imgEditada = true;
+        }
+    }
+
+    private void initRetrofitClient(){
+        OkHttpClient client = new OkHttpClient.Builder().build();
+
+        apiService = new Retrofit.Builder().baseUrl("http://10.0.2.2:3000").client(client).build().create(ApiService.class);
     }
 
 }

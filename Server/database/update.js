@@ -117,11 +117,10 @@ const updateUser = function (id_user, newDadesUser, callback) {
             username: newDadesUser.username,
             nombre: newDadesUser.nombre,
             apellidos: newDadesUser.apellidos,
+            url_img: newDadesUser.url_img,
             fecha_nac: newDadesUser.fecha_nac
         }
     ).then(() => {
-        
-    }).then(() => {
         readDB.getUserByID(id_user, (newDadesUser) => {
             callback(newDadesUser)
         })

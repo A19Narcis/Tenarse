@@ -13,9 +13,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -23,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -67,6 +70,7 @@ public class FragmentAddVideos extends Fragment {
     CardView cardView;
     String pathVideo;
     EditText postText;
+    TextView errorText;
     AutoCompleteTextView autoCompleteTextView;
 
     ArrayAdapter<String> adapter;
@@ -114,6 +118,7 @@ public class FragmentAddVideos extends Fragment {
         imageView = rootView.findViewById(R.id.preopen_video);
         videoView = rootView.findViewById(R.id.rv_post_video);
         postText = rootView.findViewById(R.id.postText);
+        errorText = rootView.findViewById(R.id.errorText);
         imageView.setVisibility(View.GONE);
 
         autoCompleteTextView = rootView.findViewById(R.id.autoCompleteVideo);
@@ -144,6 +149,29 @@ public class FragmentAddVideos extends Fragment {
             }
         });
 
+        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                int actionID = 6;
+                actionId = actionID;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String userInput = autoCompleteTextView.getText().toString();
+                    if (userInput.length() > 0 && userInput.startsWith("#")){
+                        if (errorText.getVisibility() == View.VISIBLE){
+                            errorText.setVisibility(View.GONE);
+                        }
+                        arrayRecycler.add(userInput);
+                        hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
+                        autoCompleteTextView.setText("");
+                    } else if (!userInput.startsWith("#")) {
+                        errorText.setVisibility(View.VISIBLE);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
         submitBtnVideo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -169,7 +197,6 @@ public class FragmentAddVideos extends Fragment {
                         json.put("text", postText.getText().toString());
                         json.put("comments", comments);
                         json.put("owner", jsonGDU.getString("_id"));
-                        json.put("user_img", jsonGDU.getString("url_img"));
                         json.put("hashtags", hashtags);
                     } catch (JSONException e) {
                         e.printStackTrace();

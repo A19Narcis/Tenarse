@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 public class chatObject {
     String userName;
     String lastMsg;
-    Bitmap profileImg;
+    String profileImg;
 
-    public chatObject(String userName, String lastMsg, Bitmap profileImg) {
+    public chatObject(String userName, String lastMsg, String profileImg) {
         this.userName = userName;
         this.lastMsg = lastMsg;
         this.profileImg = profileImg;
@@ -33,11 +33,11 @@ public class chatObject {
         this.lastMsg = lastMsg;
     }
 
-    public Bitmap getProfileImg() {
+    public String getProfileImg() {
         return profileImg;
     }
 
-    public void setProfileImg(Bitmap profileImg) {
+    public void setProfileImg(String profileImg) {
         this.profileImg = profileImg;
     }
 }

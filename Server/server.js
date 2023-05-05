@@ -91,6 +91,7 @@ app.post('/updateUser', (req, res) => {
         email: req.body.email,
         username: req.body.username,
         nombre: req.body.name,
+        url_img: req.body.url_img,
         apellidos: req.body.surname,
         fecha_nac: req.body.date
     }
@@ -99,6 +100,45 @@ app.post('/updateUser', (req, res) => {
         res.send(newDadesUpdated)
     })
 })
+
+
+
+
+var storageImageUser = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/user_img')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname + '.png')
+    }
+})
+
+var uploadImageUser = multer({ storage: storageImageUser });
+
+app.post('/updateUserWithImage', uploadImageUser.single('post'), (req, res, next) => {
+    let body = JSON.parse(req.body.PostJson);
+    
+    const id = body._id
+    
+
+    let URLServer = "http://localhost:3000/";
+
+    const newDadesUser = {
+        email: body.email,
+        username: body.username,
+        nombre: body.nombre,
+        apellidos: body.apellidos,
+        url_img: URLServer + req.file.path,
+        fecha_nac: body.fecha_nac
+    }
+
+    updateDB.updateUser(id, newDadesUser, (newDadesUpdated) => {
+        res.send(newDadesUpdated)
+    })
+})
+
+
+
 
 app.post('/getUser', (req, res) => {
     var email_username = req.body.email_username
@@ -124,6 +164,15 @@ app.post('/getUser', (req, res) => {
     })
 })
 
+app.post('/getUsernameAndImageFromID', (req, res) => {
+    var id = req.body.id_user;
+
+    /*var id = "644785f8fdc077b15553ba12"*/
+
+    readDB.getUserByID(id, (dades_user) => {
+        res.send({username: dades_user.username, url_img: dades_user.url_img})
+    })
+})
 
 app.post('/getSelectedUser', (req, res) => {
     var email_username_id = req.body.username
@@ -270,7 +319,6 @@ function addPost (body, postUrl) {
             url_video: '',
             comentaris: body.comments,
             owner: body.owner,
-            user_img: body.user_img,
             hora: tiempoActual
         }
         break;
@@ -284,7 +332,6 @@ function addPost (body, postUrl) {
             url_video: '',
             comentaris: body.comments,
             owner: body.owner,
-            user_img: body.user_img,
             hora: tiempoActual
         }
         break;
@@ -298,7 +345,6 @@ function addPost (body, postUrl) {
             url_video: URLServer + postUrl,
             comentaris: body.comments,
             owner: body.owner,
-            user_img: body.user_img,
             hora: tiempoActual
         }
         break;
@@ -330,8 +376,7 @@ app.post('/addNewComment', (req, res) => {
     
     /*const id_publi = '644624407cd0eca623e9d7c1'
     const comentari = {
-        user_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-        user: 'A19Narcis',
+        user: '6448e116ee402c11b13bcb4a',
         coment_text: 'Te recomiendo probar ChatGPT'
     }*/
 
@@ -401,7 +446,7 @@ app.post('/newMessage', (req, res) => {
     let minutos = fecha.getMinutes();
     let horaActual = hora + ":" + minutos;
 
-    var chat_id = '6422957c931b6cd18c021533'
+    var chat_id = '64523a1cd720d23ed679f615'
     var message = {
         emisor: 'A19Narcis',
         txt_msg: '¡Buenas!',

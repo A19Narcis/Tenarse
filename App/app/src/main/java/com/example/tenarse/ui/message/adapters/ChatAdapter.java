@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
 import com.example.tenarse.ui.message.chat.chatObject;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -37,7 +38,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         chatViewHolder cvh = (chatViewHolder) holder;
         cvh.textoUsuario.setText(dataList.get(position).getUserName());
         cvh.lastMsg.setText(dataList.get(position).getLastMsg());
-        //cvh.profileImg.setImageBitmap(dataList.get(position).getProfileImg());
+        Picasso.with(context).load(dataList.get(position).getProfileImg().replace("localhost", "10.0.2.2")).into(cvh.profileImg);
     }
 
     @Override

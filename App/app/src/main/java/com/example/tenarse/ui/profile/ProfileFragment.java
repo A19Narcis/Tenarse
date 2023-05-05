@@ -51,7 +51,9 @@ public class ProfileFragment extends Fragment {
     RecyclerView recyclerView;
     NestedScrollView nestedScrollView;
 
-    ListElementUser userInfo;
+    String userInfoString;
+
+    JSONObject userInfo;
 
     MultiAdapter multiAdapter;
 
@@ -122,11 +124,21 @@ public class ProfileFragment extends Fragment {
         /* DADES DE L'USUARI SELECCIONAT */
         Bundle args = getArguments();
         if (args != null) {
-            userInfo = (ListElementUser) args.getSerializable("userInfo");
+            userInfoString = args.getString("userInfo");
             fragmentAnterior = args.getString("fragment");
         }
 
-        refreshUserInfo(userInfo.getId_user());
+        try {
+            userInfo = new JSONObject(userInfoString);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            refreshUserInfo(userInfo.getString("_id"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
         GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
         JSONObject dadesUsuari = globalDadesUser.getDadesUser();
@@ -143,7 +155,7 @@ public class ProfileFragment extends Fragment {
 
                     try {
                         body.put("user_following", dadesUsuari.getString("_id"));
-                        body.put("user_followed", userInfo.getId_user());
+                        body.put("user_followed", userInfo.getString("_id"));
                     } catch (JSONException e){
                         e.printStackTrace();
                     }
@@ -186,11 +198,19 @@ public class ProfileFragment extends Fragment {
                         throw new RuntimeException(e);
                     }
                     //******* UPDATE DATOS USER **********
-                    refreshUserInfo(userInfo.getId_user());
+                    try {
+                        refreshUserInfo(userInfo.getString("_id"));
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else {
                     AlertDialog.Builder alertaLogOut = new AlertDialog.Builder(getActivity());
                     alertaLogOut.setTitle("Dejar de seguir");
-                    alertaLogOut.setMessage("¿Quieres dejar de seguir a @" + userInfo.getSearch_username() + "?");
+                    try {
+                        alertaLogOut.setMessage("¿Quieres dejar de seguir a @" + userInfo.getString("username") + "?");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
                     alertaLogOut.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -201,7 +221,7 @@ public class ProfileFragment extends Fragment {
 
                             try {
                                 body.put("user_following", dadesUsuari.getString("_id"));
-                                body.put("user_removed", userInfo.getId_user());
+                                body.put("user_removed", userInfo.getString("username"));
                             } catch (JSONException e){
                                 e.printStackTrace();
                             }
@@ -246,7 +266,11 @@ public class ProfileFragment extends Fragment {
                                 throw new RuntimeException(e);
                             }
                             //******* UPDATE DATOS USER **********
-                            refreshUserInfo(userInfo.getId_user());
+                            try {
+                                refreshUserInfo(userInfo.getString("_id"));
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     });
                     alertaLogOut.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -267,7 +291,7 @@ public class ProfileFragment extends Fragment {
             JSONArray usersSiguiendo = dadesUsuari.getJSONArray("followings");
             for (int i = 0; i < usersSiguiendo.length(); i++) {
                 JSONObject user = usersSiguiendo.getJSONObject(i);
-                if (user.getString("user").equals(userInfo.getId_user())){
+                if (user.getString("user").equals(userInfo.getString("_id"))){
                     binding.followButton.setBackgroundColor(Color.WHITE);
                     binding.followButton.setTextColor(Color.BLACK);
                     binding.followButton.setText("Siguiendo ✓");
@@ -278,15 +302,24 @@ public class ProfileFragment extends Fragment {
         }
 
         try {
-            if (dadesUsuari.getString("_id").equals(userInfo.getId_user())){
+            if (dadesUsuari.getString("_id").equals(userInfo.getString("_id"))){
                 binding.followButton.setVisibility(View.GONE);
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
 
-        binding.userName.setText("@" + userInfo.getSearch_username());
-        int numero_followings = userInfo.getFollowing_search();
+        try {
+            binding.userName.setText("@" + userInfo.getString("username"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        int numero_followings = 0;
+        try {
+            numero_followings = userInfo.getJSONArray("followings").length();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         if (numero_followings >= 10000 && numero_followings < 999950) {
             String followingsString = formatFollowers10(numero_followings);
             binding.userFolloweds.setText(followingsString); // 10.0 k
@@ -297,7 +330,12 @@ public class ProfileFragment extends Fragment {
             binding.userFolloweds.setText(Integer.toString(numero_followings));
         }
 
-        int numero_followers = userInfo.getFollowers_search();
+        int numero_followers = 0;
+        try {
+            numero_followers = userInfo.getJSONArray("followers").length();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         if (numero_followers >= 10000 && numero_followers < 999950) {
             String followingsString = formatFollowers10(numero_followers);
             binding.userFollowers.setText(followingsString); // 10.0 k
@@ -308,22 +346,28 @@ public class ProfileFragment extends Fragment {
             binding.userFollowers.setText(Integer.toString(numero_followers));
         }
 
-
-        Picasso.with(getContext()).load(userInfo.getUser_url_img().replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
-
+        try {
+            Picasso.with(getContext()).invalidate(userInfo.getString("url_img").replace("localhost", "10.0.2.2"));
+            Picasso.with(getContext()).load(userInfo.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             JSONArray publicacions = new JSONArray(dadesUsuari.getString("publicacions"));
             for (int i = 0; i < publicacions.length(); i++) {
                 JSONObject post = publicacions.getJSONObject(i);
+                //SACAR USERNAME
+                String realUsername = getUsernameFromID(post);
+                JSONObject readDadesUser = new JSONObject(realUsername);
                 if (post.getString("tipus").equals("image")){
-                    dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    dataList.add(0, new ListElementImg(readDadesUser.getString("username"), post.getString("text"), post.getString("url_img"), post.getString("_id"), readDadesUser.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    dataList.add(0, new ListElementVideo(readDadesUser.getString("username"), post.getString("text"), post.getString("url_video"), post.getString("_id"), readDadesUser.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
-                    dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    dataList.add(0, new ListElementDoubt(readDadesUser.getString("username"), post.getString("titol"), post.getString("text"), post.getString("_id"), readDadesUser.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 }
             }
@@ -335,7 +379,11 @@ public class ProfileFragment extends Fragment {
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshUserInfo(userInfo.getId_user());
+                try {
+                    refreshUserInfo(userInfo.getString("_id"));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
                 binding.swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -396,6 +444,7 @@ public class ProfileFragment extends Fragment {
             JSONObject newDadesUser = new JSONObject(resultSearch);
             //Canviar els valors antics de l'usuari
             binding.userName.setText("@" + newDadesUser.getString("username"));
+            Picasso.with(getContext()).invalidate(newDadesUser.getString("url_img").replace("localhost", "10.0.2.2"));
             Picasso.with(getContext()).load(newDadesUser.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
             int new_numero_followings = newDadesUser.getJSONArray("followings").length();
             if (new_numero_followings >= 10000 && new_numero_followings < 999950) {
@@ -426,14 +475,17 @@ public class ProfileFragment extends Fragment {
 
             for (int i = 0; i < new_publicacions.length(); i++) {
                 JSONObject post = new_publicacions.getJSONObject(i);
+                //SACAR USERNAME & URL IMG
+                String realUsername = getUsernameFromID(post);
+                JSONObject realDades = new JSONObject(realUsername);
                 if (post.getString("tipus").equals("image")){
-                    new_dataList.add(0, new ListElementImg(post.getString("owner"), post.getString("text"), post.getString("url_img"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementImg(realDades.getString("username"), post.getString("text"), post.getString("url_img"), post.getString("_id"), realDades.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("video")){
-                    new_dataList.add(0, new ListElementVideo(post.getString("owner"), post.getString("text"), post.getString("url_video"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementVideo(realDades.getString("username"), post.getString("text"), post.getString("url_video"), post.getString("_id"), realDades.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 } else if (post.getString("tipus").equals("doubt")){
-                    new_dataList.add(0, new ListElementDoubt(post.getString("owner"), post.getString("titol"), post.getString("text"), post.getString("_id")));
+                    new_dataList.add(0, new ListElementDoubt(realDades.getString("username"), post.getString("titol"), post.getString("text"), post.getString("_id"), realDades.getString("url_img")));
                     multiAdapter.notifyItemInserted(0);
                 }
             }
@@ -453,13 +505,33 @@ public class ProfileFragment extends Fragment {
         //******* UPDATE DATOS USER **********
     }
 
+    private String getUsernameFromID(JSONObject post) {
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("id_user", post.getString("owner"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = selectedUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return resultSearch;
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
-    public void selectPost(String post_img_id, View v) {
+    public void selectPost(String post_img_id, View v, String username, String url_img) {
         globalDadesUser = GlobalDadesUser.getInstance();
         dadesUser = globalDadesUser.getDadesUser();
 
@@ -487,14 +559,16 @@ public class ProfileFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike, v);
+        viewSelectedPost(resultSinglePost, myLike, v, username, url_img);
     }
 
-    public void viewSelectedPost(String infoPost, boolean myLike, View v) {
+    public void viewSelectedPost(String infoPost, boolean myLike, View v, String username, String url_img) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("infoPost", infoPost);
         bundle.putSerializable("origin", "otherUser");
         bundle.putSerializable("isLiked", myLike);
+        bundle.putSerializable("usernamePost", username);
+        bundle.putSerializable("url_img", url_img);
         Navigation.findNavController(v).navigate(R.id.action_profileFragment_to_viewPostFragment, bundle);
     }
 }

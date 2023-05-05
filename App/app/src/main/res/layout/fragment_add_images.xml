@@ -90,6 +90,7 @@
                 android:layout_marginEnd="20dp"
                 android:hint="#mobile #artificialIntelligence #java"
                 android:textColorHint="#A8A8A8"
+                android:inputType="text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_recyclerView_img" />
@@ -99,14 +100,28 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
-                android:layout_marginTop="20dp"
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="20dp"
+                android:layout_marginTop="15dp"
                 android:text="Subir"
                 android:textAllCaps="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/errorText" />
+
+            <TextView
+                android:id="@+id/errorText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/red"
+                android:layout_marginStart="35dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                android:layout_marginEnd="35dp"
+                android:text="El hashtag tiene que empezar por '#'"
+                app:layout_constraintEnd_toEndOf="@+id/autoCompleteImg"
+                app:layout_constraintStart_toStartOf="@+id/autoCompleteImg"
                 app:layout_constraintTop_toBottomOf="@+id/autoCompleteImg" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

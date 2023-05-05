@@ -88,7 +88,10 @@ public class SearchQuestionsFragment extends Fragment {
                 for (int i = 0; i < resultSearchPostsArray.length(); i++) {
                     isLiked = false;
                     JSONObject post = resultSearchPostsArray.getJSONObject(i);
-                    ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), post.getString("owner"), post.getString("titol"), post.getString("text"),  post.getString("user_img"), post.getJSONArray("likes"));
+                    //SACAR USERNAME & IMAGE URL
+                    String realUsername = getUsernameandImageFromID(post);
+                    JSONObject username_image = new JSONObject(realUsername);
+                    ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), username_image.getString("username"), post.getString("titol"), post.getString("text"),  username_image.getString("url_img"), post.getJSONArray("likes"));
                     for (int j = 0; j < listElementDoubt.getLikes().length() && !isLiked; j++) {
                         if (listElementDoubt.getLikes().get(j).toString().equals(dadesUser.getString("_id"))){
                             isLiked = true;
@@ -106,6 +109,26 @@ public class SearchQuestionsFragment extends Fragment {
         binding.rvSearchQuestions.setHasFixedSize(true);
         binding.rvSearchQuestions.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvSearchQuestions.setAdapter(myAdapter);
+    }
+
+    private String getUsernameandImageFromID(JSONObject post) {
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("id_user", post.getString("owner"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = selectedUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return resultSearch;
     }
 
     public void addLike(String id) {
@@ -154,7 +177,7 @@ public class SearchQuestionsFragment extends Fragment {
         }
     }
 
-    public void selectPost(String id_post, View v) {
+    public void selectPost(String id_post, View v, String username, String url_img) {
         globalDadesUser = GlobalDadesUser.getInstance();
         dadesUser = globalDadesUser.getDadesUser();
         //Recoger todos los datos de un post y verlos en un fragment nuevo
@@ -181,12 +204,12 @@ public class SearchQuestionsFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        viewSelectedPost(resultSinglePost, myLike, v);
+        viewSelectedPost(resultSinglePost, myLike, v, username, url_img);
     }
 
-    private void viewSelectedPost(String resultSinglePost, boolean myLike, View v){
+    private void viewSelectedPost(String resultSinglePost, boolean myLike, View v, String username, String url_img){
         SearchFragment searchFragment = (SearchFragment) getParentFragment();
-        searchFragment.seeSelectedPost(resultSinglePost, myLike, v);
+        searchFragment.seeSelectedPost(resultSinglePost, myLike, v, username, url_img);
     }
 
     public void selectUser(String username, View v) {
@@ -209,16 +232,15 @@ public class SearchQuestionsFragment extends Fragment {
         }
 
         try {
-            JSONObject dadesLogin = new JSONObject(resultSearch);
-            ListElementUser userSelected = new ListElementUser(dadesLogin.getString("_id"), dadesLogin.getString("url_img"), dadesLogin.getString("username"), dadesLogin.getString("nombre") + " " + dadesLogin.getString("apellidos"), dadesLogin.getJSONArray("followers").length(), dadesLogin.getJSONArray("followings").length(), dadesLogin.getJSONArray("publicacions"));
-            viewSelectedUser(userSelected, v);
+            JSONObject dadesUser = new JSONObject(resultSearch);
+            viewSelectedUser(dadesUser, v);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void viewSelectedUser(ListElementUser userSelected, View v) {
+    private void viewSelectedUser(JSONObject dadesUser, View v) {
         SearchFragment searchFragment = (SearchFragment) getParentFragment();
-        searchFragment.seeProfileUser(userSelected, v);
+        searchFragment.seeProfileUser(dadesUser, v);
     }
 }

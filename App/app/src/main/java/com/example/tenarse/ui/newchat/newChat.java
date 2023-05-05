@@ -115,8 +115,9 @@ public class newChat extends Fragment {
     private void enviarCrear(ArrayList<String> participantes) {
         String url_register = "http://10.0.2.2:3000/createChat";
         JSONObject body = new JSONObject();
+        JSONArray array = new JSONArray(participantes);
         try {
-            body.put("users", participantes);
+            body.put("users", array);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
