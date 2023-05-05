@@ -153,7 +153,7 @@ public class FragmentAddImages extends Fragment{
                     json.put("title", "");
                     json.put("text", postText.getText().toString());
                     json.put("comments", comments);
-                    json.put("owner", jsonGDU.getString("username"));
+                    json.put("owner", jsonGDU.getString("_id"));
                     json.put("user_img", jsonGDU.getString("url_img"));
                     json.put("hashtags", hashtags);
                 } catch (JSONException e) {

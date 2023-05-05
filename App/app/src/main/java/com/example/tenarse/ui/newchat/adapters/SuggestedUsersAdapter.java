@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
 import com.example.tenarse.ui.newchat.SuggestedUsersObject;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -37,13 +38,15 @@ public class SuggestedUsersAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         SuggestedUsersAdapter.usersViewHolder uvh = (SuggestedUsersAdapter.usersViewHolder) holder;
-        uvh.userName.setText(dataList.get(position).getUserName());
-        uvh.profileImg.setImageURI(Uri.parse(dataList.get(position).getPorfileImg()));
+        uvh.userName.setText("@" + dataList.get(position).getUserName());
+        Picasso.with(context).load(dataList.get(position).getPorfileImg().replace("localhost" , "10.0.2.2")).into(uvh.profileImg);
         uvh.constraintLayout.setOnClickListener(view ->{
             if (uvh.selectBtn.isChecked()){
                 uvh.selectBtn.setChecked(false);
+                dataList.get(position).setSelected(false);
             }else {
                 uvh.selectBtn.setChecked(true);
+                dataList.get(position).setSelected(true);
             }
         });
     }

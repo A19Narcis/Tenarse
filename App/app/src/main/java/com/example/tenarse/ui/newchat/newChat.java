@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,14 +40,31 @@ public class newChat extends Fragment {
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
     JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
+    Button createChat;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCreateNewChatBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        createChat = binding.createChat;
+        createChat.setOnClickListener(view -> {
+            ArrayList<String> participantes = new ArrayList<>();
+            try {
+                participantes.add(dadesUsuari.getString("_id"));
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            for (int i = 0; i < arrayRecycler.size(); i++) {
+                if(arrayRecycler.get(i).isSelected()){
+                    participantes.add(arrayRecycler.get(i).getId());
+                }
+            }
+            enviarCrear(participantes);
+        });
+
         getSuggestedUsers();
 
-        arrayRecycler.add(new SuggestedUsersObject("", "@SergiMS03"));
         SuggestedUsersAdapter suggestedUsersAdapter = new SuggestedUsersAdapter(arrayRecycler, getContext());
         recyclerView = binding.recyclerViewNewChat;
         recyclerView.setHasFixedSize(true);
@@ -77,14 +95,39 @@ public class newChat extends Fragment {
 
         MyAsyncTaskSuggestedUsers addQuestionTask = new MyAsyncTaskSuggestedUsers(url_register, body);
         addQuestionTask.execute();
-        String resultAddQuestion = null;
+        String resultSuggestedUsers = null;
         try {
-            resultAddQuestion = addQuestionTask.get();
+            resultSuggestedUsers = addQuestionTask.get();
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+        try {
+            JSONArray arrayUsers = new JSONArray(resultSuggestedUsers);
+            for (int i = 0; i < arrayUsers.length(); i++) {
+                JSONObject user = arrayUsers.getJSONObject(i);
+                arrayRecycler.add(new SuggestedUsersObject(user.getString("url_img"), user.getString("username"), user.getString("_id")));
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    private void enviarCrear(ArrayList<String> participantes) {
+        String url_register = "http://10.0.2.2:3000/createChat";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("users", participantes);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
-
+        MyAsyncTaskSuggestedUsers addQuestionTask = new MyAsyncTaskSuggestedUsers(url_register, body);
+        addQuestionTask.execute();
+        String resultSuggestedUsers = null;
+        try {
+            resultSuggestedUsers = addQuestionTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

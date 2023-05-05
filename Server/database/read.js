@@ -37,6 +37,11 @@ const getUserByID = async (id, callback) => {
     callback(userID);
 }
 
+const suggestedUserInfoByID = async (id, callback) => {
+    const userInfo = await User.findOne({ _id: id }, { _id: 1, username: 1, url_img: 1 })
+    callback(userInfo)
+}
+
 const getUsers = async (text, callback) => {
     const usersFound = await User.find({ username: { $regex: text, $options: 'i' } })
     callback(usersFound);
@@ -84,5 +89,6 @@ module.exports = {
     getPublicacio,
     getPosts,
     getPostsByHashtag,
-    getPostsByQuery
+    getPostsByQuery,
+    suggestedUserInfoByID
 }
