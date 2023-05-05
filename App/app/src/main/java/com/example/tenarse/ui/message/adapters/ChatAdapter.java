@@ -36,7 +36,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         chatViewHolder cvh = (chatViewHolder) holder;
-        cvh.textoUsuario.setText(dataList.get(position).getUserName());
+        cvh.textoUsuario.setText("@" + dataList.get(position).getUserName());
         cvh.lastMsg.setText(dataList.get(position).getLastMsg());
         Picasso.with(context).load(dataList.get(position).getProfileImg().replace("localhost", "10.0.2.2")).into(cvh.profileImg);
     }

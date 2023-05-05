@@ -429,9 +429,14 @@ app.post('/deletePost', (req, res) => {
 
 /* CHAT */
 //Crear el chat
-app.post('/createChat', (req, res) => {   
+app.post('/createChat', (req, res) => {
+    let type = "chat";
+    if(req.body.users.length > 2){
+        type = "grupo";
+    }
     var chat = {
-        participants: JSON.parse(req.body.users)
+        participants: req.body.users,
+        tipo: type
     }
     insertDB.insertChat(chat, () => {
         res.send({ newChat: true })
@@ -471,7 +476,7 @@ app.post('/getSuggestedUsersChat', async (req, res) => {
         });
     };
 
-    readDB.getUserByID("6448f52dba9f0866d1851bb6", (users) => {
+    readDB.getUserByID(req.body._id, (users) => {
         for (let i = 0; i < users.followers.length; i++) {
             let flag = false;
             for (let j = 0; j < users.followings.length && !flag; j++) {
@@ -500,6 +505,12 @@ app.post('/getSuggestedUsersChat', async (req, res) => {
 app.post('/getChats', (req, res) => {
     readDB.getChat(req.user_id, () => {
         res.send({ newChat: true })
+    })
+});
+
+app.post('/getAllMyChats', (req, res) => {
+    readDB.getAllMyChats(req.body._id, (todosLosChats) => {
+        res.send(todosLosChats);
     })
 });
 

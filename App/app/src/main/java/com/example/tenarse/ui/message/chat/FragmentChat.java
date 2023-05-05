@@ -72,22 +72,24 @@ public class FragmentChat extends Fragment {
             JSONArray arrayChats = new JSONArray(resultSuggestedUsers);
             System.out.println(arrayChats.toString());
             for (int i = 0; i < arrayChats.length(); i++) {
-                JSONObject json = arrayChats.getJSONObject(i);
-                JSONArray participants = json.getJSONArray("participants");
-                String idFotoChat = null;
-                for (int j = 0; j < participants.length(); j++) {
-                    if(!dadesUsuari.getString("_id").equals(participants.get(j))){
-                        idFotoChat = participants.get(j).toString();
+                if (arrayChats.getJSONObject(i).getString("tipo").equals("chat")){
+                    JSONObject json = arrayChats.getJSONObject(i);
+                    JSONArray participants = json.getJSONArray("participants");
+                    String idFotoChat = null;
+                    for (int j = 0; j < participants.length(); j++) {
+                        if (!dadesUsuari.getString("_id").equals(participants.get(j))) {
+                            idFotoChat = participants.get(j).toString();
+                        }
                     }
+                    String realUsername = getUsernameandImageFromID(idFotoChat);
+                    JSONObject username_image = new JSONObject(realUsername);
+                    String lastMsg = "";
+                    if (json.getJSONArray("messages").length() > 0) {
+                        lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).toString();
+                    }
+                    arrayRecycler.add(new chatObject(username_image.getString("username"), lastMsg, username_image.getString("url_img")));
+                    chatAdapter.notifyItemInserted(arrayRecycler.size() - 1);
                 }
-                String realUsername = getUsernameandImageFromID(idFotoChat);
-                JSONObject username_image = new JSONObject(realUsername);
-                String lastMsg = "";
-                if (json.getJSONArray("messages").length() > 0){
-                    lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).toString();
-                }
-                arrayRecycler.add(new chatObject(username_image.getString("username"), lastMsg, username_image.getString("url_img")));
-                chatAdapter.notifyItemInserted(arrayRecycler.size() - 1);
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);

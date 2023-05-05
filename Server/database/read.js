@@ -52,6 +52,11 @@ const getChat = async (chat_id, callback) => {
     callback(chatSelected);
 }
 
+const getAllMyChats = async (user_id, callback) => {
+    const chatsSelected = await Chat.find({ participants: { $in: [user_id] } })
+    callback(chatsSelected);
+}
+
 const getPublicacio = async (id_publi, callback) => {
     const postSelected = await Post.findOne({ _id: id_publi })
     callback(postSelected)
@@ -90,5 +95,6 @@ module.exports = {
     getPosts,
     getPostsByHashtag,
     getPostsByQuery,
-    suggestedUserInfoByID
+    suggestedUserInfoByID,
+    getAllMyChats
 }
