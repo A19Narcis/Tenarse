@@ -76,7 +76,7 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        maxlength: 25,
+        maxlength: 100,
         unique: true
     },
     password: {
@@ -97,7 +97,6 @@ const userSchema = new mongoose.Schema({
     },
     fecha_nac: {
         type: String,
-        required: true,
     },
     followers: {
         type: [followSchema],

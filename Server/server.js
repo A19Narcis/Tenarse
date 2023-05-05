@@ -39,11 +39,17 @@ app.use(cors({
 /* INSERT USUARI */
 app.post('/addNewUser', (req, res) => {
 
+
+    var urlImagen = 'http://localhost:3000/uploads/user_img/default_user_img.png';
+    if (req.body.url_img) {
+        urlImagen = req.body.url_img;
+    }
+
     const usuari = {
         email: req.body.email,
         username: req.body.username,
         password: CryptoJS.SHA256(req.body.passwd).toString(),
-        url_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
+        url_img: urlImagen,
         nombre: req.body.name,
         apellidos: req.body.surname,
         fecha_nac: req.body.date,
@@ -83,6 +89,28 @@ app.post('/checkEmailExists', (req, res) => {
     })
 })
 
+app.post('/loginGoogleAccount', (req, res) => {
+    const email = req.body.email
+    readDB.getUser(email, (dadesUser) => {
+        var dadesFullUser = {
+            _id: dadesUser._id,
+            email: dadesUser.email,
+            username: dadesUser.username,
+            password: dadesUser.password,
+            url_img: dadesUser.url_img,
+            nombre: dadesUser.nombre,
+            apellidos: dadesUser.apellidos,
+            fecha_nac: dadesUser.fecha_nac,
+            followers: dadesUser.followers,
+            followings: dadesUser.followings,
+            publicacions:dadesUser.publicacions,
+            google: true,
+            __v: 0
+        }
+        res.send(dadesFullUser)
+    })
+})
+
 app.post('/updateUser', (req, res) => {
 
     const id = req.body.id_user
@@ -109,7 +137,7 @@ var storageImageUser = multer.diskStorage({
         cb(null, 'uploads/user_img')
     },
     filename: function (req, file, cb) {
-      cb(null, file.originalname + '.png')
+        cb(null, file.originalname + '.png')
     }
 })
 
@@ -117,9 +145,9 @@ var uploadImageUser = multer({ storage: storageImageUser });
 
 app.post('/updateUserWithImage', uploadImageUser.single('post'), (req, res, next) => {
     let body = JSON.parse(req.body.PostJson);
-    
+
     const id = body._id
-    
+
 
     let URLServer = "http://localhost:3000/";
 
@@ -170,7 +198,7 @@ app.post('/getUsernameAndImageFromID', (req, res) => {
     /*var id = "644785f8fdc077b15553ba12"*/
 
     readDB.getUserByID(id, (dades_user) => {
-        res.send({username: dades_user.username, url_img: dades_user.url_img})
+        res.send({ username: dades_user.username, url_img: dades_user.url_img })
     })
 })
 
@@ -236,36 +264,36 @@ app.post('/deleteFollowing', (req, res) => {
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        if(file.mimetype == "video/*"){
+        if (file.mimetype == "video/*") {
             cb(null, 'uploads/videos')
-        }else if(file.mimetype == "image/*"){
+        } else if (file.mimetype == "image/*") {
             cb(null, 'uploads/images')
         }
     },
     filename: function (req, file, cb) {
-    let fecha = new Date();
-    let dia = fecha.getDate();
-    let mes = fecha.getMonth() + 1;
-    let anio = fecha.getFullYear();
-    let hora = fecha.getHours();
-    let minutos = fecha.getMinutes();
-    let segundos = fecha.getSeconds();
-    let miliseconds = fecha.getMilliseconds();
-    if (hora < 10) {
-        hora = '0' + hora;
-    }
-    if (minutos < 10) {
-        minutos = '0' + minutos;
-    }
-    if (segundos < 10) {
-        segundos = '0' + segundos;
-    }
-    let tiempoActual = dia + "_" + mes + "_" + anio + "_" + hora + '_' + minutos + '_' + segundos + "_" + miliseconds
-    if(file.mimetype == "video/*"){
-        cb(null, file.originalname + "-" + tiempoActual +'.mp4')
-    }else if(file.mimetype == "image/*"){
-      cb(null, file.originalname + "-" + tiempoActual +'.jpg')
-    }
+        let fecha = new Date();
+        let dia = fecha.getDate();
+        let mes = fecha.getMonth() + 1;
+        let anio = fecha.getFullYear();
+        let hora = fecha.getHours();
+        let minutos = fecha.getMinutes();
+        let segundos = fecha.getSeconds();
+        let miliseconds = fecha.getMilliseconds();
+        if (hora < 10) {
+            hora = '0' + hora;
+        }
+        if (minutos < 10) {
+            minutos = '0' + minutos;
+        }
+        if (segundos < 10) {
+            segundos = '0' + segundos;
+        }
+        let tiempoActual = dia + "_" + mes + "_" + anio + "_" + hora + '_' + minutos + '_' + segundos + "_" + miliseconds
+        if (file.mimetype == "video/*") {
+            cb(null, file.originalname + "-" + tiempoActual + '.mp4')
+        } else if (file.mimetype == "image/*") {
+            cb(null, file.originalname + "-" + tiempoActual + '.jpg')
+        }
     }
 })
 
@@ -273,24 +301,24 @@ var upload = multer({ storage: storage });
 
 app.post('/uploadfile', upload.single('post'), (req, res, next) => {
     const file = req.file;
-    if(!file){
+    if (!file) {
         const error = new Error("Please upload a file");
         error.httpStatusCode = 400;
         console.log("Error", "please upload a file");
-        res.send({code:500, msg:error});
-        return next({code:500, msg:error});
+        res.send({ code: 500, msg: error });
+        return next({ code: 500, msg: error });
     }
-    res.send({code:200, msg:file});
+    res.send({ code: 200, msg: file });
     addPost(JSON.parse(req.body.PostJson), file.path);
 });
 
 app.post('/addPostDubt', (req, res) => {
     addPost(req.body);
-    res.send({code:200});
+    res.send({ code: 200 });
 });
 
 /* INSERT PUBLICACIO */
-function addPost (body, postUrl) {
+function addPost(body, postUrl) {
     let fecha = new Date();
     let hora = fecha.getHours();
     let minutos = fecha.getMinutes();
@@ -308,49 +336,49 @@ function addPost (body, postUrl) {
     let URLServer = "http://localhost:3000/";
 
     var post;
-    switch(body.type){
-        case("image"):
-        post = {
-            tipus: body.type,
-            titol: body.title,
-            text: body.text,
-            hashtags: body.hashtags,
-            url_img: URLServer + postUrl,
-            url_video: '',
-            comentaris: body.comments,
-            owner: body.owner,
-            hora: tiempoActual
-        }
-        break;
-        case("doubt"):
-        post = {
-            tipus: body.type,
-            titol: body.title,
-            text: body.text,
-            hashtags: body.hashtags,
-            url_img: '',
-            url_video: '',
-            comentaris: body.comments,
-            owner: body.owner,
-            hora: tiempoActual
-        }
-        break;
-        case("video"):
-        post = {
-            tipus: body.type,
-            titol: body.title,
-            text: body.text,
-            hashtags: body.hashtags,
-            url_img: '',
-            url_video: URLServer + postUrl,
-            comentaris: body.comments,
-            owner: body.owner,
-            hora: tiempoActual
-        }
-        break;
+    switch (body.type) {
+        case ("image"):
+            post = {
+                tipus: body.type,
+                titol: body.title,
+                text: body.text,
+                hashtags: body.hashtags,
+                url_img: URLServer + postUrl,
+                url_video: '',
+                comentaris: body.comments,
+                owner: body.owner,
+                hora: tiempoActual
+            }
+            break;
+        case ("doubt"):
+            post = {
+                tipus: body.type,
+                titol: body.title,
+                text: body.text,
+                hashtags: body.hashtags,
+                url_img: '',
+                url_video: '',
+                comentaris: body.comments,
+                owner: body.owner,
+                hora: tiempoActual
+            }
+            break;
+        case ("video"):
+            post = {
+                tipus: body.type,
+                titol: body.title,
+                text: body.text,
+                hashtags: body.hashtags,
+                url_img: '',
+                url_video: URLServer + postUrl,
+                comentaris: body.comments,
+                owner: body.owner,
+                hora: tiempoActual
+            }
+            break;
     }
 
-    insertDB.insertPost(post, () => {})
+    insertDB.insertPost(post, () => { })
 }
 
 app.get('/getSelectedPost/:id', (req, res) => {
@@ -370,10 +398,10 @@ app.get('/getPosts', (req, res) => {
 
 /* AFEGIR COMENTARI */
 app.post('/addNewComment', (req, res) => {
-    
+
     const id_publi = req.body.id_publi
     const comentari = req.body.comentari
-    
+
     /*const id_publi = '644624407cd0eca623e9d7c1'
     const comentari = {
         user: '6448e116ee402c11b13bcb4a',

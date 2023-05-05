@@ -2,6 +2,7 @@ package com.example.tenarse.ui.settings;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -78,6 +79,18 @@ public class SettingsFragment extends Fragment{
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        System.out.println(actualDadesUser.toString());
+
+        try {
+            if (actualDadesUser.getString("google").contains("true")){
+                System.out.println("GOOOOOGLE");
+                binding.newEmail.setFocusable(false);
+                binding.newEmail.setClickable(false);
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
         initRetrofitClient();
 
@@ -164,7 +177,7 @@ public class SettingsFragment extends Fragment{
                 boolean infoValida = true;
 
                 // Verificar que no hay campos vacíos o com emoticonos
-                if ((newEmail.isEmpty() || newEmail.matches(regexEmoticionos)) || (newUsername.isEmpty() || newUsername.matches(regexEmoticionos)) || (newNombre.isEmpty() || newNombre.matches(regexEmoticionos)) || (newApellidos.isEmpty() || newApellidos.matches(regexEmoticionos)) || newFehca.isEmpty()) {
+                if ((newEmail.isEmpty() || newEmail.matches(regexEmoticionos)) || (newUsername.isEmpty() || newUsername.matches(regexEmoticionos)) || (newNombre.isEmpty() || newNombre.matches(regexEmoticionos)) || (newApellidos.isEmpty() || newApellidos.matches(regexEmoticionos))) {
                     infoValida = false;
                     System.out.println("Vacio o Emojis");
                 }
