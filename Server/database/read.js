@@ -37,6 +37,11 @@ const getUserByID = async (id, callback) => {
     callback(userID);
 }
 
+const suggestedUserInfoByID = async (id, callback) => {
+    const userInfo = await User.findOne({ _id: id }, { _id: 1, username: 1, url_img: 1 })
+    callback(userInfo)
+}
+
 const getUsers = async (text, callback) => {
     const usersFound = await User.find({ username: { $regex: text, $options: 'i' } })
     callback(usersFound);
@@ -45,6 +50,11 @@ const getUsers = async (text, callback) => {
 const getChat = async (chat_id, callback) => {
     const chatSelected = await Chat.findOne({ _id: chat_id })
     callback(chatSelected);
+}
+
+const getAllMyChats = async (user_id, callback) => {
+    const chatsSelected = await Chat.find({ participants: { $in: [user_id] } })
+    callback(chatsSelected);
 }
 
 const getPublicacio = async (id_publi, callback) => {
@@ -84,5 +94,7 @@ module.exports = {
     getPublicacio,
     getPosts,
     getPostsByHashtag,
-    getPostsByQuery
+    getPostsByQuery,
+    suggestedUserInfoByID,
+    getAllMyChats
 }

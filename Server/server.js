@@ -458,8 +458,13 @@ app.post('/deletePost', (req, res) => {
 /* CHAT */
 //Crear el chat
 app.post('/createChat', (req, res) => {
+    let type = "chat";
+    if(req.body.users.length > 2){
+        type = "grupo";
+    }
     var chat = {
-        participants: ['A19Narcis', '_DevOps_'],
+        participants: req.body.users,
+        tipo: type
     }
     insertDB.insertChat(chat, () => {
         res.send({ newChat: true })
@@ -486,10 +491,54 @@ app.post('/newMessage', (req, res) => {
     })
 });
 
+app.post('/getSuggestedUsersChat', async (req, res) => {
+    let usersArr = [];
+    let resultUsers = [];
+
+    // Envolver la función `readDB.getUserByID()` en una promesa
+    const getUserByIDPromise = (userID) => {
+        return new Promise((resolve, reject) => {
+            readDB.suggestedUserInfoByID(userID, (dadesUser) => {
+                resolve(dadesUser);
+            });
+        });
+    };
+
+    readDB.getUserByID(req.body._id, (users) => {
+        for (let i = 0; i < users.followers.length; i++) {
+            let flag = false;
+            for (let j = 0; j < users.followings.length && !flag; j++) {
+                if(users.followers[i].user === users.followings[j].user){
+                    usersArr.push(users.followers[i].user);
+                    flag = true;
+                }
+            }
+        }
+
+        // Utilizar `Promise.all()` para esperar a que todas las promesas se resuelvan antes de continuar con la ejecución del código
+        Promise.all(usersArr.map(userID => getUserByIDPromise(userID)))
+            .then((dadesUsers) => {
+                resultUsers = dadesUsers;
+                log(dadesUsers);
+                res.send(resultUsers);
+            })
+            .catch((error) => {
+                console.log(error);
+                res.send(error);
+            });
+    });       
+});
+
 //Crear el chat
 app.post('/getChats', (req, res) => {
     readDB.getChat(req.user_id, () => {
         res.send({ newChat: true })
+    })
+});
+
+app.post('/getAllMyChats', (req, res) => {
+    readDB.getAllMyChats(req.body._id, (todosLosChats) => {
+        res.send(todosLosChats);
     })
 });
 

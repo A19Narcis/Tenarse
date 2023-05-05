@@ -68,7 +68,7 @@ public class MessageFragment extends Fragment {
         newChats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_nots);
+                Navigation.findNavController(v).navigate(R.id.action_navigation_message_to_newChat);
             }
         });
 

@@ -1,6 +1,8 @@
 package com.example.tenarse.ui.message.adapters;
 
 import android.content.Context;
+import android.os.Build;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +10,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
 import com.example.tenarse.ui.message.chat.chatObject;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -35,9 +40,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         chatViewHolder cvh = (chatViewHolder) holder;
-        cvh.textoUsuario.setText(dataList.get(position).getUserName());
+        cvh.textoUsuario.setText("@" + dataList.get(position).getUserName());
         cvh.lastMsg.setText(dataList.get(position).getLastMsg());
-        //cvh.profileImg.setImageBitmap(dataList.get(position).getProfileImg());
+        Picasso.with(context).load(dataList.get(position).getProfileImg().replace("localhost", "10.0.2.2")).into(cvh.profileImg);
+        cvh.element_chat.setOnClickListener(view -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("username", dataList.get(position).getUserName());
+            bundle.putString("profile_img", dataList.get(position).getProfileImg());
+            Navigation.findNavController(view).navigate(R.id.action_navigation_message_to_activeChat, bundle);
+        });
     }
 
     @Override
@@ -46,6 +57,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public static class chatViewHolder extends RecyclerView.ViewHolder {
+        ConstraintLayout element_chat;
         TextView textoUsuario;
 
         TextView lastMsg;
@@ -58,6 +70,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public chatViewHolder(View itemView) {
             super(itemView);
+            element_chat = itemView.findViewById(R.id.element_chat);
             textoUsuario = itemView.findViewById(R.id.userName);
             lastMsg = itemView.findViewById(R.id.lastMsg);
             profileImg = itemView.findViewById(R.id.profileImg);

@@ -133,6 +133,7 @@ const msgSchema = new mongoose.Schema({
 
 const chatSchema = new mongoose.Schema({
     participants: [String],
+    tipo: String,
     messages: {
         type: [msgSchema],
         default: []
