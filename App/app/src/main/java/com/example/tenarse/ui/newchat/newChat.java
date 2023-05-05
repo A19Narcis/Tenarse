@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
-import com.example.tenarse.databinding.FragmentChatBinding;
 import com.example.tenarse.databinding.FragmentCreateNewChatBinding;
 import com.example.tenarse.databinding.FragmentNotificacionesBinding;
 import com.example.tenarse.globals.GlobalDadesUser;

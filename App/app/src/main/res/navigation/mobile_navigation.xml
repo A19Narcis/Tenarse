@@ -48,6 +48,9 @@
         <action
             android:id="@+id/action_navigation_message_to_newChat"
             app:destination="@id/newChat" />
+        <action
+            android:id="@+id/action_navigation_message_to_activeChat"
+            app:destination="@id/activeChat" />
     </fragment>
 
     <fragment
@@ -100,5 +103,9 @@
         android:id="@+id/newChat"
         android:name="com.example.tenarse.ui.newchat.newChat"
         android:label="newChat" />
+    <fragment
+        android:id="@+id/activeChat"
+        android:name="com.example.tenarse.ui.active_chat.activeChat"
+        android:label="activeChat" />
 
 </navigation>

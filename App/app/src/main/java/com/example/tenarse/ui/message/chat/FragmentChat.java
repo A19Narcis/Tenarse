@@ -15,9 +15,6 @@ import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.message.adapters.ChatAdapter;
 import com.example.tenarse.ui.message.asynctask.MyAsyncTaskGetMyChats;
-import com.example.tenarse.ui.newchat.SuggestedUsersObject;
-import com.example.tenarse.ui.newchat.asynctask.MyAsyncTaskSuggestedUsers;
-import com.example.tenarse.ui.newpost.adapters.HashtagAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,12 +36,12 @@ public class FragmentChat extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_active_chat, container, false);
 
 
         chatAdapter = new ChatAdapter(arrayRecycler, getContext());
         getMyChats();
-        recyclerView = rootView.findViewById(R.id.rv_chats);
+        recyclerView = rootView.findViewById(R.id.rv_chat);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(chatAdapter);
