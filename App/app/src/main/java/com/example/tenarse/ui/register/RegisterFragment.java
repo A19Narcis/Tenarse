@@ -1,7 +1,9 @@
 package com.example.tenarse.ui.register;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -31,6 +33,7 @@ import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentLoginBinding;
 import com.example.tenarse.databinding.FragmentRegisterBinding;
 import com.example.tenarse.ui.home.HomeFragment;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.widgets.DatePickerFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -179,6 +182,29 @@ public class RegisterFragment extends Fragment {
                             @Override
                             public void onDismissed(Snackbar snackbar, int event) {
                                 super.onDismissed(snackbar, event);
+
+                                String urlGetUser = "http://10.0.2.2:3000/getSelectedUser";
+                                JSONObject body = new JSONObject();
+                                try {
+                                    body.put("username", binding.editTextUser.getText().toString());
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(urlGetUser, body);
+                                getUser.execute();
+                                String resultGetUserRegistered = null;
+                                try {
+                                    resultGetUserRegistered = getUser.get();
+                                } catch (ExecutionException | InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+
+                                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("infoUser", resultGetUserRegistered);
+                                editor.apply();
+
+
                                 startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                                 getActivity().finish();
                             }

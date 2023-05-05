@@ -73,7 +73,7 @@ public class FragmentAddImages extends Fragment{
     Button submitBtnImg;
 
     TextView errorText;
-
+    TextView errorFaltanCampos;
     EditText postText;
     ArrayList<String> arrayRecycler = new ArrayList<>();
 
@@ -97,6 +97,7 @@ public class FragmentAddImages extends Fragment{
         submitBtnImg = rootView.findViewById(R.id.submitBtnImg);
         postText = rootView.findViewById(R.id.postText);
         errorText = rootView.findViewById(R.id.errorText);
+        errorFaltanCampos = rootView.findViewById(R.id.errorFaltanCampos);
 
         autoCompleteTextView = rootView.findViewById(R.id.autoCompleteImg);
         adapter = new ArrayAdapter<String>(getContext(),
@@ -123,6 +124,9 @@ public class FragmentAddImages extends Fragment{
                 autoCompleteTextView.setHint(autoCompleteTextView.getHint());
                 // Cierra la lista de autocompletado
                 autoCompleteTextView.dismissDropDown();
+                if (errorText.getVisibility() == View.VISIBLE){
+                    errorText.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -163,63 +167,69 @@ public class FragmentAddImages extends Fragment{
         submitBtnImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                File file = new File(pathImg);
-                if (file.exists()) {
-                    System.out.println("File ok");
+                if (postText.getText().toString().length() == 0 || pathImg.length() == 0){
+                    errorFaltanCampos.setVisibility(View.VISIBLE);
                 } else {
-                    System.out.println("Files does not exists");
-                }
+                    if (errorFaltanCampos.getVisibility() == View.VISIBLE){
+                        errorFaltanCampos.setVisibility(View.GONE);
+                    }
+                    File file = new File(pathImg);
+                    if (file.exists()) {
+                        System.out.println("File ok");
+                    } else {
+                        System.out.println("Files does not exists");
+                    }
 
-                // Crear un objeto JSONObject y agregar los campos necesarios
-                String idUser = "null";
-                GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-                JSONObject jsonGDU = globalDadesUser.getDadesUser();
-                JSONObject json = new JSONObject();
-                JSONArray comments = new JSONArray();
-                JSONArray hashtags = new JSONArray(arrayRecycler);
+                    // Crear un objeto JSONObject y agregar los campos necesarios
+                    String idUser = "null";
+                    GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+                    JSONObject jsonGDU = globalDadesUser.getDadesUser();
+                    JSONObject json = new JSONObject();
+                    JSONArray comments = new JSONArray();
+                    JSONArray hashtags = new JSONArray(arrayRecycler);
 
-                try {
-                    idUser = jsonGDU.getString("_id");
-                    json.put("type", "image");
-                    json.put("title", "");
-                    json.put("text", postText.getText().toString());
-                    json.put("comments", comments);
-                    json.put("owner", jsonGDU.getString("_id"));
-                    json.put("hashtags", hashtags);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                    try {
+                        idUser = jsonGDU.getString("_id");
+                        json.put("type", "image");
+                        json.put("title", "");
+                        json.put("text", postText.getText().toString());
+                        json.put("comments", comments);
+                        json.put("owner", jsonGDU.getString("_id"));
+                        json.put("hashtags", hashtags);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                // Crear un RequestBody a partir del JSON
-                RequestBody jsonBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
-                RequestBody postImg = RequestBody.create(MediaType.parse("image/*"), file);
-                MultipartBody.Part body = MultipartBody.Part.createFormData("post", idUser, postImg);
-                RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "postImage");
+                    // Crear un RequestBody a partir del JSON
+                    RequestBody jsonBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
+                    RequestBody postImg = RequestBody.create(MediaType.parse("image/*"), file);
+                    MultipartBody.Part body = MultipartBody.Part.createFormData("post", idUser, postImg);
+                    RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "postImage");
 
-                // Enviar la solicitud POST con el multipart y el JSON como parte del cuerpo de la solicitud
-                Call<ResponseBody> req = apiService.postImage(body, name, jsonBody);
+                    // Enviar la solicitud POST con el multipart y el JSON como parte del cuerpo de la solicitud
+                    Call<ResponseBody> req = apiService.postImage(body, name, jsonBody);
 
-                req.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    req.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                        if (response.code() == 200) {
-                            System.out.println("image uploaded successfully");
+                            if (response.code() == 200) {
+                                System.out.println("image uploaded successfully");
+                            }
+
+                            Toast.makeText(getContext(), "¡Post subido!", Toast.LENGTH_SHORT).show();
+
+                            NewpostFragment newpostFragment = (NewpostFragment) getParentFragment();
+                            newpostFragment.postUploaded();
+
                         }
 
-                        Toast.makeText(getContext(), "¡Post subido!", Toast.LENGTH_SHORT).show();
-
-                        NewpostFragment newpostFragment = (NewpostFragment) getParentFragment();
-                        newpostFragment.postUploaded();
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        t.printStackTrace();
-                    }
-                });
-
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+                }
             }
         });
 

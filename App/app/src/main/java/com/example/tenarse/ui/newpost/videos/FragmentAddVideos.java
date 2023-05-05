@@ -3,6 +3,7 @@ package com.example.tenarse.ui.newpost.videos;
 import static android.app.Activity.RESULT_OK;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -71,6 +72,7 @@ public class FragmentAddVideos extends Fragment {
     String pathVideo;
     EditText postText;
     TextView errorText;
+    TextView errorFaltanCampos;
     AutoCompleteTextView autoCompleteTextView;
 
     ArrayAdapter<String> adapter;
@@ -85,6 +87,7 @@ public class FragmentAddVideos extends Fragment {
     private static final int GALLERY_REQUEST_CODE = 1;
     ApiService apiService;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -120,6 +123,7 @@ public class FragmentAddVideos extends Fragment {
         postText = rootView.findViewById(R.id.postText);
         errorText = rootView.findViewById(R.id.errorText);
         imageView.setVisibility(View.GONE);
+        errorFaltanCampos = rootView.findViewById(R.id.errorFaltanCampos);
 
         autoCompleteTextView = rootView.findViewById(R.id.autoCompleteVideo);
         adapter = new ArrayAdapter<String>(getContext(),
@@ -146,6 +150,9 @@ public class FragmentAddVideos extends Fragment {
                 autoCompleteTextView.setHint(autoCompleteTextView.getHint());
                 // Cierra la lista de autocompletado
                 autoCompleteTextView.dismissDropDown();
+                if (errorText.getVisibility() == View.VISIBLE){
+                    errorText.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -175,63 +182,69 @@ public class FragmentAddVideos extends Fragment {
         submitBtnVideo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    File file = new File(pathVideo);
-                    if (file.exists()) {
-                        System.out.println("File ok");
+                    if (postText.getText().toString().length() == 0 || pathVideo.length() == 0){
+                        errorFaltanCampos.setVisibility(View.VISIBLE);
                     } else {
-                        System.out.println("Files does not exists");
-                    }
+                        if (errorFaltanCampos.getVisibility() == View.VISIBLE){
+                            errorFaltanCampos.setVisibility(View.GONE);
+                        }
+                        File file = new File(pathVideo);
+                        if (file.exists()) {
+                            System.out.println("File ok");
+                        } else {
+                            System.out.println("Files does not exists");
+                        }
 
-// Crear un objeto JSONObject y agregar los campos necesarios
-                    String idUser = "null";
-                    GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-                    JSONObject jsonGDU = globalDadesUser.getDadesUser();
-                    JSONObject json = new JSONObject();
-                    JSONArray comments = new JSONArray();
-                    JSONArray hashtags = new JSONArray(arrayRecycler);
+                        // Crear un objeto JSONObject y agregar los campos necesarios
+                        String idUser = "null";
+                        GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+                        JSONObject jsonGDU = globalDadesUser.getDadesUser();
+                        JSONObject json = new JSONObject();
+                        JSONArray comments = new JSONArray();
+                        JSONArray hashtags = new JSONArray(arrayRecycler);
 
-                    try {
-                        idUser = jsonGDU.getString("_id");
-                        json.put("type", "video");
-                        json.put("title", "");
-                        json.put("text", postText.getText().toString());
-                        json.put("comments", comments);
-                        json.put("owner", jsonGDU.getString("_id"));
-                        json.put("hashtags", hashtags);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        try {
+                            idUser = jsonGDU.getString("_id");
+                            json.put("type", "video");
+                            json.put("title", "");
+                            json.put("text", postText.getText().toString());
+                            json.put("comments", comments);
+                            json.put("owner", jsonGDU.getString("_id"));
+                            json.put("hashtags", hashtags);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-// Crear un RequestBody a partir del JSON
-                    RequestBody jsonBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
-                    RequestBody postVideo = RequestBody.create(MediaType.parse("video/*"), file);
-                    MultipartBody.Part body = MultipartBody.Part.createFormData("post", idUser+".", postVideo);
-                    RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "postImage");
+                        // Crear un RequestBody a partir del JSON
+                        RequestBody jsonBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
+                        RequestBody postVideo = RequestBody.create(MediaType.parse("video/*"), file);
+                        MultipartBody.Part body = MultipartBody.Part.createFormData("post", idUser+".", postVideo);
+                        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "postImage");
 
-// Enviar la solicitud POST con el multipart y el JSON como parte del cuerpo de la solicitud
-                    Call<ResponseBody> req = apiService.postVideo(body, name, jsonBody);
+                        // Enviar la solicitud POST con el multipart y el JSON como parte del cuerpo de la solicitud
+                        Call<ResponseBody> req = apiService.postVideo(body, name, jsonBody);
 
-                    req.enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        req.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                            if (response.code() == 200) {
-                                System.out.println("Video uploaded successfully");
+                                if (response.code() == 200) {
+                                    System.out.println("Video uploaded successfully");
+                                }
+
+                                Toast.makeText(getContext(), "¡Post subido!", Toast.LENGTH_SHORT).show();
+
+                                NewpostFragment newpostFragment = (NewpostFragment) getParentFragment();
+                                newpostFragment.postUploaded();
+
                             }
 
-                            Toast.makeText(getContext(), "¡Post subido!", Toast.LENGTH_SHORT).show();
-
-                            NewpostFragment newpostFragment = (NewpostFragment) getParentFragment();
-                            newpostFragment.postUploaded();
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            t.printStackTrace();
-                        }
-                    });
-
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                t.printStackTrace();
+                            }
+                        });
+                    }
                 }
         });
 

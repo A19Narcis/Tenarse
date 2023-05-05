@@ -128,6 +128,20 @@
                 app:layout_constraintStart_toStartOf="@+id/autoCompleteVideo"
                 app:layout_constraintTop_toBottomOf="@+id/autoCompleteVideo" />
 
+            <TextView
+                android:id="@+id/errorFaltanCampos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/red"
+                android:layout_marginStart="35dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="35dp"
+                android:visibility="gone"
+                android:text="Faltan campos por rellenar"
+                app:layout_constraintEnd_toEndOf="@+id/uploadVideo"
+                app:layout_constraintStart_toStartOf="@+id/uploadVideo"
+                app:layout_constraintTop_toBottomOf="@+id/uploadVideo" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
