@@ -183,7 +183,22 @@ app.post('/getUser', (req, res) => {
         } else {
             if (dades_user_valides.password === cryptedPasswd) {
                 /* Login successful */
-                res.send(dades_user_valides)
+                var dadesFinals = {
+                    _id: dades_user_valides._id,
+                    email: dades_user_valides.email,
+                    username: dades_user_valides.username,
+                    password: dades_user_valides.password,
+                    url_img: dades_user_valides.url_img,
+                    nombre: dades_user_valides.nombre,
+                    apellidos: dades_user_valides.apellidos,
+                    fecha_nac: dades_user_valides.fecha_nac,
+                    followers: dades_user_valides.followers,
+                    followings: dades_user_valides.followings,
+                    publicacions:dades_user_valides.publicacions,
+                    google: false,
+                    __v: 0
+                }
+                res.send(dadesFinals)
             } else {
                 res.send({ username: false })
             }
@@ -206,7 +221,22 @@ app.post('/getSelectedUser', (req, res) => {
     var email_username_id = req.body.username
 
     readDB.getUser(email_username_id, (dades_user) => {
-        res.send(dades_user)
+        var dadesFinals = {
+            _id: dades_user._id,
+            email: dades_user.email,
+            username: dades_user.username,
+            password: dades_user.password,
+            url_img: dades_user.url_img,
+            nombre: dades_user.nombre,
+            apellidos: dades_user.apellidos,
+            fecha_nac: dades_user.fecha_nac,
+            followers: dades_user.followers,
+            followings: dades_user.followings,
+            publicacions:dades_user.publicacions,
+            google: false,
+            __v: 0
+        }
+        res.send(dadesFinals)
     })
 })
 
