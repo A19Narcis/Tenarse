@@ -40,9 +40,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +64,7 @@ public class RegisterFragment extends Fragment {
     private Object resultRegister;
 
     private String data_usuari = "";
+    private String token;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -142,81 +145,96 @@ public class RegisterFragment extends Fragment {
                     // Todos los campos son válidos
                     JSONObject body = new JSONObject();
 
-                    try {
-                        body.put("email", email);
-                        body.put("passwd", passwd);
-                        body.put("passwd_repeat", passwd_repeat);
-                        body.put("username", username);
-                        body.put("name", name);
-                        body.put("surname", surname);
-                        body.put("date", date);
-                    } catch (JSONException e){
-                        e.printStackTrace();
-                    }
-
-                    MyAsyncTaskRegister registerUser = new MyAsyncTaskRegister(url_register, body);
-                    registerUser.execute();
-                    String resultRegister = null;
-                    try {
-                        resultRegister = registerUser.get();
-                    } catch (ExecutionException | InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    binding.errorTextRegister.setVisibility(View.GONE);
-                    if (!resultRegister.contains("false")){
-                        binding.userExisteRegister.setVisibility(View.GONE);
-                        Snackbar snackbar = Snackbar.make(binding.getRoot(), "Registro completado exitosamente.", Snackbar.LENGTH_LONG);
-
-                        // Cambiar el color de fondo
-                        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
-
-                        // Cambiar el color del texto
-                        TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                        textView.setTextColor(Color.WHITE);
-
-                        // Obtener el TextView dentro de Snackbar
-                        TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                        textoSnackbar.setGravity(Gravity.CENTER);
-
-                        snackbar.addCallback(new Snackbar.Callback() {
-                            @Override
-                            public void onDismissed(Snackbar snackbar, int event) {
-                                super.onDismissed(snackbar, event);
-
-                                String urlGetUser = "http://10.0.2.2:3000/getSelectedUser";
-                                JSONObject body = new JSONObject();
-                                try {
-                                    body.put("username", binding.editTextUser.getText().toString());
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(urlGetUser, body);
-                                getUser.execute();
-                                String resultGetUserRegistered = null;
-                                try {
-                                    resultGetUserRegistered = getUser.get();
-                                } catch (ExecutionException | InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-                                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("infoUser", resultGetUserRegistered);
-                                editor.apply();
-
-
-                                startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                                getActivity().finish();
+                    /* AÑADIR EL TOKEN DE FIREBASE CLOUD MESSAGING */
+                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                        @Override
+                        public void onComplete(@NonNull Task<String> task) {
+                            if (!task.isSuccessful()){
+                                System.out.println("FAILED");
+                                System.out.println(task.getException());
                             }
-                        });
 
-                        // Mostrar Snackbar personalizado
-                        snackbar.show();
+                            token = task.getResult();
 
-                    } else {
-                        //Este usuario ya existe
-                        binding.userExisteRegister.setVisibility(View.VISIBLE);
-                    }
+                            try {
+                                body.put("email", email);
+                                body.put("passwd", passwd);
+                                body.put("passwd_repeat", passwd_repeat);
+                                body.put("username", username);
+                                body.put("name", name);
+                                body.put("surname", surname);
+                                body.put("date", date);
+                                body.put("token_id", token);
+                            } catch (JSONException e){
+                                e.printStackTrace();
+                            }
+
+                            MyAsyncTaskRegister registerUser = new MyAsyncTaskRegister(url_register, body);
+                            registerUser.execute();
+                            String resultRegister = null;
+                            try {
+                                resultRegister = registerUser.get();
+                            } catch (ExecutionException | InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                            binding.errorTextRegister.setVisibility(View.GONE);
+                            if (!resultRegister.contains("false")){
+                                binding.userExisteRegister.setVisibility(View.GONE);
+                                Snackbar snackbar = Snackbar.make(binding.getRoot(), "Registro completado exitosamente.", Snackbar.LENGTH_LONG);
+
+                                // Cambiar el color de fondo
+                                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
+
+                                // Cambiar el color del texto
+                                TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                                textView.setTextColor(Color.WHITE);
+
+                                // Obtener el TextView dentro de Snackbar
+                                TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                                textoSnackbar.setGravity(Gravity.CENTER);
+
+                                snackbar.addCallback(new Snackbar.Callback() {
+                                    @Override
+                                    public void onDismissed(Snackbar snackbar, int event) {
+                                        super.onDismissed(snackbar, event);
+
+                                        String urlGetUser = "http://10.0.2.2:3000/getSelectedUser";
+                                        JSONObject body = new JSONObject();
+                                        try {
+                                            body.put("username", binding.editTextUser.getText().toString());
+                                        } catch (JSONException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                        MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(urlGetUser, body);
+                                        getUser.execute();
+                                        String resultGetUserRegistered = null;
+                                        try {
+                                            resultGetUserRegistered = getUser.get();
+                                        } catch (ExecutionException | InterruptedException e) {
+                                            throw new RuntimeException(e);
+                                        }
+
+                                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("infoUser", resultGetUserRegistered);
+                                        editor.apply();
+
+
+                                        startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                        getActivity().finish();
+                                    }
+                                });
+
+                                // Mostrar Snackbar personalizado
+                                snackbar.show();
+
+                            } else {
+                                //Este usuario ya existe
+                                binding.userExisteRegister.setVisibility(View.VISIBLE);
+                            }
+
+                        }
+                    });
                 } else {
                     binding.userExisteRegister.setVisibility(View.GONE);
                     binding.errorTextRegister.setVisibility(View.VISIBLE);

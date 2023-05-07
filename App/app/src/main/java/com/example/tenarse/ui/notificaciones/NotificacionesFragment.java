@@ -3,9 +3,12 @@ package com.example.tenarse.ui.notificaciones;
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +31,24 @@ import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentHomeBinding;
 import com.example.tenarse.databinding.FragmentNotificacionesBinding;
+import com.example.tenarse.globals.GlobalDadesUser;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 public class NotificacionesFragment extends Fragment {
 
     private FragmentNotificacionesBinding binding;
+
+    private GlobalDadesUser globalDadesUser;
+    private JSONObject dadesUsuari;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -41,6 +57,8 @@ public class NotificacionesFragment extends Fragment {
 
         MainActivity mainActivity = (MainActivity) getActivity();
 
+        globalDadesUser = GlobalDadesUser.getInstance();
+        dadesUsuari = globalDadesUser.getDadesUser();
 
         binding.backToMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,39 +68,45 @@ public class NotificacionesFragment extends Fragment {
         });
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("My notification", "My notification", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager manager = getActivity().getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
-        }
+       }
 
 
         binding.sendNot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(mainActivity, "My notification");
-                builder.setContentText("Hello from easy tutorial");
-                builder.setSmallIcon(R.drawable.logo_claro_small);
-                builder.setAutoCancel(true);
-
-                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(mainActivity);
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                managerCompat.notify(1, builder.build());
+                enviarNotificacion();
             }
         });
+
 
         return root;
     }
 
+    private void enviarNotificacion() {
+        //Enviar notificacion a un usuario llamado 'user2' que tiene un token asociado
+        String url = "http://10.0.2.2:3000/sendNotificacion";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("token_usuario", dadesUsuari.getString("token_id"));
+            jsonObject.put("tituloNotificacion", "Nuevo seguidor,"+dadesUsuari.getString("token_id"));
+            jsonObject.put("textoNotificacion", "@UsuarioA te ha empezado a seguir");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        MyAsyncTaskGetUser getAsynkTask = new MyAsyncTaskGetUser(url, jsonObject);
+        getAsynkTask.execute();
+        String resultTask = null;
+        try {
+            resultTask = getAsynkTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     @Override

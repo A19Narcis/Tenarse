@@ -24,6 +24,8 @@ import com.example.tenarse.ui.newpost.NewpostFragment;
 import com.example.tenarse.ui.notificaciones.NotificacionesFragment;
 import com.example.tenarse.ui.search.SearchFragment;
 import com.example.tenarse.ui.user.UserFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -41,6 +43,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.tenarse.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String lastActivity = sharedPreferences.getString("infoUser", "");
-
 
         try {
             if (dadesUsuari == null){

@@ -98,6 +98,10 @@ const userSchema = new mongoose.Schema({
     fecha_nac: {
         type: String,
     },
+    token_id: {
+        type: String,
+        required: true
+    },
     followers: {
         type: [followSchema],
         default: []
