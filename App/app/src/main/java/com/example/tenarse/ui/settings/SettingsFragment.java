@@ -270,6 +270,7 @@ public class SettingsFragment extends Fragment{
                         json.put("followers",  actualDadesUser.getJSONArray("followers"));
                         json.put("followings",  actualDadesUser.getJSONArray("followings"));
                         json.put("publicacions",  actualDadesUser.getJSONArray("publicacions"));
+                        json.put("google", actualDadesUser.getString("google"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

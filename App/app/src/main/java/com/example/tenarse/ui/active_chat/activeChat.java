@@ -26,6 +26,10 @@ public class activeChat extends Fragment {
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
     JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
+    String username;
+
+    String profile_img;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -33,17 +37,12 @@ public class activeChat extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_active_chat, container, false);
 
         Bundle args = getArguments();
-        /*if (args != null){
-            infoPost = args.getString("infoPost");
-            fragmentAnterior = args.getString("fragment");
-            originFragment = args.getString("origin");
-            isLiked = args.getBoolean("isLiked");
-            usernamePost = args.getString("usernamePost");
-            urlImg = args.getString("url_img");
-        }                                                   HAY QUE RECOGER LOS DATOS DE CHATADAPTEEEEEEEEER*/
+        if (args != null){
+            username = args.getString("username");
+            profile_img = args.getString("profile_img");
+        }
 
         chatAdapter = new ChatAdapter(arrayRecycler, getContext());
-
         recyclerView = rootView.findViewById(R.id.rv_chat);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
