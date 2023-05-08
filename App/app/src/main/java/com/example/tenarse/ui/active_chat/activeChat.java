@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
-import com.example.tenarse.ui.message.adapters.ChatAdapter;
+import com.example.tenarse.ui.active_chat.adapters.ActiveChatMultiAdapter;
 import com.example.tenarse.ui.message.chat.chatObject;
 
 import org.json.JSONObject;
@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 public class activeChat extends Fragment {
     RecyclerView recyclerView;
-    ArrayList<chatObject> arrayRecycler = new ArrayList<>();
-    ChatAdapter chatAdapter;
+    ArrayList<Object> arrayRecycler = new ArrayList<>();
+    ActiveChatMultiAdapter chatAdapter;
 
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
     JSONObject dadesUsuari = globalDadesUser.getDadesUser();
@@ -42,7 +42,10 @@ public class activeChat extends Fragment {
             profile_img = args.getString("profile_img");
         }
 
-        chatAdapter = new ChatAdapter(arrayRecycler, getContext());
+        arrayRecycler.add(new MessageObject("1","sergi", "Hola que tal?"));
+        arrayRecycler.add(new MessageObject("2","narcis", "Toi bien"));
+
+        chatAdapter = new ActiveChatMultiAdapter(arrayRecycler, getContext(), new activeChat());
         recyclerView = rootView.findViewById(R.id.rv_chat);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

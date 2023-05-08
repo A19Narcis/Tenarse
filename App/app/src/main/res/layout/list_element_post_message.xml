@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chat_element_direction"
     android:paddingBottom="2dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
+    android:paddingEnd="10dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -13,20 +12,17 @@
         android:id="@+id/usernameTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="18dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="@+id/cardView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_width="395px"
+        android:layout_height="395px"
         android:layout_marginTop="2dp"
-        android:layout_marginBottom="10dp"
 
+        android:layout_marginBottom="10dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,15 +30,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usernameTxt">
 
-        <TextView
-            android:id="@+id/txtMsg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/imagePost"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:text="TextVegergergergergergergergerg rg erg erwg werge rwhtrhtyeh  hrteiew"
-            android:textSize="20dp" />
+            android:scaleType="fitXY"
+            android:src="@drawable/logo_claro" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
