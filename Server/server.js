@@ -126,6 +126,22 @@ app.post('/updateUser', (req, res) => {
     }
 
     updateDB.updateUser(id, newDadesUser, (newDadesUpdated) => {
+        var newDadesUpdated = {
+            _id: dadesUser._id,
+            email: dadesUser.email,
+            username: dadesUser.username,
+            password: dadesUser.password,
+            url_img: dadesUser.url_img,
+            nombre: dadesUser.nombre,
+            apellidos: dadesUser.apellidos,
+            fecha_nac: dadesUser.fecha_nac,
+            token_id: dadesUser.token_id,
+            followers: dadesUser.followers,
+            followings: dadesUser.followings,
+            publicacions:dadesUser.publicacions,
+            google: req.body.google,
+            __v: 0
+        }
         res.send(newDadesUpdated)
     })
 })

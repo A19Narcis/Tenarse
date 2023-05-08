@@ -43,7 +43,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.tenarse.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
