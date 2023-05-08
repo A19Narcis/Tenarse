@@ -168,10 +168,14 @@ public class ProfileFragment extends Fragment {
                     } catch (ExecutionException | InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+
                     //Un cop acaba, canvia la vista del botó
                     binding.followButton.setBackgroundColor(Color.WHITE);
                     binding.followButton.setTextColor(Color.BLACK);
                     binding.followButton.setText("Siguiendo ✓");
+
+                    //Notificacion de que le sigues
+                    enviarNotificacion();
 
                     //******* UPDATE DATOS USER **********
                     String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
@@ -221,7 +225,7 @@ public class ProfileFragment extends Fragment {
 
                             try {
                                 body.put("user_following", dadesUsuari.getString("_id"));
-                                body.put("user_removed", userInfo.getString("username"));
+                                body.put("user_removed", userInfo.getString("_id"));
                             } catch (JSONException e){
                                 e.printStackTrace();
                             }
@@ -395,6 +399,31 @@ public class ProfileFragment extends Fragment {
         recyclerView.setAdapter(multiAdapter);
 
         return root;
+    }
+
+    private void enviarNotificacion() {
+        GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+        JSONObject dadesUsuariPersonal = globalDadesUser.getDadesUser();
+        //Enviar notificacion a un usuario que tiene un token asociado
+        String url = "http://10.0.2.2:3000/sendNotificacion";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("token_usuario", userInfo.getString("token_id"));
+            jsonObject.put("tituloNotificacion", "Nuevo seguidor");
+            jsonObject.put("textoNotificacion",  "@" + dadesUsuariPersonal.getString("username") + " te ha empezado a seguir");
+            jsonObject.put("token_destino", userInfo.getString("token_id"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        MyAsyncTaskGetUser getAsynkTask = new MyAsyncTaskGetUser(url, jsonObject);
+        getAsynkTask.execute();
+        String resultTask = null;
+        try {
+            resultTask = getAsynkTask.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String formatFollowers10(int num) {

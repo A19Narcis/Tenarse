@@ -96,7 +96,7 @@ public class LoginFragment extends Fragment {
                     throw new RuntimeException(e);
                 }
 
-                System.out.println(resultLogin);
+                System.out.println("RESULT LOGIN: " + resultLogin);
 
                 if (!resultLogin.contains("false") || (!email_username.equals("") && !passwd.equals(""))){
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);

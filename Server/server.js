@@ -607,10 +607,11 @@ app.post('/sendNotificacion', (req, res) => {
     var fcm = new FCM(SERVER_KEY)
     
     /*var message = {
-        to: "eaor4h0_RcOMNHYoQbIuLS:APA91bFIZjy1su3b0NMmGdZZORERMqjZpXGnTpRt1IJBeXlyybdFDQENZy04vJLKMxnvDD7b-CCeCDY1F7Ks8NSerWwC1NzDYGOfUkcx7H-B_DeXPlK6GKgl-tGUr4o3VY_coo4LrWiR",
+        to: "c1nYgC4_SH2A11xTjUvDKP:APA91bEckhqdf5ZR7sY65sqoK77TSm13j9_55rN4qT4f7dPkDKsZTDj4eflabplfKo03x0sWreCwhO1o_lka1GLWkFGFPTaaJNGfeEfBXv0fX_rqrSaWljaASFO-_XNDF-k_CshjkVv6",
         notification: {
-            title: "Nuevo seguidor,eaor4h0_RcOMNHYoQbIuLS:APA91bFIZjy1su3b0NMmGdZZORERMqjZpXGnTpRt1IJBeXlyybdFDQENZy04vJLKMxnvDD7b-CCeCDY1F7Ks8NSerWwC1NzDYGOfUkcx7H-B_DeXPlK6GKgl-tGUr4o3VY_coo4LrWiR", 
+            title: "Nuevo seguidor", 
             body: "¡@A19Narcis te ha empezado a seguir!",
+            tag: "c1nYgC4_SH2A11xTjUvDKP:APA91bEckhqdf5ZR7sY65sqoK77TSm13j9_55rN4qT4f7dPkDKsZTDj4eflabplfKo03x0sWreCwhO1o_lka1GLWkFGFPTaaJNGfeEfBXv0fX_rqrSaWljaASFO-_XNDF-k_CshjkVv6"
         },
     }*/
 
@@ -624,9 +625,12 @@ app.post('/sendNotificacion', (req, res) => {
         to: req.body.token_usuario,
         notification: {
             title: req.body.tituloNotificacion, 
-            body: req.body.textoNotificacion 
+            body: req.body.textoNotificacion,
+            tag: req.body.token_destino
         },
     }
+
+    console.log(message);
 
     fcm.send(message, function(err, response){
         if (err){
