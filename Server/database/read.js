@@ -82,8 +82,6 @@ const getPostsByQuery = async (query, callback) => {
     callback(doubts)
 }
 
-
-
 module.exports = {
     getUser,
     checkUserExists,

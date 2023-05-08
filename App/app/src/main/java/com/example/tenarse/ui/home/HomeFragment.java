@@ -367,19 +367,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         bundle.putSerializable("usernamePost", username);
         bundle.putSerializable("url_img", url_img);
         Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_viewPostFragment, bundle);
-
-        /*FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        ViewPostFragment viewPostFragment = new ViewPostFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("infoPost", infoPost);
-        bundle.putSerializable("origin", "home");
-        bundle.putSerializable("isLiked", myLike);
-        transaction.replace(R.id.viewFragment, viewPostFragment);
-        viewPostFragment.setArguments(bundle);
-        transaction.setReorderingAllowed(true);
-        transaction.addToBackStack(null);
-        transaction.commit();*/
     }
 
 
@@ -429,5 +416,4 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             throw new RuntimeException(e);
         }
     }
-
 }

@@ -238,6 +238,14 @@ app.post('/getUsernameAndImageFromID', (req, res) => {
 app.post('/getSelectedUser', (req, res) => {
     var email_username_id = req.body.username
 
+    var googleAccount = req.body.google;
+
+    if (req.body.google === true) {
+        googleAccount = true
+    } else {
+        googleAccount = false
+    }
+
     readDB.getUser(email_username_id, (dades_user) => {
         var dadesFinals = {
             _id: dades_user._id,
@@ -248,10 +256,11 @@ app.post('/getSelectedUser', (req, res) => {
             nombre: dades_user.nombre,
             apellidos: dades_user.apellidos,
             fecha_nac: dades_user.fecha_nac,
+            token_id: dades_user.token_id,
             followers: dades_user.followers,
             followings: dades_user.followings,
             publicacions:dades_user.publicacions,
-            google: false,
+            google: googleAccount,
             __v: 0
         }
         res.send(dadesFinals)
@@ -623,10 +632,11 @@ app.post('/sendNotificacion', (req, res) => {
     var fcm = new FCM(SERVER_KEY)
     
     /*var message = {
-        to: "eaor4h0_RcOMNHYoQbIuLS:APA91bFIZjy1su3b0NMmGdZZORERMqjZpXGnTpRt1IJBeXlyybdFDQENZy04vJLKMxnvDD7b-CCeCDY1F7Ks8NSerWwC1NzDYGOfUkcx7H-B_DeXPlK6GKgl-tGUr4o3VY_coo4LrWiR",
+        to: "c1nYgC4_SH2A11xTjUvDKP:APA91bEckhqdf5ZR7sY65sqoK77TSm13j9_55rN4qT4f7dPkDKsZTDj4eflabplfKo03x0sWreCwhO1o_lka1GLWkFGFPTaaJNGfeEfBXv0fX_rqrSaWljaASFO-_XNDF-k_CshjkVv6",
         notification: {
-            title: "Nuevo seguidor,eaor4h0_RcOMNHYoQbIuLS:APA91bFIZjy1su3b0NMmGdZZORERMqjZpXGnTpRt1IJBeXlyybdFDQENZy04vJLKMxnvDD7b-CCeCDY1F7Ks8NSerWwC1NzDYGOfUkcx7H-B_DeXPlK6GKgl-tGUr4o3VY_coo4LrWiR", 
+            title: "Nuevo seguidor", 
             body: "¡@A19Narcis te ha empezado a seguir!",
+            tag: "c1nYgC4_SH2A11xTjUvDKP:APA91bEckhqdf5ZR7sY65sqoK77TSm13j9_55rN4qT4f7dPkDKsZTDj4eflabplfKo03x0sWreCwhO1o_lka1GLWkFGFPTaaJNGfeEfBXv0fX_rqrSaWljaASFO-_XNDF-k_CshjkVv6"
         },
     }*/
 
@@ -640,9 +650,12 @@ app.post('/sendNotificacion', (req, res) => {
         to: req.body.token_usuario,
         notification: {
             title: req.body.tituloNotificacion, 
-            body: req.body.textoNotificacion 
+            body: req.body.textoNotificacion,
+            tag: req.body.token_destino
         },
     }
+
+    console.log(message);
 
     fcm.send(message, function(err, response){
         if (err){

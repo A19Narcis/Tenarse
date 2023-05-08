@@ -15,14 +15,20 @@ import android.widget.VideoView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
+import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.HomeFragment;
 import com.example.tenarse.ui.home.HomeViewModel;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -252,9 +258,9 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
                         if (!videoElement.isLiked()){
-                            mHomeFragment.addLike(videoElement.getId());
                             videoViewHolder.likeImage.setImageResource(R.drawable.like);
                             videoElement.setLiked(true);
+                            mHomeFragment.addLike(videoElement.getId());
                         } else if (videoElement.isLiked()) {
                             mHomeFragment.removeLike(videoElement.getId());
                             videoViewHolder.likeImage.setImageResource(R.drawable.no_like);

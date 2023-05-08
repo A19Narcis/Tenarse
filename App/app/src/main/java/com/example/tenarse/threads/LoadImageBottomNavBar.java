@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -43,19 +44,26 @@ public class LoadImageBottomNavBar extends AsyncTask<String, Void, Bitmap> {
         String imageUrl = params[0];
         imageUrl = imageUrl.replace("\\", "/");
         Bitmap bitmap = null;
-        try {
-            int targetSize = (int) (context.getResources().getDisplayMetrics().density * 50);
-            bitmap = Glide.with(context.getApplicationContext())
-                    .asBitmap()
-                    .load(imageUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .override(targetSize, targetSize)
-                    .centerCrop()
-                    .into(targetSize, targetSize)
-                    .get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+        boolean imageLoaded = false;
+
+        while (!imageLoaded) {
+            try {
+                int targetSize = (int) (context.getResources().getDisplayMetrics().density * 50);
+                bitmap = Glide.with(context.getApplicationContext())
+                        .asBitmap()
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .override(targetSize, targetSize)
+                        .centerCrop()
+                        .into(targetSize, targetSize)
+                        .get();
+
+                imageLoaded = true; // La imagen se cargó correctamente, salir del bucle
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         }
+
         return bitmap;
     }
 

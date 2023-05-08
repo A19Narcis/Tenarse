@@ -30,9 +30,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,6 +55,8 @@ public class LoginFragment extends Fragment {
     TextView registrarseBtn;
 
     TextView test;
+
+    private String token = null;
 
     private FragmentLoginBinding binding;
 
@@ -96,7 +100,7 @@ public class LoginFragment extends Fragment {
                     throw new RuntimeException(e);
                 }
 
-                System.out.println(resultLogin);
+                System.out.println("RESULT LOGIN: " + resultLogin);
 
                 if (!resultLogin.contains("false") || (!email_username.equals("") && !passwd.equals(""))){
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
@@ -163,83 +167,96 @@ public class LoginFragment extends Fragment {
                     String username = account.getEmail().substring(0, account.getEmail().indexOf("@"));
                     boolean isUsernameUsed = checkifUsernameIsUsed(username);
                     JSONObject bodyRegister = new JSONObject();
-                    try {
-                        bodyRegister.put("email", account.getEmail());
-                        bodyRegister.put("passwd", "");
-                        bodyRegister.put("passwd_repeat", "");
-                        if (isUsernameUsed){
-                            bodyRegister.put("username", username);
-                        } else {
-                            // Obtener la fecha y hora actual
-                            Date date = new Date();
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
-                            String usernameWithDate = dateFormat.format(date);
-                            bodyRegister.put("username", username + usernameWithDate);
-                        }
-                        bodyRegister.put("name", account.getGivenName());
-                        bodyRegister.put("surname", account.getFamilyName());
-                        bodyRegister.put("date", " ");
-                        bodyRegister.put("url_img", account.getPhotoUrl());
-                    } catch (JSONException e){
-                        e.printStackTrace();
-                    }
-                    //Registrar el correo
-                    String url_register = "http://10.0.2.2:3000/addNewUser";
-                    MyAsyncTaskRegister registerUser = new MyAsyncTaskRegister(url_register, bodyRegister);
-                    registerUser.execute();
-                    String resultRegister = null;
-                    try {
-                        resultRegister = registerUser.get();
-                    } catch (ExecutionException | InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    Snackbar snackbar = Snackbar.make(binding.getRoot(), "Registro completado exitosamente.", Snackbar.LENGTH_LONG);
 
-                    // Cambiar el color de fondo
-                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
-
-                    // Cambiar el color del texto
-                    TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                    textView.setTextColor(Color.WHITE);
-
-                    // Obtener el TextView dentro de Snackbar
-                    TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                    textoSnackbar.setGravity(Gravity.CENTER);
-
-                    snackbar.addCallback(new Snackbar.Callback() {
+                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
                         @Override
-                        public void onDismissed(Snackbar snackbar, int event) {
-                            super.onDismissed(snackbar, event);
+                        public void onComplete(@NonNull Task<String> task) {
+                            token = task.getResult();
 
-                            String urlGetUser = "http://10.0.2.2:3000/getSelectedUser";
-                            JSONObject body = new JSONObject();
                             try {
-                                body.put("username", bodyRegister.getString("username"));
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
+                                bodyRegister.put("email", account.getEmail());
+                                bodyRegister.put("passwd", "");
+                                bodyRegister.put("passwd_repeat", "");
+                                if (isUsernameUsed){
+                                    bodyRegister.put("username", username);
+                                } else {
+                                    // Obtener la fecha y hora actual
+                                    Date date = new Date();
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
+                                    String usernameWithDate = dateFormat.format(date);
+                                    bodyRegister.put("username", username + usernameWithDate);
+                                }
+                                bodyRegister.put("name", account.getGivenName());
+                                bodyRegister.put("surname", account.getFamilyName());
+                                bodyRegister.put("date", " ");
+                                bodyRegister.put("url_img", account.getPhotoUrl());
+                                bodyRegister.put("token_id", token);
+                            } catch (JSONException e){
+                                e.printStackTrace();
                             }
-                            MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(urlGetUser, body);
-                            getUser.execute();
-                            String resultGetUserRegistered = null;
+                            //Registrar el correo
+                            String url_register = "http://10.0.2.2:3000/addNewUser";
+                            MyAsyncTaskRegister registerUser = new MyAsyncTaskRegister(url_register, bodyRegister);
+                            registerUser.execute();
+                            String resultRegister = null;
                             try {
-                                resultGetUserRegistered = getUser.get();
+                                resultRegister = registerUser.get();
                             } catch (ExecutionException | InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
+                            Snackbar snackbar = Snackbar.make(binding.getRoot(), "Registro completado exitosamente.", Snackbar.LENGTH_LONG);
 
-                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("infoUser", resultGetUserRegistered);
-                            editor.apply();
+                            // Cambiar el color de fondo
+                            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
+
+                            // Cambiar el color del texto
+                            TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                            textView.setTextColor(Color.WHITE);
+
+                            // Obtener el TextView dentro de Snackbar
+                            TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                            textoSnackbar.setGravity(Gravity.CENTER);
+
+                            snackbar.addCallback(new Snackbar.Callback() {
+                                @Override
+                                public void onDismissed(Snackbar snackbar, int event) {
+                                    super.onDismissed(snackbar, event);
+
+                                    String urlGetUser = "http://10.0.2.2:3000/getSelectedUser";
+                                    JSONObject body = new JSONObject();
+                                    try {
+                                        body.put("username", bodyRegister.getString("username"));
+                                        body.put("google", true);
+                                    } catch (JSONException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(urlGetUser, body);
+                                    getUser.execute();
+                                    String resultGetUserRegistered = null;
+                                    try {
+                                        resultGetUserRegistered = getUser.get();
+                                    } catch (ExecutionException | InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                    System.out.println(resultGetUserRegistered);
+
+                                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("infoUser", resultGetUserRegistered);
+                                    editor.apply();
 
 
-                            startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                            getActivity().finish();
+                                    startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                    getActivity().finish();
+                                }
+                            });
+
+                            // Mostrar Snackbar personalizado
+                            snackbar.show();
+
                         }
                     });
-
-                    // Mostrar Snackbar personalizado
-                    snackbar.show();
 
                 } else {
                     //Ya esta registrado, por lo tango login

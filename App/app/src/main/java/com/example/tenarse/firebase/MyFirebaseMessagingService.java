@@ -35,15 +35,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 token_personal = task.getResult();
 
-                String[] partsTitulo = message.getNotification().getTitle().split(",", 2);
 
-                if (token_personal.equals(partsTitulo[1])){
+                if (token_personal.equals(message.getNotification().getTag())){
                     // Obtener los datos de la notificación
-                    String title = partsTitulo[0];
                     String body = message.getNotification().getBody();
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "My notification");
                     builder.setContentText(body);
-                    builder.setContentTitle(title);
+                    //builder.setContentTitle(message.getNotification().getTitle());
                     builder.setSmallIcon(R.drawable.logo_claro_small);
                     builder.setAutoCancel(true);
 

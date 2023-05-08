@@ -87,25 +87,7 @@ public class NotificacionesFragment extends Fragment {
     }
 
     private void enviarNotificacion() {
-        //Enviar notificacion a un usuario llamado 'user2' que tiene un token asociado
-        String url = "http://10.0.2.2:3000/sendNotificacion";
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("token_usuario", dadesUsuari.getString("token_id"));
-            jsonObject.put("tituloNotificacion", "Nuevo seguidor,"+dadesUsuari.getString("token_id"));
-            jsonObject.put("textoNotificacion", "@UsuarioA te ha empezado a seguir");
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
 
-        MyAsyncTaskGetUser getAsynkTask = new MyAsyncTaskGetUser(url, jsonObject);
-        getAsynkTask.execute();
-        String resultTask = null;
-        try {
-            resultTask = getAsynkTask.get();
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
