@@ -23,7 +23,6 @@
 
     <item
         android:id="@+id/navigation_user"
-        android:icon="@drawable/borrar_selector"
         android:iconTint="@android:color/transparent"
         android:title="" />
 </menu>

@@ -238,6 +238,14 @@ app.post('/getUsernameAndImageFromID', (req, res) => {
 app.post('/getSelectedUser', (req, res) => {
     var email_username_id = req.body.username
 
+    var googleAccount = req.body.google;
+
+    if (req.body.google === true) {
+        googleAccount = true
+    } else {
+        googleAccount = false
+    }
+
     readDB.getUser(email_username_id, (dades_user) => {
         var dadesFinals = {
             _id: dades_user._id,
@@ -248,10 +256,11 @@ app.post('/getSelectedUser', (req, res) => {
             nombre: dades_user.nombre,
             apellidos: dades_user.apellidos,
             fecha_nac: dades_user.fecha_nac,
+            token_id: dades_user.token_id,
             followers: dades_user.followers,
             followings: dades_user.followings,
             publicacions:dades_user.publicacions,
-            google: false,
+            google: googleAccount,
             __v: 0
         }
         res.send(dadesFinals)
