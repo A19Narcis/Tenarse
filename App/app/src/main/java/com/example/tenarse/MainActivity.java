@@ -2,38 +2,22 @@ package com.example.tenarse;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.example.tenarse.databinding.FragmentUserBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
-import com.example.tenarse.threads.LoadImageBottomNavBar;
-import com.example.tenarse.ui.home.HomeFragment;
-import com.example.tenarse.ui.login.LoginFragment;
-import com.example.tenarse.ui.message.MessageFragment;
-import com.example.tenarse.ui.newpost.NewpostFragment;
-import com.example.tenarse.ui.notificaciones.NotificacionesFragment;
-import com.example.tenarse.ui.search.SearchFragment;
-import com.example.tenarse.ui.user.UserFragment;
+import com.example.tenarse.ui.threads.LoadImageBottomNavBar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
@@ -42,7 +26,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.tenarse.databinding.ActivityMainBinding;
-import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -100,8 +84,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String lastActivity = sharedPreferences.getString("infoUser", "");
 
+        System.out.println("DADES USUARI EN EL MAIN: " + dadesUsuari);
+
         try {
-            if (dadesUsuari == null){
+            if (dadesUsuari == null || dadesUsuari.toString().equals("{}")){
                 JSONObject jsonObject = new JSONObject(lastActivity);
                 globalDadesUser.setDadesUser(jsonObject);
                 dadesUsuari = globalDadesUser.getDadesUser();
@@ -128,6 +114,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                System.out.println("TOKEN DISPOSITIVO: " + task.getResult());
+            }
+        });
     }
 
 

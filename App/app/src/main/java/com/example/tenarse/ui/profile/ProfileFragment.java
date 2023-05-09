@@ -37,9 +37,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ProfileFragment extends Fragment {
 
@@ -120,7 +130,6 @@ public class ProfileFragment extends Fragment {
         });
 
 
-
         /* DADES DE L'USUARI SELECCIONAT */
         Bundle args = getArguments();
         if (args != null) {
@@ -130,12 +139,6 @@ public class ProfileFragment extends Fragment {
 
         try {
             userInfo = new JSONObject(userInfoString);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            refreshUserInfo(userInfo.getString("_id"));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -173,9 +176,6 @@ public class ProfileFragment extends Fragment {
                     binding.followButton.setBackgroundColor(Color.WHITE);
                     binding.followButton.setTextColor(Color.BLACK);
                     binding.followButton.setText("Siguiendo ✓");
-
-                    //Notificacion de que le sigues
-                    enviarNotificacion();
 
                     //******* UPDATE DATOS USER **********
                     String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
@@ -392,6 +392,13 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+
+        try {
+            refreshUserInfo(userInfo.getString("_id"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
         recyclerView = binding.recyclerViewFeed;
 
         recyclerView.setHasFixedSize(true);
@@ -399,31 +406,6 @@ public class ProfileFragment extends Fragment {
         recyclerView.setAdapter(multiAdapter);
 
         return root;
-    }
-
-    private void enviarNotificacion() {
-        GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-        JSONObject dadesUsuariPersonal = globalDadesUser.getDadesUser();
-        //Enviar notificacion a un usuario que tiene un token asociado
-        String url = "http://10.0.2.2:3000/sendNotificacion";
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("token_usuario", userInfo.getString("token_id"));
-            jsonObject.put("tituloNotificacion", "Nuevo seguidor");
-            jsonObject.put("textoNotificacion",  "@" + dadesUsuariPersonal.getString("username") + " te ha empezado a seguir");
-            jsonObject.put("token_destino", userInfo.getString("token_id"));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
-        MyAsyncTaskGetUser getAsynkTask = new MyAsyncTaskGetUser(url, jsonObject);
-        getAsynkTask.execute();
-        String resultTask = null;
-        try {
-            resultTask = getAsynkTask.get();
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static String formatFollowers10(int num) {
@@ -496,6 +478,21 @@ public class ProfileFragment extends Fragment {
             } else {
                 binding.userFollowers.setText(Integer.toString(new_numero_followers));
             }
+
+            try {
+                JSONArray usersSiguiendo = newDadesUser.getJSONArray("followings");
+                for (int i = 0; i < usersSiguiendo.length(); i++) {
+                    JSONObject user = usersSiguiendo.getJSONObject(i);
+                    if (user.getString("user").equals(userInfo.getString("_id"))){
+                        binding.followButton.setBackgroundColor(Color.WHITE);
+                        binding.followButton.setTextColor(Color.BLACK);
+                        binding.followButton.setText("Siguiendo ✓");
+                    }
+                }
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
 
 
             JSONArray new_publicacions = new JSONArray(newDadesUser.getString("publicacions"));

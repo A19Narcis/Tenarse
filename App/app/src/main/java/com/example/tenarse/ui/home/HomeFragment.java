@@ -169,15 +169,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
-        ImageView nots = binding.notificacionesImg;
-
-        nots.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_nots);
-            }
-        });
-
         return root;
     }
 
@@ -315,18 +306,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         Bundle bundle = new Bundle();
         bundle.putString("userInfo", dadesUser.toString());
         Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_profileFragment, bundle);
-
-
-        /*FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        ProfileFragment profileFragment = new ProfileFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("userInfo", userSelected);
-        profileFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.viewFragment, profileFragment);
-        fragmentTransaction.setReorderingAllowed(true);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();*/
     }
 
     public void selectPost(String idPost, View view, String username, String url_img){

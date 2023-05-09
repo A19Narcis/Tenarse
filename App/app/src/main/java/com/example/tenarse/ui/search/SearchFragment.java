@@ -122,10 +122,8 @@ public class SearchFragment extends Fragment {
                     switch (selected_image){
                         case USER_SELECTED:
                             if (searchUsersFragmentClicked == null){
-                                System.out.println("1");
                                 searchUsersFragment.buscarQuery(query);
                             } else {
-                                System.out.println("2");
                                 searchUsersFragmentClicked.buscarQuery(query);
                             }
                             break;

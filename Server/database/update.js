@@ -125,8 +125,9 @@ const updateUser = function (id_user, newDadesUser, callback) {
             callback(newDadesUser)
         })
     })
-    
 }
+
+
 
 module.exports = {
     addUserPost,

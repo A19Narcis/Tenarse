@@ -11,7 +11,6 @@ const app = express();
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const { log } = require('console');
-const FCM = require('fcm-node');
 
 const PORT = 3000
 
@@ -52,7 +51,6 @@ app.post('/addNewUser', (req, res) => {
         nombre: req.body.name,
         apellidos: req.body.surname,
         fecha_nac: req.body.date,
-        token_id: req.body.token_id,
         followers: [],
         followings: []
     }
@@ -101,7 +99,6 @@ app.post('/loginGoogleAccount', (req, res) => {
             nombre: dadesUser.nombre,
             apellidos: dadesUser.apellidos,
             fecha_nac: dadesUser.fecha_nac,
-            token_id: dadesUser.token_id,
             followers: dadesUser.followers,
             followings: dadesUser.followings,
             publicacions:dadesUser.publicacions,
@@ -126,23 +123,22 @@ app.post('/updateUser', (req, res) => {
     }
 
     updateDB.updateUser(id, newDadesUser, (newDadesUpdated) => {
-        var newDadesUpdated = {
-            _id: dadesUser._id,
-            email: dadesUser.email,
-            username: dadesUser.username,
-            password: dadesUser.password,
-            url_img: dadesUser.url_img,
-            nombre: dadesUser.nombre,
-            apellidos: dadesUser.apellidos,
-            fecha_nac: dadesUser.fecha_nac,
-            token_id: dadesUser.token_id,
-            followers: dadesUser.followers,
-            followings: dadesUser.followings,
-            publicacions:dadesUser.publicacions,
+        var updatedDadesUser = {
+            _id: newDadesUpdated._id,
+            email: newDadesUpdated.email,
+            username: newDadesUpdated.username,
+            password: newDadesUpdated.password,
+            url_img: newDadesUpdated.url_img,
+            nombre: newDadesUpdated.nombre,
+            apellidos: newDadesUpdated.apellidos,
+            fecha_nac: newDadesUpdated.fecha_nac,
+            followers: newDadesUpdated.followers,
+            followings: newDadesUpdated.followings,
+            publicacions:newDadesUpdated.publicacions,
             google: req.body.google,
             __v: 0
         }
-        res.send(newDadesUpdated)
+        res.send(updatedDadesUser)
     })
 })
 
@@ -198,6 +194,7 @@ app.post('/getUser', (req, res) => {
         if (dades_user_valides === null) {
             res.send({ username: false })
         } else {
+            console.log("ENVIO DATOS");
             if (dades_user_valides.password === cryptedPasswd) {
                 /* Login successful */
                 var dadesFinals = {
@@ -209,7 +206,6 @@ app.post('/getUser', (req, res) => {
                     nombre: dades_user_valides.nombre,
                     apellidos: dades_user_valides.apellidos,
                     fecha_nac: dades_user_valides.fecha_nac,
-                    token_id: dades_user_valides.token_id,
                     followers: dades_user_valides.followers,
                     followings: dades_user_valides.followings,
                     publicacions:dades_user_valides.publicacions,
@@ -256,7 +252,6 @@ app.post('/getSelectedUser', (req, res) => {
             nombre: dades_user.nombre,
             apellidos: dades_user.apellidos,
             fecha_nac: dades_user.fecha_nac,
-            token_id: dades_user.token_id,
             followers: dades_user.followers,
             followings: dades_user.followings,
             publicacions:dades_user.publicacions,
@@ -576,7 +571,6 @@ app.post('/getSuggestedUsersChat', async (req, res) => {
         Promise.all(usersArr.map(userID => getUserByIDPromise(userID)))
             .then((dadesUsers) => {
                 resultUsers = dadesUsers;
-                log(dadesUsers);
                 res.send(resultUsers);
             })
             .catch((error) => {
@@ -626,45 +620,6 @@ app.post('/searchDoubt', (req, res) => {
     })
 })
 
-app.post('/sendNotificacion', (req, res) => {
-    //Servidor FIREBASE CLOUD MESSAGING
-    var SERVER_KEY = 'AAAAbkUW_hQ:APA91bGe9b9v-ors2V30QuHWoGFsZKYlovsvbZbxzez63G6kHkAuitATfR7gn8e7VNkewv-HWraMTDPWFdMlgeoHcyb-68DN94j1hsR8DaN1KJSrsNhdpQPgnamBpcvuKpp8fRPU0UMn'
-    var fcm = new FCM(SERVER_KEY)
-    
-    /*var message = {
-        to: "c1nYgC4_SH2A11xTjUvDKP:APA91bEckhqdf5ZR7sY65sqoK77TSm13j9_55rN4qT4f7dPkDKsZTDj4eflabplfKo03x0sWreCwhO1o_lka1GLWkFGFPTaaJNGfeEfBXv0fX_rqrSaWljaASFO-_XNDF-k_CshjkVv6",
-        notification: {
-            title: "Nuevo seguidor", 
-            body: "¡@A19Narcis te ha empezado a seguir!",
-            tag: "c1nYgC4_SH2A11xTjUvDKP:APA91bEckhqdf5ZR7sY65sqoK77TSm13j9_55rN4qT4f7dPkDKsZTDj4eflabplfKo03x0sWreCwhO1o_lka1GLWkFGFPTaaJNGfeEfBXv0fX_rqrSaWljaASFO-_XNDF-k_CshjkVv6"
-        },
-    }*/
-
-    /*DIFERENTES NOTIFICACIONES*/
-    // 1 - Nuevo seguidor
-    // 2 - Nuevo like a tu publicacion
-    // 3 - Nuevo mensaje de usuario
-
-
-    var message = {
-        to: req.body.token_usuario,
-        notification: {
-            title: req.body.tituloNotificacion, 
-            body: req.body.textoNotificacion,
-            tag: req.body.token_destino
-        },
-    }
-
-    console.log(message);
-
-    fcm.send(message, function(err, response){
-        if (err){
-            console.log(err);
-        } else {
-            res.send(message)
-        }
-    })
-})
 
 app.listen(PORT, () => {
     console.log("Server Running [" + PORT + "]");
