@@ -36,7 +36,7 @@ public class FragmentChat extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_active_chat, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_chat_list, container, false);
 
 
         chatAdapter = new ChatAdapter(arrayRecycler, getContext());
@@ -84,7 +84,7 @@ public class FragmentChat extends Fragment {
                     if (json.getJSONArray("messages").length() > 0) {
                         lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).toString();
                     }
-                    arrayRecycler.add(new chatObject(username_image.getString("username"), lastMsg, username_image.getString("url_img")));
+                    arrayRecycler.add(new chatObject(json.getString("_id") ,username_image.getString("username"), lastMsg, username_image.getString("url_img")));
                     chatAdapter.notifyItemInserted(arrayRecycler.size() - 1);
                 }
             }

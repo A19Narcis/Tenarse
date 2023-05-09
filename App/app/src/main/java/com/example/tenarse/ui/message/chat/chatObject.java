@@ -3,14 +3,24 @@ package com.example.tenarse.ui.message.chat;
 import android.graphics.Bitmap;
 
 public class chatObject {
+    String chat_id;
     String userName;
     String lastMsg;
     String profileImg;
 
-    public chatObject(String userName, String lastMsg, String profileImg) {
+    public chatObject(String chat_id, String userName, String lastMsg, String profileImg) {
+        this.chat_id = chat_id;
         this.userName = userName;
         this.lastMsg = lastMsg;
         this.profileImg = profileImg;
+    }
+
+    public String getChat_id() {
+        return chat_id;
+    }
+
+    public void setChat_id(String chat_id) {
+        this.chat_id = chat_id;
     }
 
     public chatObject(String userName, String lastMsg) {

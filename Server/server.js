@@ -536,10 +536,10 @@ app.post('/newMessage', (req, res) => {
     let minutos = fecha.getMinutes();
     let horaActual = hora + ":" + minutos;
 
-    var chat_id = '64523a1cd720d23ed679f615'
+    var chat_id = req.body.chat_id
     var message = {
-        emisor: 'A19Narcis',
-        txt_msg: '¡Buenas!',
+        emisor: req.body.emisor,
+        txt_msg: req.body.message,
         hora: horaActual
     }
 

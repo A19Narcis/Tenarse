@@ -1,6 +1,7 @@
 package com.example.tenarse.ui.active_chat.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
+import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.active_chat.MessageObject;
 import com.example.tenarse.ui.active_chat.PostObject;
 import com.example.tenarse.ui.active_chat.activeChat;
@@ -21,10 +23,16 @@ import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private GlobalDadesUser globalDadesUser;
+
+    private JSONObject dadesUser;
     private List<Object> dataList;
     private Context context;
     private activeChat ActiveChat;
@@ -66,18 +74,29 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        globalDadesUser = GlobalDadesUser.getInstance();
+        dadesUser = globalDadesUser.getDadesUser();
+        String id = null;
+        try {
+            id = dadesUser.getString("_id");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         switch (holder.getItemViewType()) {
             case TYPE_MESSAGE:
                 MessageObject messageElement = (MessageObject) dataList.get(position);
                 MessageViewHolder messageViewHolder = (MessageViewHolder) holder;
-                messageViewHolder.usernameTxt.setText(messageElement.getUserName());
+                messageViewHolder.usernameTxt.setText("@" + messageElement.getUserName());
                 messageViewHolder.msgText.setText(messageElement.getMessage());
                 ConstraintLayout.LayoutParams layoutParams =
                         (ConstraintLayout.LayoutParams) messageViewHolder.cardView.getLayoutParams();
-                if(messageElement.getIdEmitter().equals("1")){
+                System.out.println("AQUI ESTA LA IDDDDDDDDDDDDDD: "+ id);
+                if(messageElement.getIdEmitter().equals(id)){
                     // Eliminar la restricción layout_constraintEnd_toEndOf
                     layoutParams.startToStart = ConstraintLayout.LayoutParams.UNSET;
                     messageViewHolder.cardView.setLayoutParams(layoutParams);
+                    messageViewHolder.cardView.setCardBackgroundColor(Color.BLACK);
+                    messageViewHolder.msgText.setTextColor(Color.WHITE);
                 }else{
                     // Eliminar la restricción layout_constraintEnd_toEndOf
                     layoutParams.endToEnd = ConstraintLayout.LayoutParams.UNSET;

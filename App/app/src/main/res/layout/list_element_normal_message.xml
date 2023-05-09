@@ -11,6 +11,7 @@
 
     <TextView
         android:id="@+id/usernameTxt"
+        android:textStyle="bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="18dp"
@@ -24,10 +25,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="3dp"
         android:layout_marginBottom="10dp"
 
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="100dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,8 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
             android:text="TextVegergergergergergergergerg rg erg erwg werge rwhtrhtyeh  hrteiew"
             android:textSize="20dp" />
     </androidx.cardview.widget.CardView>
