@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentActiveChatBinding;
-import com.example.tenarse.databinding.FragmentNotificacionesBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.httpRetrofit.ApiService;
 import com.example.tenarse.ui.active_chat.adapters.ActiveChatMultiAdapter;
