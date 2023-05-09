@@ -126,23 +126,23 @@ app.post('/updateUser', (req, res) => {
     }
 
     updateDB.updateUser(id, newDadesUser, (newDadesUpdated) => {
-        var newDadesUpdated = {
-            _id: dadesUser._id,
-            email: dadesUser.email,
-            username: dadesUser.username,
-            password: dadesUser.password,
-            url_img: dadesUser.url_img,
-            nombre: dadesUser.nombre,
-            apellidos: dadesUser.apellidos,
-            fecha_nac: dadesUser.fecha_nac,
-            token_id: dadesUser.token_id,
-            followers: dadesUser.followers,
-            followings: dadesUser.followings,
-            publicacions:dadesUser.publicacions,
+        var updatedDadesUser = {
+            _id: newDadesUpdated._id,
+            email: newDadesUpdated.email,
+            username: newDadesUpdated.username,
+            password: newDadesUpdated.password,
+            url_img: newDadesUpdated.url_img,
+            nombre: newDadesUpdated.nombre,
+            apellidos: newDadesUpdated.apellidos,
+            fecha_nac: newDadesUpdated.fecha_nac,
+            token_id: newDadesUpdated.token_id,
+            followers: newDadesUpdated.followers,
+            followings: newDadesUpdated.followings,
+            publicacions:newDadesUpdated.publicacions,
             google: req.body.google,
             __v: 0
         }
-        res.send(newDadesUpdated)
+        res.send(updatedDadesUser)
     })
 })
 
@@ -576,7 +576,6 @@ app.post('/getSuggestedUsersChat', async (req, res) => {
         Promise.all(usersArr.map(userID => getUserByIDPromise(userID)))
             .then((dadesUsers) => {
                 resultUsers = dadesUsers;
-                log(dadesUsers);
                 res.send(resultUsers);
             })
             .catch((error) => {
@@ -640,12 +639,6 @@ app.post('/sendNotificacion', (req, res) => {
         },
     }*/
 
-    /*DIFERENTES NOTIFICACIONES*/
-    // 1 - Nuevo seguidor
-    // 2 - Nuevo like a tu publicacion
-    // 3 - Nuevo mensaje de usuario
-
-
     var message = {
         to: req.body.token_usuario,
         notification: {
@@ -664,6 +657,9 @@ app.post('/sendNotificacion', (req, res) => {
             res.send(message)
         }
     })
+
+
+    //res.send(message)
 })
 
 app.listen(PORT, () => {

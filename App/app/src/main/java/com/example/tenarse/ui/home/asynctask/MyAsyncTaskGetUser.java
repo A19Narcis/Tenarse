@@ -33,7 +33,7 @@ public class MyAsyncTaskGetUser extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... params) {
         OkHttpClient client = new OkHttpClient.Builder()
-                .callTimeout(30, TimeUnit.SECONDS) // Ajusta el tiempo de espera aquí
+                .callTimeout(10000, TimeUnit.SECONDS) // Ajusta el tiempo de espera aquí
                 .build();
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, jsonObject.toString());

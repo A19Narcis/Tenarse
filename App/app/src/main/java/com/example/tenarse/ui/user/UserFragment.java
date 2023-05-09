@@ -82,12 +82,6 @@ public class UserFragment extends Fragment {
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        try {
-            refreshUserInfo(dadesUsuari.getString("_id"));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
         binding.logoHomeToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,46 +119,6 @@ public class UserFragment extends Fragment {
             }
         });
 
-
-        try {
-            binding.userName.setText("@" + dadesUsuari.getString("username"));
-            JSONArray followings = new JSONArray(dadesUsuari.getString("followings"));
-            int numero_followings = followings.length();
-            if (numero_followings >= 10000 && numero_followings < 999950) {
-                String followingsString = formatFollowers10(numero_followings);
-                binding.userFolloweds.setText(followingsString); // 10.0 k
-            } else if (numero_followings >= 999950){
-                String followingsString = formatFollowers100(numero_followings);
-                binding.userFolloweds.setText(followingsString); // 10.0 M
-            } else {
-                binding.userFolloweds.setText(Integer.toString(numero_followings));
-            }
-
-            JSONArray followers = new JSONArray(dadesUsuari.getString("followers"));
-            int numero_followers = followers.length();
-            if (numero_followers >= 10000 && numero_followers < 999950) {
-                String followingsString = formatFollowers10(numero_followers);
-                binding.userFollowers.setText(followingsString); // 10.0 k
-            } else if (numero_followers >= 999950){
-                String followingsString = formatFollowers100(numero_followers);
-                binding.userFollowers.setText(followingsString); // 10.0 M
-            } else {
-                binding.userFollowers.setText(Integer.toString(numero_followers));
-            }
-
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            if (!dadesUsuari.getString("username").equals("false")){
-                Picasso.with(getContext()).invalidate(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
-                Picasso.with(getContext()).load(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
-            }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
         binding.settingsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,24 +126,9 @@ public class UserFragment extends Fragment {
             }
         });
 
+
         try {
-            JSONArray publicacions = new JSONArray(dadesUsuari.getString("publicacions"));
-            for (int i = 0; i < publicacions.length(); i++) {
-                JSONObject post = publicacions.getJSONObject(i);
-                //SACAR USERNAME
-                String realUsername = getUsernameFromID(post);
-                JSONObject readDadesUser = new JSONObject(realUsername);
-                if (post.getString("tipus").equals("image")){
-                    dataList.add(0, new ListElementImg(readDadesUser.getString("username"), post.getString("text"), post.getString("url_img"), post.getString("_id"), readDadesUser.getString("url_img")));
-                    multiAdapter.notifyItemInserted(0);
-                } else if (post.getString("tipus").equals("video")){
-                    dataList.add(0, new ListElementVideo(readDadesUser.getString("username"), post.getString("text"), post.getString("url_video"), post.getString("_id"), readDadesUser.getString("url_img")));
-                    multiAdapter.notifyItemInserted(0);
-                } else if (post.getString("tipus").equals("doubt")){
-                    dataList.add(0, new ListElementDoubt(readDadesUser.getString("username"), post.getString("titol"), post.getString("text"), post.getString("_id"), readDadesUser.getString("url_img")));
-                    multiAdapter.notifyItemInserted(0);
-                }
-            }
+            refreshUserInfo(dadesUsuari.getString("_id"));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -374,20 +313,5 @@ public class UserFragment extends Fragment {
         bundle.putSerializable("usernamePost", username);
         bundle.putSerializable("url_img", url_img);
         Navigation.findNavController(v).navigate(R.id.action_navigation_user_to_viewPostFragment, bundle);
-
-
-        //Carregar el nou fragment amb les seves dades
-        /*FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        ViewPostFragment viewPostFragment = new ViewPostFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("infoPost", infoPost);
-        bundle.putSerializable("origin", "perfil");
-        bundle.putSerializable("isLiked", myLike);
-        transaction.replace(R.id.viewFragment, viewPostFragment);
-        viewPostFragment.setArguments(bundle);
-        transaction.setReorderingAllowed(true);
-        transaction.addToBackStack(null);
-        transaction.commit();*/
     }
 }

@@ -1,4 +1,4 @@
-package com.example.tenarse.threads;
+package com.example.tenarse.ui.threads;
 
 import android.content.Context;
 import android.graphics.Bitmap;

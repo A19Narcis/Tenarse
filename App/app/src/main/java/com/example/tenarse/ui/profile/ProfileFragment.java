@@ -37,9 +37,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ProfileFragment extends Fragment {
 
@@ -120,7 +130,6 @@ public class ProfileFragment extends Fragment {
         });
 
 
-
         /* DADES DE L'USUARI SELECCIONAT */
         Bundle args = getArguments();
         if (args != null) {
@@ -130,12 +139,6 @@ public class ProfileFragment extends Fragment {
 
         try {
             userInfo = new JSONObject(userInfoString);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            refreshUserInfo(userInfo.getString("_id"));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -392,6 +395,13 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+
+        try {
+            refreshUserInfo(userInfo.getString("_id"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
         recyclerView = binding.recyclerViewFeed;
 
         recyclerView.setHasFixedSize(true);
@@ -416,14 +426,36 @@ public class ProfileFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskGetUser getAsynkTask = new MyAsyncTaskGetUser(url, jsonObject);
-        getAsynkTask.execute();
-        String resultTask = null;
-        try {
-            resultTask = getAsynkTask.get();
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+                1, // Número mínimo de hilos en el grupo
+                1, // Número máximo de hilos en el grupo
+                0L, TimeUnit.MILLISECONDS, // Tiempo máximo de espera para tareas adicionales
+                new LinkedBlockingQueue<Runnable>() // Cola de tareas
+        );
+
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .callTimeout(60, TimeUnit.SECONDS) // Ajusta el tiempo de espera aquí
+                        .build();
+                MediaType mediaType = MediaType.parse("application/json");
+                RequestBody body = RequestBody.create(mediaType, jsonObject.toString());
+                Request request = new Request.Builder()
+                        .url(url)
+                        .post(body)
+                        .build();
+
+                try {
+                    Response response = client.newCall(request).execute();
+                    String result = response.body().string();
+                    // Procesa la respuesta de la solicitud HTTP si es necesario
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // Maneja cualquier error de la solicitud HTTP
+                }
+            }
+        });
     }
 
     public static String formatFollowers10(int num) {
@@ -496,6 +528,21 @@ public class ProfileFragment extends Fragment {
             } else {
                 binding.userFollowers.setText(Integer.toString(new_numero_followers));
             }
+
+            try {
+                JSONArray usersSiguiendo = newDadesUser.getJSONArray("followings");
+                for (int i = 0; i < usersSiguiendo.length(); i++) {
+                    JSONObject user = usersSiguiendo.getJSONObject(i);
+                    if (user.getString("user").equals(userInfo.getString("_id"))){
+                        binding.followButton.setBackgroundColor(Color.WHITE);
+                        binding.followButton.setTextColor(Color.BLACK);
+                        binding.followButton.setText("Siguiendo ✓");
+                    }
+                }
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
 
 
             JSONArray new_publicacions = new JSONArray(newDadesUser.getString("publicacions"));

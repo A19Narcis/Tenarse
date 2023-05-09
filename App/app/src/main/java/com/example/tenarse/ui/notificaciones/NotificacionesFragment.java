@@ -68,26 +68,9 @@ public class NotificacionesFragment extends Fragment {
         });
 
 
-       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("My notification", "My notification", NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager manager = getActivity().getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-       }
-
-
-        binding.sendNot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                enviarNotificacion();
-            }
-        });
 
 
         return root;
-    }
-
-    private void enviarNotificacion() {
-
     }
 
 
