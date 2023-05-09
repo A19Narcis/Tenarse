@@ -177,9 +177,6 @@ public class ProfileFragment extends Fragment {
                     binding.followButton.setTextColor(Color.BLACK);
                     binding.followButton.setText("Siguiendo ✓");
 
-                    //Notificacion de que le sigues
-                    enviarNotificacion();
-
                     //******* UPDATE DATOS USER **********
                     String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
                     JSONObject jsonBody = new JSONObject();
@@ -409,53 +406,6 @@ public class ProfileFragment extends Fragment {
         recyclerView.setAdapter(multiAdapter);
 
         return root;
-    }
-
-    private void enviarNotificacion() {
-        GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-        JSONObject dadesUsuariPersonal = globalDadesUser.getDadesUser();
-        //Enviar notificacion a un usuario que tiene un token asociado
-        String url = "http://10.0.2.2:3000/sendNotificacion";
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("token_usuario", userInfo.getString("token_id"));
-            jsonObject.put("tituloNotificacion", "Nuevo seguidor");
-            jsonObject.put("textoNotificacion",  "@" + dadesUsuariPersonal.getString("username") + " te ha empezado a seguir");
-            jsonObject.put("token_destino", userInfo.getString("token_id"));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(
-                1, // Número mínimo de hilos en el grupo
-                1, // Número máximo de hilos en el grupo
-                0L, TimeUnit.MILLISECONDS, // Tiempo máximo de espera para tareas adicionales
-                new LinkedBlockingQueue<Runnable>() // Cola de tareas
-        );
-
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                OkHttpClient client = new OkHttpClient.Builder()
-                        .callTimeout(60, TimeUnit.SECONDS) // Ajusta el tiempo de espera aquí
-                        .build();
-                MediaType mediaType = MediaType.parse("application/json");
-                RequestBody body = RequestBody.create(mediaType, jsonObject.toString());
-                Request request = new Request.Builder()
-                        .url(url)
-                        .post(body)
-                        .build();
-
-                try {
-                    Response response = client.newCall(request).execute();
-                    String result = response.body().string();
-                    // Procesa la respuesta de la solicitud HTTP si es necesario
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    // Maneja cualquier error de la solicitud HTTP
-                }
-            }
-        });
     }
 
     public static String formatFollowers10(int num) {

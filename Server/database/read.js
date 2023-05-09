@@ -43,7 +43,13 @@ const suggestedUserInfoByID = async (id, callback) => {
 }
 
 const getUsers = async (text, callback) => {
-    const usersFound = await User.find({ username: { $regex: text, $options: 'i' } })
+    const usersFound = await User.find({
+    $or: [
+        { username: { $regex: text, $options: 'i' } },
+        { nombre: { $regex: text, $options: 'i' } },
+        { apellidos: { $regex: text, $options: 'i' } }
+    ]
+    });    
     callback(usersFound);
 }
 
@@ -94,5 +100,5 @@ module.exports = {
     getPostsByHashtag,
     getPostsByQuery,
     suggestedUserInfoByID,
-    getAllMyChats
+    getAllMyChats,
 }

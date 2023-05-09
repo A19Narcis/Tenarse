@@ -11,10 +11,6 @@
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_navigation_home_to_navigation_nots"
-            app:destination="@id/navigation_nots"
-            app:enterAnim="@anim/home_to_notifications" />
-        <action
             android:id="@+id/action_navigation_home_to_profileFragment"
             app:destination="@id/profileFragment" />
         <action
@@ -70,11 +66,6 @@
         android:name="com.example.tenarse.ui.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
-    <fragment
-        android:id="@+id/navigation_nots"
-        android:name="com.example.tenarse.ui.notificaciones.NotificacionesFragment"
-        android:label="fragment_notificaciones"
-        tools:layout="@layout/fragment_notificaciones" />
     <fragment
         android:id="@+id/navigation_settings"
         android:name="com.example.tenarse.ui.settings.SettingsFragment"
