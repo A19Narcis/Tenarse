@@ -1,5 +1,6 @@
 package com.example.tenarse.ui.home.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +41,9 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final int TYPE_IMAGE = 1;
     private final int TYPE_DOUBT = 2;
     private final int TYPE_VIDEO = 3;
+
+    private int currentItemPosition = 0;
+    private int totalItemCount = 0;
 
     public MultiAdapter(List<Object> dataList, Context context, HomeFragment mHomeFragment) {
         this.dataList = dataList;
@@ -78,7 +83,16 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+
+        currentItemPosition = position;
+        totalItemCount = getItemCount() - 1;
+
+        if (currentItemPosition == totalItemCount){
+            mHomeFragment.morePosts();
+        }
+
+
         switch (holder.getItemViewType()) {
             case TYPE_IMAGE:
                 ListElementImg imgElement = (ListElementImg) dataList.get(position);
@@ -302,6 +316,10 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public int getItemCount() {
         return dataList.size();
+    }
+
+    public void setDataList(List<Object> dataList) {
+        this.dataList = dataList;
     }
 
     public static class ImageViewHolder extends RecyclerView.ViewHolder {

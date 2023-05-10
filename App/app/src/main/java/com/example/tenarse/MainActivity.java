@@ -26,8 +26,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.tenarse.databinding.ActivityMainBinding;
-import com.google.firebase.messaging.FirebaseMessaging;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -84,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String lastActivity = sharedPreferences.getString("infoUser", "");
 
-        System.out.println("DADES USUARI EN EL MAIN: " + dadesUsuari);
-
         try {
             if (dadesUsuari == null || dadesUsuari.toString().equals("{}")){
                 JSONObject jsonObject = new JSONObject(lastActivity);
@@ -114,13 +110,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-            @Override
-            public void onComplete(@NonNull Task<String> task) {
-                System.out.println("TOKEN DISPOSITIVO: " + task.getResult());
-            }
-        });
     }
 
 

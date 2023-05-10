@@ -68,8 +68,8 @@ const getPublicacio = async (id_publi, callback) => {
     callback(postSelected)
 }
 
-const getPosts = async (callback) => {
-    const posts = await Post.find()
+const getPosts = async (numPagina, callback) => {
+    const posts = await Post.find().sort({ hora: -1 }).skip(numPagina * 5).limit(5) //SKIP -> numPagina * numPostQueCargan - LIMIT .> numeroPostQueCargan
     callback(posts)
 }
 

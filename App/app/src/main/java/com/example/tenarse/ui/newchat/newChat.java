@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentCreateNewChatBinding;
-import com.example.tenarse.databinding.FragmentNotificacionesBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.message.adapters.ChatAdapter;

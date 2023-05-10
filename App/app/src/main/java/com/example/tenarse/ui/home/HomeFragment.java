@@ -4,16 +4,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,7 +22,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentHomeBinding;
@@ -34,14 +34,10 @@ import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
-import com.example.tenarse.ui.search.users.ListElementUser;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -50,7 +46,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     // Establece una demora de 1 segundo antes de cancelar la animación de desplazamiento suave
     private static final int DELAY_MILLIS = 500;
-    private static final String URL = "http://10.0.2.2:3000/getPosts";
+
+    private static int numPagina = 0;
+    private static String url = "http://10.0.2.2:3000/getPosts/" + numPagina;
 
     private Handler mHandler = new Handler();
 
@@ -61,6 +59,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     /* Multi ADAPTER */
     List<Object> dataList;
     MultiAdapter multiAdapter;
+
+    private static final String KEY_DATA_LIST = "dataList";
+    private static final String KEY_RECYCLER_POSITION = "recyclerPosition";
+
+    private Parcelable recyclerPosition;
 
 
     RecyclerView recyclerView;
@@ -73,7 +76,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private boolean isLiked;
 
+    private boolean isFirstEntry;
+
     private ProgressBar progressBar;
+
+    private Parcelable recyclerViewState;
+
+    private int posicionPosts = 0;
 
     private Runnable mRunnable = new Runnable() {
         @Override
@@ -95,10 +104,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         View root = binding.getRoot();
 
         MainActivity mainActivity = (MainActivity) getActivity();
-        dataList = new ArrayList<>();
-        multiAdapter = new MultiAdapter(dataList, getContext(), HomeFragment.this);
 
         recyclerView = binding.rvHome;
+
+        dataList = new ArrayList<>();
+        multiAdapter = new MultiAdapter(dataList, getContext(), HomeFragment.this);
 
         globalDadesUser = GlobalDadesUser.getInstance();
 
@@ -117,8 +127,21 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         }
 
+        if (globalDadesUser.isFirstEntry()){
+            checkIfNewPost();
+            globalDadesUser.setFirstEntry(false);
+        } else {
+            dataList = globalDadesUser.getDataList();
+            System.out.println(dataList.toString());
 
-         chechIfNewPost();
+            if (dataList.size() > 0) {
+                multiAdapter.setDataList(dataList);
+                multiAdapter.notifyDataSetChanged();
+            } else {
+                // dataList está vacía, vuelve a cargar los datos
+                checkIfNewPost();
+            }
+        }
 
         // Obtener la referencia a la Toolbar de la MainActivity
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
@@ -164,22 +187,34 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                    //chechIfNewPost();
+                    checkIfNewPostReload(dataList.get(0));
                     binding.swipeRefreshLayout.setRefreshing(false);
             }
         });
 
+
+        recyclerView.setSaveEnabled(true);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(multiAdapter);
+
         return root;
     }
 
-    private void chechIfNewPost() {
-        MyAsyncTaskHomePosts getPosts = new MyAsyncTaskHomePosts(URL);
+    private void checkIfNewPostReload(Object o) {
+    }
+
+    private void checkIfNewPost() {
+        System.out.println(url);
+        MyAsyncTaskHomePosts getPosts = new MyAsyncTaskHomePosts(url);
         getPosts.execute();
         String resultGetPosts = null;
         try {
             resultGetPosts = getPosts.get();
             JSONArray jsonArray = new JSONArray(resultGetPosts);
-
+            if (jsonArray.length() == 0){
+                posicionPosts--;
+            }
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject post = jsonArray.getJSONObject(i);
                 //El owner llega como una ID, con esta ID sacamos el username
@@ -195,8 +230,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             listElementImg.setLiked(true);
                         }
                     }
-                    dataList.add(0, listElementImg);
-                    multiAdapter.notifyItemInserted(0);
+                    dataList.add(listElementImg);
+                    multiAdapter.notifyItemInserted(dataList.size() - 1);
                 } else if (post.getString("tipus").equals("doubt")){
                     isLiked = false;
                     ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), username_image.getString("username"), post.getString("titol"), post.getString("text"),  username_image.getString("url_img"), post.getJSONArray("likes"));
@@ -207,8 +242,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             listElementDoubt.setLiked(true);
                         }
                     }
-                    dataList.add(0, listElementDoubt);
-                    multiAdapter.notifyItemInserted(0);
+                    dataList.add(listElementDoubt);
+                    multiAdapter.notifyItemInserted(dataList.size() - 1);
                 } else if (post.getString("tipus").equals("video")){
                     isLiked = false;
                     ListElementVideo listElementVideo = new ListElementVideo(post.getString("_id"), username_image.getString("username"), username_image.getString("url_img"), post.getString("url_video"), post.getString("text"), post.getJSONArray("likes"));
@@ -219,17 +254,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             listElementVideo.setLiked(true);
                         }
                     }
-                    dataList.add(0, listElementVideo);
-                    multiAdapter.notifyItemInserted(0);
+                    dataList.add(listElementVideo);
+                    multiAdapter.notifyItemInserted(dataList.size() - 1);
                 }
             }
-
-
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerView.setAdapter(multiAdapter);
-
-
 
         } catch (ExecutionException | InterruptedException | JSONException e) {
             throw new RuntimeException(e);
@@ -306,6 +334,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         Bundle bundle = new Bundle();
         bundle.putString("userInfo", dadesUser.toString());
         Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_profileFragment, bundle);
+        globalDadesUser.setDataList(dataList);
     }
 
     public void selectPost(String idPost, View view, String username, String url_img){
@@ -346,6 +375,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         bundle.putSerializable("usernamePost", username);
         bundle.putSerializable("url_img", url_img);
         Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_viewPostFragment, bundle);
+        globalDadesUser.setDataList(dataList);
     }
 
 
@@ -394,5 +424,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void morePosts() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                numPagina++;
+                url = "http://10.0.2.2:3000/getPosts/" + numPagina;
+                checkIfNewPost();
+            }
+        });
     }
 }

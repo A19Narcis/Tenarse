@@ -441,8 +441,11 @@ app.get('/getSelectedPost/:id', (req, res) => {
     })
 })
 
-app.get('/getPosts', (req, res) => {
-    readDB.getPosts(function (posts) {
+app.get('/getPosts/:pagina', (req, res) => {
+
+    var numPagina = req.params.pagina;
+
+    readDB.getPosts(numPagina, function (posts) {
         res.send(posts)
     })
 })
