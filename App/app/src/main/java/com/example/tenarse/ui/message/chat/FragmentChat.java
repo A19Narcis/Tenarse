@@ -67,7 +67,6 @@ public class FragmentChat extends Fragment {
         }
         try {
             JSONArray arrayChats = new JSONArray(resultSuggestedUsers);
-            System.out.println(arrayChats.toString());
             for (int i = 0; i < arrayChats.length(); i++) {
                 if (arrayChats.getJSONObject(i).getString("tipo").equals("chat")){
                     JSONObject json = arrayChats.getJSONObject(i);
@@ -82,7 +81,7 @@ public class FragmentChat extends Fragment {
                     JSONObject username_image = new JSONObject(realUsername);
                     String lastMsg = "";
                     if (json.getJSONArray("messages").length() > 0) {
-                        lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).toString();
+                        lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).getString("txt_msg").toString();
                     }
                     arrayRecycler.add(new chatObject(json.getString("_id") ,username_image.getString("username"), lastMsg, username_image.getString("url_img")));
                     chatAdapter.notifyItemInserted(arrayRecycler.size() - 1);

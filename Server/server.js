@@ -581,9 +581,9 @@ app.post('/getSuggestedUsersChat', async (req, res) => {
 });
 
 //Crear el chat
-app.post('/getChats', (req, res) => {
-    readDB.getChat(req.user_id, () => {
-        res.send({ newChat: true })
+app.post('/getMessages', (req, res) => {
+    readDB.getChat(req.body.chat_id, (chat) => {
+        res.send({ chat: chat })
     })
 });
 
