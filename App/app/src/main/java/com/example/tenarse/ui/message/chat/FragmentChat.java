@@ -81,7 +81,7 @@ public class FragmentChat extends Fragment {
                     JSONObject username_image = new JSONObject(realUsername);
                     String lastMsg = "";
                     if (json.getJSONArray("messages").length() > 0) {
-                        lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).getString("txt_msg").toString();
+                        lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).getString("txt_msg");
                     }
                     arrayRecycler.add(new chatObject(json.getString("_id") ,username_image.getString("username"), lastMsg, username_image.getString("url_img")));
                     chatAdapter.notifyItemInserted(arrayRecycler.size() - 1);
