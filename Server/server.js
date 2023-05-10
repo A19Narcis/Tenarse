@@ -445,6 +445,8 @@ app.get('/getPosts/:pagina', (req, res) => {
 
     var numPagina = req.params.pagina;
 
+    console.log("Cargando publicaciones...");
+
     readDB.getPosts(numPagina, function (posts) {
         res.send(posts)
     })

@@ -83,6 +83,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private Parcelable recyclerViewState;
 
     private int posicionPosts = 0;
+    private boolean noMorePosts;
 
     private Runnable mRunnable = new Runnable() {
         @Override
@@ -132,7 +133,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             globalDadesUser.setFirstEntry(false);
         } else {
             dataList = globalDadesUser.getDataList();
-            System.out.println(dataList.toString());
 
             if (dataList.size() > 0) {
                 multiAdapter.setDataList(dataList);
@@ -202,6 +202,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void checkIfNewPostReload(Object o) {
+        url = "http://10.0.2.2:3000/getPosts/0";
+        dataList.clear();
+        checkIfNewPost();
+        multiAdapter.notifyDataSetChanged();
     }
 
     private void checkIfNewPost() {
@@ -212,9 +216,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         try {
             resultGetPosts = getPosts.get();
             JSONArray jsonArray = new JSONArray(resultGetPosts);
-            if (jsonArray.length() == 0){
-                posicionPosts--;
+            if (jsonArray.length() < 5){
+                noMorePosts = true;
+            } else {
+                noMorePosts = false;
             }
+            System.out.println(posicionPosts);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject post = jsonArray.getJSONObject(i);
                 //El owner llega como una ID, con esta ID sacamos el username
@@ -334,7 +341,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         Bundle bundle = new Bundle();
         bundle.putString("userInfo", dadesUser.toString());
         Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_profileFragment, bundle);
-        globalDadesUser.setDataList(dataList);
     }
 
     public void selectPost(String idPost, View view, String username, String url_img){
@@ -375,7 +381,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         bundle.putSerializable("usernamePost", username);
         bundle.putSerializable("url_img", url_img);
         Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_viewPostFragment, bundle);
-        globalDadesUser.setDataList(dataList);
     }
 
 
@@ -430,10 +435,20 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                numPagina++;
-                url = "http://10.0.2.2:3000/getPosts/" + numPagina;
-                checkIfNewPost();
+                System.out.println("HAY MAS POSTS? " + noMorePosts);
+                if (!noMorePosts){
+                    numPagina++;
+                    url = "http://10.0.2.2:3000/getPosts/" + numPagina;
+                    checkIfNewPost();
+                }
             }
         });
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        globalDadesUser.setDataList(dataList);
+    }
+
 }

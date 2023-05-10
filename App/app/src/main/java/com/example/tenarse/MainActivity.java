@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.example.tenarse.globals.GlobalDadesUser;
+import com.example.tenarse.ui.home.HomeFragment;
+import com.example.tenarse.ui.search.SearchFragment;
 import com.example.tenarse.ui.threads.LoadImageBottomNavBar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
@@ -26,6 +29,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.tenarse.databinding.ActivityMainBinding;
+import com.google.android.material.navigation.NavigationBarView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
