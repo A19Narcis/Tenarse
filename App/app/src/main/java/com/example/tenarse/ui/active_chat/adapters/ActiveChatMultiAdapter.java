@@ -2,10 +2,12 @@ package com.example.tenarse.ui.active_chat.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -88,18 +90,16 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 MessageViewHolder messageViewHolder = (MessageViewHolder) holder;
                 messageViewHolder.usernameTxt.setText("@" + messageElement.getUserName());
                 messageViewHolder.msgText.setText(messageElement.getMessage());
-                ConstraintLayout.LayoutParams layoutParams =
-                        (ConstraintLayout.LayoutParams) messageViewHolder.cardView.getLayoutParams();
-                System.out.println("AQUI ESTA LA IDDDDDDDDDDDDDD: "+ id);
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) messageViewHolder.cardView.getLayoutParams();
                 if(messageElement.getIdEmitter().equals(id)){
                     // Eliminar la restricción layout_constraintEnd_toEndOf
-                    layoutParams.startToStart = ConstraintLayout.LayoutParams.UNSET;
+                    layoutParams.setMarginStart(150);
+                    messageViewHolder.linearLayout.setGravity(Gravity.END);
                     messageViewHolder.cardView.setLayoutParams(layoutParams);
                     messageViewHolder.cardView.setCardBackgroundColor(Color.BLACK);
                     messageViewHolder.msgText.setTextColor(Color.WHITE);
                 }else{
-                    // Eliminar la restricción layout_constraintEnd_toEndOf
-                    layoutParams.endToEnd = ConstraintLayout.LayoutParams.UNSET;
+                    layoutParams.setMarginEnd(150);
                     messageViewHolder.cardView.setLayoutParams(layoutParams);
                 }
                 break;
@@ -119,13 +119,13 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
 
-        ConstraintLayout constraintLayout;
+        LinearLayout linearLayout;
         CardView cardView;
         TextView usernameTxt;
         TextView msgText;
         public MessageViewHolder(View itemView) {
             super(itemView);
-            constraintLayout = itemView.findViewById(R.id.chat_element_direction);
+            linearLayout = itemView.findViewById(R.id.chat_element_direction);
             cardView = itemView.findViewById(R.id.cardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             msgText = itemView.findViewById(R.id.txtMsg);
@@ -133,13 +133,13 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        ConstraintLayout constraintLayout;
+        LinearLayout linearLayout;
         CardView cardView;
         TextView usernameTxt;
         ImageView imagePost;
         public PostViewHolder(View itemView) {
             super(itemView);
-            constraintLayout = itemView.findViewById(R.id.chat_element_direction);
+            linearLayout = itemView.findViewById(R.id.chat_element_direction);
             cardView = itemView.findViewById(R.id.cardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             imagePost = itemView.findViewById(R.id.imagePost);

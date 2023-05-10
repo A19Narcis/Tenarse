@@ -530,15 +530,14 @@ app.post('/createChat', (req, res) => {
 //Update con msg
 app.post('/newMessage', (req, res) => {
     let fecha = new Date();
-    let hora = fecha.getHours();
-    let minutos = fecha.getMinutes();
-    let horaActual = hora + ":" + minutos;
+    const formatoFecha = 'ddd MMM DD HH:mm:ss z YYYY';
+    let fechaFormateada = getDateJavaFormat();
 
     var chat_id = req.body.chat_id
     var message = {
         emisor: req.body.emisor,
         txt_msg: req.body.message,
-        hora: horaActual
+        hora: fechaFormateada
     }
 
     updateDB.addMessageChat(message, chat_id, function () {
@@ -584,9 +583,9 @@ app.post('/getSuggestedUsersChat', async (req, res) => {
 });
 
 //Crear el chat
-app.post('/getChats', (req, res) => {
-    readDB.getChat(req.user_id, () => {
-        res.send({ newChat: true })
+app.post('/getMessages', (req, res) => {
+    readDB.getChat(req.body.chat_id, (chat) => {
+        res.send({ chat: chat })
     })
 });
 
@@ -627,3 +626,34 @@ app.post('/searchDoubt', (req, res) => {
 app.listen(PORT, () => {
     console.log("Server Running [" + PORT + "]");
 });
+
+function getDateJavaFormat(){
+    const fechaActual = new Date();
+
+    // Días de la semana
+    const diasSemana = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const diaSemana = diasSemana[fechaActual.getUTCDay()];
+
+    // Meses
+    const meses = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const mes = meses[fechaActual.getUTCMonth()];
+
+    // Día del mes
+    const dia = fechaActual.getUTCDate();
+
+    // Hora, minutos y segundos
+    const hora = fechaActual.getUTCHours();
+    const minutos = fechaActual.getUTCMinutes();
+    const segundos = fechaActual.getUTCSeconds();
+
+    // Zona horaria
+    const zonaHoraria = 'PDT'; // Puedes cambiarla según la zona horaria deseada
+
+    // Año
+    const año = fechaActual.getUTCFullYear();
+
+    // Formatear la fecha actual según el formato especificado
+    const fechaFormateada = `${diaSemana} ${mes} ${dia} ${hora}:${minutos}:${segundos} ${zonaHoraria} ${año}`;
+
+    return fechaFormateada;
+}

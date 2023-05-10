@@ -53,13 +53,13 @@ public class newChat extends Fragment {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
+            for (int i = 0; i < arrayRecycler.size(); i++) {
+                if (arrayRecycler.get(i).isSelected()) {
+                    participantes.add(arrayRecycler.get(i).getId());
+                }
+            }
             System.out.println("PARTICIPANTEEEEEEEEEEEEEEEEEEEES: " + participantes.size());
             if(participantes.size() > 1) {
-                for (int i = 0; i < arrayRecycler.size(); i++) {
-                    if (arrayRecycler.get(i).isSelected()) {
-                        participantes.add(arrayRecycler.get(i).getId());
-                    }
-                }
                 enviarCrear(participantes);
             }
         });

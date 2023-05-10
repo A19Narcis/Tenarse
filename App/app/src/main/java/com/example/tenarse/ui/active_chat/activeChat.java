@@ -19,6 +19,7 @@ import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.message.chat.chatObject;
 import com.example.tenarse.ui.register.MyAsyncTaskRegister;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -78,46 +79,104 @@ public class activeChat extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(chatAdapter);
 
+        getOldMessages();
+
         binding.sendBtn.setOnClickListener(view -> {
-            globalDadesUser = GlobalDadesUser.getInstance();
-            dadesUsuari = globalDadesUser.getDadesUser();
-            JSONObject body = new JSONObject();
-
-            try {
-                body.put("chat_id", chat_id);
-                System.out.println("DADES USUARI EN EL JSOOOON: " + dadesUsuari.toString());
-                body.put("emisor", dadesUsuari.getString("_id"));
-                body.put("message", binding.msgTextView.getText().toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if(!binding.msgTextView.getText().toString().equals("")) {
+                sendMessage();
             }
-
-            String url_updateDades = "http://10.0.2.2:3000/newMessage";
-            MyAsyncTaskGetUser updateUser = new MyAsyncTaskGetUser(url_updateDades, body);
-            updateUser.execute();
-            String resultUpdate = null;
-            try {
-                resultUpdate = updateUser.get();
-                System.out.println(resultUpdate);
-            } catch (ExecutionException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                System.out.println("DATOS RECYCLEEEER: "+dadesUsuari.toString());
-                arrayRecycler.add(new MessageObject(dadesUsuari.getString("_id"), dadesUsuari.getString("username"), binding.msgTextView.getText().toString()));
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            chatAdapter.notifyItemInserted(arrayRecycler.size()-1);
-            binding.msgTextView.setText("");
         });
         return root;
     }
 
-    private void initRetrofitClient(){
-        OkHttpClient client = new OkHttpClient.Builder().build();
+    public void sendMessage(){
+        globalDadesUser = GlobalDadesUser.getInstance();
+        dadesUsuari = globalDadesUser.getDadesUser();
+        JSONObject body = new JSONObject();
 
-        apiService = new Retrofit.Builder().baseUrl("http://10.0.2.2:3000").client(client).build().create(ApiService.class);
+        try {
+            body.put("chat_id", chat_id);
+            body.put("emisor", dadesUsuari.getString("_id"));
+            body.put("message", binding.msgTextView.getText().toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String url_updateDades = "http://10.0.2.2:3000/newMessage";
+        MyAsyncTaskGetUser updateUser = new MyAsyncTaskGetUser(url_updateDades, body);
+        updateUser.execute();
+        String resultUpdate = null;
+        try {
+            resultUpdate = updateUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            arrayRecycler.add(new MessageObject(dadesUsuari.getString("_id"), dadesUsuari.getString("username"), binding.msgTextView.getText().toString()));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        chatAdapter.notifyItemInserted(arrayRecycler.size()-1);
+        binding.msgTextView.setText("");
+    }
+
+    public void getOldMessages(){
+        globalDadesUser = GlobalDadesUser.getInstance();
+        dadesUsuari = globalDadesUser.getDadesUser();
+        JSONObject body = new JSONObject();
+
+        try {
+            body.put("chat_id", chat_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String url_updateDades = "http://10.0.2.2:3000/getMessages";
+        MyAsyncTaskGetUser updateUser = new MyAsyncTaskGetUser(url_updateDades, body);
+        updateUser.execute();
+        String resultUpdate = null;
+        try {
+            resultUpdate = updateUser.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            JSONObject objectChat = new JSONObject(resultUpdate);
+            System.out.println(objectChat);
+                JSONArray arrayMessages = objectChat.getJSONObject("chat").getJSONArray("messages");
+                for (int j = 0; j < arrayMessages.length(); j++) {//Coje la array de mensajes
+                    JSONObject object = (JSONObject) arrayMessages.get(j);
+                    String realUsername = getUsernameandImageFromID(object.getString("emisor"));
+                    JSONObject username_image = new JSONObject(realUsername);
+                    arrayRecycler.add(new MessageObject(object.getString("emisor"), username_image.getString("username"), object.getString("txt_msg")));
+                }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        chatAdapter.notifyItemInserted(arrayRecycler.size()-1);
+        binding.msgTextView.setText("");
+    }
+
+
+    private String getUsernameandImageFromID(String idUser) {
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("id_user", idUser);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        try {
+            resultSearch = selectedUser.get();
+            System.out.println(resultSearch);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return resultSearch;
     }
 
 }

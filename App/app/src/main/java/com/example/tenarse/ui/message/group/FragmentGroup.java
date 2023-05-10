@@ -94,7 +94,7 @@ public class FragmentGroup extends Fragment {
                     }
                     String lastMsg = "";
                     if (json.getJSONArray("messages").length() > 0) {
-                        lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).toString();
+                        lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).getString("txt_msg");
                     }
 
                     arrayRecycler.add(new chatObject(json.getString("_id"), groupName, lastMsg, "http://10.0.2.2:3000/uploads/user_img/default_user_img.png"));
