@@ -1,36 +1,32 @@
 package com.example.tenarse.ui.home.adapters;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
-import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.HomeFragment;
 import com.example.tenarse.ui.home.HomeViewModel;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -170,11 +166,6 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 doubtViewHolder.title.setText(doubtElement.getTitle());
                 doubtViewHolder.description.setText(doubtElement.getDescription());
 
-                /* Cargar USER IMAGE BITMAT Hilo */
-                /*String urlUserDoubt = doubtElement.getUser_img_url().replace("localhost", "10.0.2.2");
-                ImageView userImageViewDoubt = doubtViewHolder.userImageView;
-                new HomeViewModel.DownloadImageTask(userImageViewDoubt).execute(urlUserDoubt);*/
-
                 doubtViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -202,6 +193,15 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             doubtElement.setLiked(false);
                         }
                     }
+                });
+
+                doubtViewHolder.sharePost.setOnClickListener(view -> {
+                    animateButton(doubtViewHolder.sharePost);
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Tenarse");
+                    intent.putExtra(Intent.EXTRA_TEXT, "Mira esta publicacion de Tenarse: http://10.0.2.2:3000/app/publicacion_template?id=" + doubtElement.getId());
+                    mHomeFragment.startActivity(Intent.createChooser(intent, "Comparte:"));
                 });
 
                 break;
@@ -305,6 +305,13 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
+    private void animateButton(ImageView sharePost) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(sharePost, "translationX", 0f, 10f, -10f, 0f);
+        animator.setDuration(200);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.start();
+    }
+
     private void verProgressBar(VideoViewHolder videoViewHolder) {
         videoViewHolder.progressBar.setVisibility(View.VISIBLE);
     }
@@ -345,6 +352,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView description;
         ImageView userImageView;
         ImageView likeImage;
+        ImageView sharePost;
 
 
         public DoubtViewHolder(View itemView) {
@@ -354,6 +362,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             description = itemView.findViewById(R.id.rv_description);
             userImageView = itemView.findViewById(R.id.rv_userImage);
             likeImage = itemView.findViewById(R.id.like_image);
+            sharePost = itemView.findViewById(R.id.share_icon);
         }
     }
 

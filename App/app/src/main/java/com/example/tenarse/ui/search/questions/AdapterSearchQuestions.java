@@ -1,11 +1,14 @@
 package com.example.tenarse.ui.search.questions;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -87,6 +90,22 @@ public class AdapterSearchQuestions extends RecyclerView.Adapter<RecyclerView.Vi
                 }
             }
         });
+
+        doubtViewHolder.shareIcon.setOnClickListener(view -> {
+            animateButton(doubtViewHolder.shareIcon);
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Tenarse");
+            intent.putExtra(Intent.EXTRA_TEXT, "Mira esta publicacion de Tenarse: http://10.0.2.2:3000/app/publicacion_template?id=" + doubtElement.getId());
+            mSearchQuestionsFragment.startActivity(Intent.createChooser(intent, "Comparte:"));
+        });
+    }
+
+    private void animateButton(ImageView sharePost) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(sharePost, "translationX", 0f, 10f, -10f, 0f);
+        animator.setDuration(200);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.start();
     }
 
 
@@ -106,6 +125,7 @@ public class AdapterSearchQuestions extends RecyclerView.Adapter<RecyclerView.Vi
         TextView description;
         ImageView userImageView;
         ImageView likeImage;
+        ImageView shareIcon;
 
 
         public DoubtViewHolder(View itemView) {
@@ -115,6 +135,7 @@ public class AdapterSearchQuestions extends RecyclerView.Adapter<RecyclerView.Vi
             description = itemView.findViewById(R.id.rv_description);
             userImageView = itemView.findViewById(R.id.rv_userImage);
             likeImage = itemView.findViewById(R.id.like_image);
+            shareIcon = itemView.findViewById(R.id.share_icon);
         }
     }
 

@@ -202,14 +202,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void checkIfNewPostReload(Object o) {
-        url = "http://10.0.2.2:3000/getPosts/0";
+        numPagina = 0;
+        url = "http://10.0.2.2:3000/getPosts/" + numPagina;
         dataList.clear();
         checkIfNewPost();
         multiAdapter.notifyDataSetChanged();
     }
 
     private void checkIfNewPost() {
-        System.out.println(url);
         MyAsyncTaskHomePosts getPosts = new MyAsyncTaskHomePosts(url);
         getPosts.execute();
         String resultGetPosts = null;
@@ -221,7 +221,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             } else {
                 noMorePosts = false;
             }
-            System.out.println(posicionPosts);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject post = jsonArray.getJSONObject(i);
                 //El owner llega como una ID, con esta ID sacamos el username
@@ -435,7 +434,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                System.out.println("HAY MAS POSTS? " + noMorePosts);
                 if (!noMorePosts){
                     numPagina++;
                     url = "http://10.0.2.2:3000/getPosts/" + numPagina;

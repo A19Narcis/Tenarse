@@ -1,5 +1,6 @@
 package com.example.tenarse.ui.post;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,6 +22,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.Toast;
 
@@ -100,7 +103,6 @@ public class ViewPostFragment extends Fragment {
             urlImg = args.getString("url_img");
         }
 
-        System.out.println(usernamePost);
 
 
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -118,11 +120,23 @@ public class ViewPostFragment extends Fragment {
 
         binding.swipeRefreshLayout.setDistanceToTriggerSync((int) (180 * getResources().getDisplayMetrics().density));
 
+        binding.shareIcon.setOnClickListener(view -> {
+                animateButton(binding.shareIcon);
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Tenarse");
+            try {
+                intent.putExtra(Intent.EXTRA_TEXT, "Mira esta publicacion de Tenarse: http://10.0.2.2:3000/app/publicacion_template?id=" + dadesPost.getString("_id"));
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            startActivity(Intent.createChooser(intent, "Comparte:"));
+        });
+
         try {
             dadesPost = new JSONObject(infoPost);
             binding.rvUsername.setText(usernamePost);
             String userImg = urlImg.replace("localhost", "10.0.2.2");
-            System.out.println(userImg);
             Picasso.with(getContext()).invalidate(userImg);
             Picasso.with(getContext()).load(userImg).into(binding.rvUserImage);
 
@@ -365,6 +379,13 @@ public class ViewPostFragment extends Fragment {
         }
 
         return root;
+    }
+
+    private void animateButton(ImageView sharePost) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(sharePost, "translationX", 0f, 10f, -10f, 0f);
+        animator.setDuration(200);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.start();
     }
 
 

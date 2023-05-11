@@ -194,7 +194,6 @@ app.post('/getUser', (req, res) => {
         if (dades_user_valides === null) {
             res.send({ username: false })
         } else {
-            console.log("ENVIO DATOS");
             if (dades_user_valides.password === cryptedPasswd) {
                 /* Login successful */
                 var dadesFinals = {
@@ -372,10 +371,13 @@ app.post('/addPostDubt', (req, res) => {
 /* INSERT PUBLICACIO */
 function addPost(body, postUrl) {
     let fecha = new Date();
+    let year = fecha.getFullYear();
+    let mes = fecha.getMonth() + 1;
+    let dia = fecha.getDay();
     let hora = fecha.getHours();
     let minutos = fecha.getMinutes();
     let segundos = fecha.getSeconds();
-    if (hora < 10) {
+    if (hora < 10 ) {
         hora = '0' + hora;
     }
     if (minutos < 10) {
@@ -384,7 +386,7 @@ function addPost(body, postUrl) {
     if (segundos < 10) {
         segundos = '0' + segundos;
     }
-    let tiempoActual = hora + ':' + minutos + ':' + segundos
+    let tiempoActual = dia + '/' + mes + '/' + year + '_' + hora + ':' + minutos + ':' + segundos
     let URLServer = "http://localhost:3000/";
 
     var post;
@@ -444,8 +446,6 @@ app.get('/getSelectedPost/:id', (req, res) => {
 app.get('/getPosts/:pagina', (req, res) => {
 
     var numPagina = req.params.pagina;
-
-    console.log("Cargando publicaciones...");
 
     readDB.getPosts(numPagina, function (posts) {
         res.send(posts)
