@@ -31,8 +31,12 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import okhttp3.OkHttpClient;
 
 public class RegisterFragment extends Fragment {
@@ -46,6 +50,23 @@ public class RegisterFragment extends Fragment {
     private Object resultRegister;
 
     private String data_usuari = "";
+
+    private Socket mSocket;
+    {
+        try {
+            mSocket = IO.socket("http://10.0.2.2:3001");
+
+            mSocket.on("respuestaAddNewUser", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    // Manejar el mensaje recibido
+                    String mensaje = (String) args[0];
+                    System.out.println("Mensaje recibido: " + mensaje);
+                    mSocket.disconnect();
+                }
+            });
+        } catch (URISyntaxException e) {}
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -137,7 +158,11 @@ public class RegisterFragment extends Fragment {
                         e.printStackTrace();
                     }
 
-                    MyAsyncTaskRegister registerUser = new MyAsyncTaskRegister(url_register, body);
+                    mSocket.connect();
+                    mSocket.emit("addNewUser", body);
+
+
+                    /*MyAsyncTaskRegister registerUser = new MyAsyncTaskRegister(url_register, body);
                     registerUser.execute();
                     String resultRegister = null;
                     try {
@@ -199,7 +224,7 @@ public class RegisterFragment extends Fragment {
                     } else {
                         //Este usuario ya existe
                         binding.userExisteRegister.setVisibility(View.VISIBLE);
-                    }
+                    }*/
                 } else {
                     binding.userExisteRegister.setVisibility(View.GONE);
                     binding.errorTextRegister.setVisibility(View.VISIBLE);

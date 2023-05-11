@@ -34,7 +34,11 @@ import com.google.android.material.navigation.NavigationBarView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URISyntaxException;
 import java.util.Objects;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
     JSONObject dadesUsuari = globalDadesUser.getDadesUser();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
