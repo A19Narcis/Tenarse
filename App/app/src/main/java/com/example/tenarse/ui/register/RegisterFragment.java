@@ -33,6 +33,7 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -41,13 +42,14 @@ import okhttp3.OkHttpClient;
 
 public class RegisterFragment extends Fragment {
 
+    Semaphore semaphore = new Semaphore(0);
     TextView iniciarSesionBtn;
 
     private FragmentRegisterBinding binding;
 
     EditText etPlannedDate;
 
-    private Object resultRegister;
+    private String mensaje;
 
     private String data_usuari = "";
 
@@ -60,12 +62,72 @@ public class RegisterFragment extends Fragment {
                 @Override
                 public void call(Object... args) {
                     // Manejar el mensaje recibido
-                    String mensaje = (String) args[0];
+                    mensaje = (String) args[0];
                     System.out.println("Mensaje recibido: " + mensaje);
                     mSocket.disconnect();
+                    semaphore.release();
                 }
             });
         } catch (URISyntaxException e) {}
+    }
+
+    private void acabarRegistro(String resultRegister) {
+        binding.errorTextRegister.setVisibility(View.GONE);
+        if (!resultRegister.contains("false")){
+            binding.userExisteRegister.setVisibility(View.GONE);
+            Snackbar snackbar = Snackbar.make(binding.getRoot(), "Registro completado exitosamente.", Snackbar.LENGTH_LONG);
+
+            // Cambiar el color de fondo
+            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
+
+            // Cambiar el color del texto
+            TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+            textView.setTextColor(Color.WHITE);
+
+            // Obtener el TextView dentro de Snackbar
+            TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+            textoSnackbar.setGravity(Gravity.CENTER);
+
+            snackbar.addCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar snackbar, int event) {
+                    super.onDismissed(snackbar, event);
+
+                    String urlGetUser = "http://10.0.2.2:3000/getSelectedUser";
+                    JSONObject body = new JSONObject();
+                    try {
+                        body.put("username", binding.editTextUser.getText().toString());
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(urlGetUser, body);
+                    getUser.execute();
+                    String resultGetUserRegistered = null;
+                    try {
+                        resultGetUserRegistered = getUser.get();
+                    } catch (ExecutionException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("infoUser", resultGetUserRegistered);
+                    editor.apply();
+
+
+                    startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                    getActivity().finish();
+                }
+            });
+
+            // Mostrar Snackbar personalizado
+            snackbar.show();
+
+        } else {
+            //Este usuario ya existe
+            //binding.userExisteRegister.setVisibility(View.VISIBLE);
+            System.out.println("MAL");
+        }
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -158,73 +220,16 @@ public class RegisterFragment extends Fragment {
                         e.printStackTrace();
                     }
 
-                    mSocket.connect();
-                    mSocket.emit("addNewUser", body);
-
-
-                    /*MyAsyncTaskRegister registerUser = new MyAsyncTaskRegister(url_register, body);
-                    registerUser.execute();
-                    String resultRegister = null;
                     try {
-                        resultRegister = registerUser.get();
-                    } catch (ExecutionException | InterruptedException e) {
-                        throw new RuntimeException(e);
+                        mSocket.connect();
+                        mSocket.emit("addNewUser", body);
+
+                        // Espera hasta que se libere el semáforo (es decir, hasta que se reciba la respuesta)
+                        semaphore.acquire();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    binding.errorTextRegister.setVisibility(View.GONE);
-                    if (!resultRegister.contains("false")){
-                        binding.userExisteRegister.setVisibility(View.GONE);
-                        Snackbar snackbar = Snackbar.make(binding.getRoot(), "Registro completado exitosamente.", Snackbar.LENGTH_LONG);
-
-                        // Cambiar el color de fondo
-                        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
-
-                        // Cambiar el color del texto
-                        TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                        textView.setTextColor(Color.WHITE);
-
-                        // Obtener el TextView dentro de Snackbar
-                        TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                        textoSnackbar.setGravity(Gravity.CENTER);
-
-                        snackbar.addCallback(new Snackbar.Callback() {
-                            @Override
-                            public void onDismissed(Snackbar snackbar, int event) {
-                                super.onDismissed(snackbar, event);
-
-                                String urlGetUser = "http://10.0.2.2:3000/getSelectedUser";
-                                JSONObject body = new JSONObject();
-                                try {
-                                    body.put("username", binding.editTextUser.getText().toString());
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(urlGetUser, body);
-                                getUser.execute();
-                                String resultGetUserRegistered = null;
-                                try {
-                                    resultGetUserRegistered = getUser.get();
-                                } catch (ExecutionException | InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-                                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("infoUser", resultGetUserRegistered);
-                                editor.apply();
-
-
-                                startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                                getActivity().finish();
-                            }
-                        });
-
-                        // Mostrar Snackbar personalizado
-                        snackbar.show();
-
-                    } else {
-                        //Este usuario ya existe
-                        binding.userExisteRegister.setVisibility(View.VISIBLE);
-                    }*/
+                    acabarRegistro(mensaje);
                 } else {
                     binding.userExisteRegister.setVisibility(View.GONE);
                     binding.errorTextRegister.setVisibility(View.VISIBLE);
@@ -268,9 +273,5 @@ public class RegisterFragment extends Fragment {
         }
 
         binding = null;
-    }
-
-    public void setResultRegister(Object result){
-        resultRegister = result;
     }
 }

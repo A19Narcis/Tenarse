@@ -684,7 +684,7 @@ io.on('connection', socket => {
             url_img: urlImagen,
             nombre: data.name,
             apellidos: data.surname,
-            socket: socket,
+            socket: socket.id,
             fecha_nac: data.date,
             followers: [],
             followings: []
