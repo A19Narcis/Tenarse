@@ -8,11 +8,14 @@ const updateDB = require('./database/update')
 const deleteDB = require('./database/delete')
 const CryptoJS = require('crypto-js');
 const app = express();
+const http = require("http").createServer(app);
+const io = require("socket.io")(http)
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const { log } = require('console');
 
 const PORT = 3000
+const PORT_SOCKETS = 3001
 
 // Carpeta imagenes
 const publicDirPosts = path.join(__dirname, 'uploads', 'images');
@@ -629,6 +632,10 @@ app.listen(PORT, () => {
     console.log("Server Running [" + PORT + "]");
 });
 
+http.listen(PORT_SOCKETS, () => {
+    console.log("Socket Running [" + PORT_SOCKETS + "]");
+});
+
 function getDateJavaFormat(){
     const fechaActual = new Date();
 
@@ -659,3 +666,47 @@ function getDateJavaFormat(){
 
     return fechaFormateada;
 }
+
+io.on('connection', socket => {
+    console.log('Nuevo cliente conectado');
+  
+    // Escuchar eventos del cliente
+    socket.on('addNewUser', data => {
+        var urlImagen = 'http://localhost:3000/uploads/user_img/default_user_img.png';
+        if (data.url_img) {
+            urlImagen = data.url_img;
+        }
+    
+        const usuari = {
+            email: data.email,
+            username: data.username,
+            password: CryptoJS.SHA256(data.passwd).toString(),
+            url_img: urlImagen,
+            nombre: data.name,
+            apellidos: data.surname,
+            socket: socket.id,
+            fecha_nac: data.date,
+            followers: [],
+            followings: []
+        }
+    
+        /*const usuari = {
+            email: "1email@1gmail.com",
+            username: 'A19Narcis',
+            password: CryptoJS.SHA256("Ausias_2003").toString(),
+            url_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
+            nombre: 'Narcis',
+            apellidos: 'Gomez Carretero',
+            fecha_nac: '28/08/2003'
+        }*/
+    
+        insertDB.insertUsuari(usuari, function (resultInsert) {
+            socket.emit("respuestaAddNewUser", JSON.stringify(resultInsert));
+        })
+    });
+  
+    // Escuchar desconexiones de clientes
+    socket.on('disconnect', () => {
+      console.log('Cliente desconectado');
+    });
+});
