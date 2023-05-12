@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentMessageBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
@@ -39,13 +40,14 @@ public class MessageFragment extends Fragment {
         binding = FragmentMessageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.changeChatIconNormal();
+
         FragmentChat fragmentChat = new FragmentChat();
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragmentChat);
         transaction.commit();
-
-        setLastTimeChecked();
 
         binding.txtChat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,16 +85,6 @@ public class MessageFragment extends Fragment {
         });
 
         return root;
-    }
-
-    private void setLastTimeChecked() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("lastCheckedMessages", new Date().toString());
-        GlobalDadesUser globalDadesExit = GlobalDadesUser.getInstance();
-        JSONObject dadesUsuariExit = globalDadesExit.getDadesUser();
-        editor.putString("infoUser", dadesUsuariExit.toString());
-        editor.apply();
     }
 
     @Override

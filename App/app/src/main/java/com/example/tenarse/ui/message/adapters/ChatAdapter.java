@@ -49,6 +49,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             bundle.putString("username", dataList.get(position).getUserName());
             bundle.putString("profile_img", dataList.get(position).getProfileImg());
             bundle.putString("chat_id", dataList.get(position).getChat_id());
+            bundle.putString("participants", dataList.get(position).getParticipants().toString());
             Navigation.findNavController(view).navigate(R.id.action_navigation_message_to_activeChat, bundle);
         });
     }

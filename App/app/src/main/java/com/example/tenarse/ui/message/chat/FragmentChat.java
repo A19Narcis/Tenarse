@@ -72,6 +72,7 @@ public class FragmentChat extends Fragment {
                     JSONObject json = arrayChats.getJSONObject(i);
                     JSONArray participants = json.getJSONArray("participants");
                     String idFotoChat = null;
+                    JSONArray arrayParticipants = new JSONArray();
                     for (int j = 0; j < participants.length(); j++) {
                         if (!dadesUsuari.getString("_id").equals(participants.get(j))) {
                             idFotoChat = participants.get(j).toString();
@@ -79,11 +80,16 @@ public class FragmentChat extends Fragment {
                     }
                     String realUsername = getUsernameandImageFromID(idFotoChat);
                     JSONObject username_image = new JSONObject(realUsername);
+                    JSONObject newUser = new JSONObject();
+                    newUser.put("id", idFotoChat);
+                    newUser.put("username", username_image.getString("username"));
+                    arrayParticipants.put(newUser);
                     String lastMsg = "";
                     if (json.getJSONArray("messages").length() > 0) {
                         lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).getString("txt_msg");
                     }
-                    arrayRecycler.add(new chatObject(json.getString("_id") ,username_image.getString("username"), lastMsg, username_image.getString("url_img")));
+                    System.out.println(json);
+                    arrayRecycler.add(new chatObject(json.getString("_id") ,username_image.getString("username"), lastMsg, username_image.getString("url_img"), arrayParticipants));
                     chatAdapter.notifyItemInserted(arrayRecycler.size() - 1);
                 }
             }

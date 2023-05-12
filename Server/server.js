@@ -667,8 +667,21 @@ function getDateJavaFormat(){
     return fechaFormateada;
 }
 
+const sockets = {};
+
 io.on('connection', socket => {
-    console.log('Nuevo cliente conectado');
+
+    socket.on('updateSocket', data => {
+        readDB.getUserByID(data, function(dades_user){
+            socket.identificador = dades_user.socket;
+            sockets[socket.identificador] = socket;
+            console.log('IDs de los sockets almacenados:');
+            Object.keys(sockets).forEach((socketId) => {
+              console.log(socketId);
+            });
+        })
+    });
+
   
     // Escuchar eventos del cliente
     socket.on('addNewUser', data => {
@@ -689,24 +702,35 @@ io.on('connection', socket => {
             followers: [],
             followings: []
         }
-    
-        /*const usuari = {
-            email: "1email@1gmail.com",
-            username: 'A19Narcis',
-            password: CryptoJS.SHA256("Ausias_2003").toString(),
-            url_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-            nombre: 'Narcis',
-            apellidos: 'Gomez Carretero',
-            fecha_nac: '28/08/2003'
-        }*/
-    
+
         insertDB.insertUsuari(usuari, function (resultInsert) {
             socket.emit("respuestaAddNewUser", JSON.stringify(resultInsert));
         })
     });
+
+    socket.on('sendMessage', data => {
+        readDB.getChat(data.chat_id, function(dades_chat){
+            for (let i = 0; i < dades_chat.participants.length; i++) {
+                if(dades_chat.participants[i] != data.emisor){
+                    readDB.getUserByID(dades_chat.participants[i], function (dades_user){
+                        enviarMensajeASocket(dades_user.socket, data);
+                    });
+                }
+            }
+            
+        });
+    });
   
     // Escuchar desconexiones de clientes
     socket.on('disconnect', () => {
-      console.log('Cliente desconectado');
+      delete sockets[socket.identificador];
     });
 });
+
+function enviarMensajeASocket(socketId, mensaje) {
+    const socket = sockets[socketId];
+  
+    if (socket) {
+      socket.emit('listenChats', mensaje);
+    }
+  }
