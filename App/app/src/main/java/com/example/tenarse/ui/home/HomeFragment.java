@@ -187,7 +187,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                    checkIfNewPostReload(dataList.get(0));
+                    checkIfNewPostReload();
                     binding.swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -201,7 +201,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         return root;
     }
 
-    private void checkIfNewPostReload(Object o) {
+    private void checkIfNewPostReload() {
         numPagina = 0;
         url = "http://10.0.2.2:3000/getPosts/" + numPagina;
         dataList.clear();
