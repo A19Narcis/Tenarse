@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.message.adapters.ChatAdapter;
 import com.example.tenarse.ui.message.asynctask.MyAsyncTaskGetMyChats;
 
@@ -107,7 +107,7 @@ public class FragmentChat extends Fragment {
             e.printStackTrace();
         }
 
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
         selectedUser.execute();
         String resultSearch = null;
         try {

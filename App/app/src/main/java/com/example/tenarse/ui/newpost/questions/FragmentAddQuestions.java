@@ -1,11 +1,6 @@
 package com.example.tenarse.ui.newpost.questions;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,28 +14,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.newpost.NewpostFragment;
 import com.example.tenarse.ui.newpost.adapters.HashtagAdapter;
 import com.example.tenarse.ui.newpost.httpUploads.MyAsyncTaskQuestion;
-import com.example.tenarse.ui.register.MyAsyncTaskRegister;
-import com.example.tenarse.ui.search.users.ListElementUser;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -175,7 +162,7 @@ public class FragmentAddQuestions extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+                        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
                         selectedUser.execute();
                         String resultSearch = null;
                         try {

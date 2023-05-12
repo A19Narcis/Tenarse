@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.message.adapters.ChatAdapter;
 import com.example.tenarse.ui.message.asynctask.MyAsyncTaskGetMyChats;
 import com.example.tenarse.ui.message.chat.chatObject;
@@ -21,7 +21,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -121,7 +120,7 @@ public class FragmentGroup extends Fragment {
             e.printStackTrace();
         }
 
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
         selectedUser.execute();
         String resultSearch = null;
         try {

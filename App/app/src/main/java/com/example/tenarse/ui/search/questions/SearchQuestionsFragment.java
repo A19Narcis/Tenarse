@@ -12,11 +12,10 @@ import android.view.ViewGroup;
 import com.example.tenarse.databinding.FragmentSearchQuestionsBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.search.SearchFragment;
 import com.example.tenarse.ui.search.posts.MyAsyncTaskGetPosts;
-import com.example.tenarse.ui.search.users.ListElementUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -120,7 +119,7 @@ public class SearchQuestionsFragment extends Fragment {
             e.printStackTrace();
         }
 
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
         selectedUser.execute();
         String resultSearch = null;
         try {
@@ -222,7 +221,7 @@ public class SearchQuestionsFragment extends Fragment {
             e.printStackTrace();
         }
 
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
         selectedUser.execute();
         String resultSearch = null;
         try {

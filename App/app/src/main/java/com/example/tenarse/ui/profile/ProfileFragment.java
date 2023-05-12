@@ -2,21 +2,32 @@ package com.example.tenarse.ui.profile;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -24,9 +35,12 @@ import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentProfileBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.profile.asynctask.MyAsyncTaskFollowing;
-import com.example.tenarse.ui.search.users.ListElementUser;
+import com.example.tenarse.ui.search.posts.MyAsyncTaskGetPosts;
+import com.example.tenarse.ui.user.UserFragment;
+import com.example.tenarse.ui.user.adapters.FollowAdapter;
+import com.example.tenarse.ui.user.elements.ElementUserFollow;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
 import com.example.tenarse.ui.user.adapters.MultiAdapter;
@@ -37,25 +51,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class ProfileFragment extends Fragment {
 
     private Handler mHandler = new Handler();
     private static final int DELAY_MILLIS = 500;
     List<Object> dataList;
+    List<Object> usersList;
     private FragmentProfileBinding binding;
 
     RecyclerView recyclerView;
@@ -66,6 +71,7 @@ public class ProfileFragment extends Fragment {
     JSONObject userInfo;
 
     MultiAdapter multiAdapter;
+    FollowAdapter followAdapter;
 
     String fragmentAnterior = "";
 
@@ -94,6 +100,10 @@ public class ProfileFragment extends Fragment {
 
         dataList = new ArrayList<>();
         multiAdapter = new MultiAdapter(dataList, getContext(),ProfileFragment.this);
+
+        usersList = new ArrayList<>();
+        followAdapter = new FollowAdapter(usersList, getContext(), ProfileFragment.this);
+
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -185,7 +195,7 @@ public class ProfileFragment extends Fragment {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+                    MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
                     selectedUser.execute();
                     String resultSearch = null;
                     try {
@@ -253,7 +263,7 @@ public class ProfileFragment extends Fragment {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+                            MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
                             selectedUser.execute();
                             String resultSearch = null;
                             try {
@@ -405,6 +415,176 @@ public class ProfileFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(multiAdapter);
 
+        binding.userFollowers.setOnClickListener(v -> {
+
+            usersList.clear();
+
+            Dialog dialog = new Dialog(getContext());
+            dialog.setContentView(R.layout.seguidores_dialog);
+
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+            if (windowManager != null) {
+                windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+                int screenWidth = displayMetrics.widthPixels;
+                int screenHeight = displayMetrics.heightPixels;
+
+                // Calcular el ancho deseado para el diálogo (la mitad de la pantalla)
+                int desiredWidth = (int) (screenWidth / 1.45f);
+                int desiredHeight = screenHeight / 3;
+
+                // Obtener la ventana del diálogo
+                Window window = dialog.getWindow();
+                if (window != null) {
+                    // Establecer el ancho y alto personalizados
+                    WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+                    params.copyFrom(window.getAttributes());
+                    params.width = desiredWidth;
+                    params.height = desiredHeight;
+
+                    // Establecer la gravedad para centrar horizontalmente
+                    params.gravity = Gravity.CENTER_HORIZONTAL;
+
+                    window.setAttributes(params);
+
+                    // Aplicar bordes redondeados al diálogo
+                    int cornerRadius = 20; // Valor en píxeles, ajusta según tus necesidades
+                    ShapeDrawable shapeDrawable = new ShapeDrawable();
+                    shapeDrawable.getPaint().setColor(Color.WHITE); // Color del fondo del diálogo
+                    shapeDrawable.getPaint().setStyle(Paint.Style.FILL);
+                    shapeDrawable.getPaint().setAntiAlias(true);
+                    shapeDrawable.setShape(new RoundRectShape(
+                            new float[]{cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius},
+                            null,
+                            null));
+                    window.setBackgroundDrawable(shapeDrawable);
+                }
+            }
+
+            RecyclerView recyclerView = dialog.findViewById(R.id.recyclerViewSeguidores);
+            recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+            //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
+            String url = "http://10.0.2.2:3000/getFollowersInfo";
+            JSONObject body = new JSONObject();
+            try {
+                body.put("id_user", userInfo.getString("_id"));
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+            MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+            getInfoFollowers.execute();
+            String result = null;
+            try {
+                result = getInfoFollowers.get();
+
+                JSONArray followsArray = new JSONArray(result);
+
+                for (int i = 0; i < followsArray.length(); i++) {
+                    JSONObject user = followsArray.getJSONObject(i);
+                    usersList.add(new ElementUserFollow(user.getString("username"), user.getString("url_img")));
+                    followAdapter.notifyItemInserted(usersList.size() - 1);
+                }
+
+
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(followAdapter);
+
+            } catch (ExecutionException | InterruptedException | JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+            dialog.show();
+        });
+
+        binding.userFolloweds.setOnClickListener(v -> {
+            usersList.clear();
+
+            Dialog dialog = new Dialog(getContext());
+            dialog.setContentView(R.layout.seguidores_dialog);
+
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+            if (windowManager != null) {
+                windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+                int screenWidth = displayMetrics.widthPixels;
+                int screenHeight = displayMetrics.heightPixels;
+
+                // Calcular el ancho deseado para el diálogo (la mitad de la pantalla)
+                int desiredWidth = (int) (screenWidth / 1.45f);
+                int desiredHeight = screenHeight / 3;
+
+                // Obtener la ventana del diálogo
+                Window window = dialog.getWindow();
+                if (window != null) {
+                    // Establecer el ancho y alto personalizados
+                    WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+                    params.copyFrom(window.getAttributes());
+                    params.width = desiredWidth;
+                    params.height = desiredHeight;
+
+                    // Establecer la gravedad para centrar horizontalmente
+                    params.gravity = Gravity.CENTER_HORIZONTAL;
+
+                    window.setAttributes(params);
+
+                    // Aplicar bordes redondeados al diálogo
+                    int cornerRadius = 20; // Valor en píxeles, ajusta según tus necesidades
+                    ShapeDrawable shapeDrawable = new ShapeDrawable();
+                    shapeDrawable.getPaint().setColor(Color.WHITE); // Color del fondo del diálogo
+                    shapeDrawable.getPaint().setStyle(Paint.Style.FILL);
+                    shapeDrawable.getPaint().setAntiAlias(true);
+                    shapeDrawable.setShape(new RoundRectShape(
+                            new float[]{cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius},
+                            null,
+                            null));
+                    window.setBackgroundDrawable(shapeDrawable);
+                }
+            }
+
+            RecyclerView recyclerView = dialog.findViewById(R.id.recyclerViewSeguidores);
+            TextView texto = dialog.findViewById(R.id.followers_window_text);
+            texto.setText("Siguiendo");
+            recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+            //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
+            String url = "http://10.0.2.2:3000/getFollowingsInfo";
+            JSONObject body = new JSONObject();
+            try {
+                body.put("id_user", userInfo.getString("_id"));
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+            MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+            getInfoFollowers.execute();
+            String result = null;
+            try {
+                result = getInfoFollowers.get();
+
+                JSONArray followsArray = new JSONArray(result);
+
+                for (int i = 0; i < followsArray.length(); i++) {
+                    JSONObject user = followsArray.getJSONObject(i);
+                    usersList.add(new ElementUserFollow(user.getString("username"), user.getString("url_img")));
+                    followAdapter.notifyItemInserted(usersList.size() - 1);
+                }
+
+
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(followAdapter);
+
+            } catch (ExecutionException | InterruptedException | JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+            dialog.show();
+        });
+
+
         return root;
     }
 
@@ -442,7 +622,7 @@ public class ProfileFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
         selectedUser.execute();
         String resultSearch = null;
         try {
@@ -540,7 +720,7 @@ public class ProfileFragment extends Fragment {
             e.printStackTrace();
         }
 
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
         selectedUser.execute();
         String resultSearch = null;
         try {

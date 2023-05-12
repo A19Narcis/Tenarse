@@ -226,12 +226,27 @@ app.post('/getUser', (req, res) => {
 app.post('/getUsernameAndImageFromID', (req, res) => {
     var id = req.body.id_user;
 
-    /*var id = "644785f8fdc077b15553ba12"*/
-
     readDB.getUserByID(id, (dades_user) => {
         res.send({ username: dades_user.username, url_img: dades_user.url_img })
     })
 })
+
+app.post('/getFollowersInfo', (req, res) => {
+    var id = req.body.id_user
+
+    readDB.getFollowersInfo(id, (dades_followers) => {
+        res.send(dades_followers)
+    })
+})
+
+app.post('/getFollowingsInfo', (req, res) => {
+    var id = req.body.id_user
+
+    readDB.getFollowingsInfo(id, (dades_followers) => {
+        res.send(dades_followers)
+    })
+})
+
 
 app.post('/getSelectedUser', (req, res) => {
     var email_username_id = req.body.username
@@ -675,10 +690,6 @@ io.on('connection', socket => {
         readDB.getUserByID(data, function(dades_user){
             socket.identificador = dades_user.socket;
             sockets[socket.identificador] = socket;
-            console.log('IDs de los sockets almacenados:');
-            Object.keys(sockets).forEach((socketId) => {
-              console.log(socketId);
-            });
         })
     });
 

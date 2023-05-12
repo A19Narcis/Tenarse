@@ -23,14 +23,12 @@ import androidx.navigation.Navigation;
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentLoginBinding;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
-import com.example.tenarse.ui.register.MyAsyncTaskRegister;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -255,7 +253,7 @@ public class LoginFragment extends Fragment {
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);
                             }
-                            MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(urlGetUser, body);
+                            MyAsyncTask getUser = new MyAsyncTask(urlGetUser, body);
                             getUser.execute();
                             String resultGetUserRegistered = null;
                             try {
@@ -327,7 +325,7 @@ public class LoginFragment extends Fragment {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(url, jsonObject);
+        MyAsyncTask getUser = new MyAsyncTask(url, jsonObject);
         getUser.execute();
         String resultGetUser = null;
         try {
@@ -350,7 +348,7 @@ public class LoginFragment extends Fragment {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(url, jsonObject);
+        MyAsyncTask getUser = new MyAsyncTask(url, jsonObject);
         getUser.execute();
         String resultGetUser = null;
         try {

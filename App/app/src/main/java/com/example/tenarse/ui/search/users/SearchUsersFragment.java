@@ -3,26 +3,20 @@ package com.example.tenarse.ui.search.users;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentSearchUsersBinding;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
-import com.example.tenarse.ui.profile.ProfileFragment;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.search.SearchFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -112,7 +106,7 @@ public class SearchUsersFragment extends Fragment{
             e.printStackTrace();
         }
 
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
         selectedUser.execute();
         String resultSearch = null;
         try {

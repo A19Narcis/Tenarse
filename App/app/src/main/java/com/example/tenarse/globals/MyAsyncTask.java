@@ -1,12 +1,9 @@
-package com.example.tenarse.ui.home.asynctask;
+package com.example.tenarse.globals;
 
 import android.os.AsyncTask;
 
-import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.HomeFragment;
-import com.example.tenarse.ui.search.users.ListElementUser;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -18,14 +15,13 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MyAsyncTaskGetUser extends AsyncTask<Void, Void, String> {
+public class MyAsyncTask extends AsyncTask<Void, Void, String> {
 
     private final String url;
     private final JSONObject jsonObject;
 
-    final HomeFragment homeFragment = new HomeFragment();
 
-    public MyAsyncTaskGetUser(String url, JSONObject jsonObject) {
+    public MyAsyncTask(String url, JSONObject jsonObject) {
         this.url = url;
         this.jsonObject = jsonObject;
     }
@@ -33,7 +29,7 @@ public class MyAsyncTaskGetUser extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... params) {
         OkHttpClient client = new OkHttpClient.Builder()
-                .callTimeout(10000, TimeUnit.SECONDS) // Ajusta el tiempo de espera aquí
+                .callTimeout(30, TimeUnit.SECONDS) // Ajusta el tiempo de espera aquí
                 .build();
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, jsonObject.toString());
@@ -45,7 +41,7 @@ public class MyAsyncTaskGetUser extends AsyncTask<Void, Void, String> {
         try {
             Response response = client.newCall(request).execute();
             return response.body().string();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

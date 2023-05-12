@@ -23,7 +23,7 @@ import androidx.navigation.Navigation;
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentRegisterBinding;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.widgets.DatePickerFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -100,7 +100,7 @@ public class RegisterFragment extends Fragment {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                    MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(urlGetUser, body);
+                    MyAsyncTask getUser = new MyAsyncTask(urlGetUser, body);
                     getUser.execute();
                     String resultGetUserRegistered = null;
                     try {

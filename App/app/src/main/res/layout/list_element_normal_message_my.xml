@@ -31,6 +31,8 @@
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:paddingBottom="6dp"
+        android:layout_marginBottom="10dp"
         android:text="TextVegergergergergergergergerg rg erg erwg werge rwhtrhtyeh  hrteiew"
         android:textSize="20dp" />
+
 </LinearLayout>

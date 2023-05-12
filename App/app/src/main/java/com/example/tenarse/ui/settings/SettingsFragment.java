@@ -2,7 +2,6 @@ package com.example.tenarse.ui.settings;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -29,7 +28,7 @@ import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentSettingsBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.httpRetrofit.ApiService;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.register.MyAsyncTaskRegister;
 import com.example.tenarse.widgets.CropperActivity;
 import com.example.tenarse.widgets.DatePickerFragment;
@@ -216,7 +215,7 @@ public class SettingsFragment extends Fragment{
                         throw new RuntimeException(e);
                     }
 
-                    MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(url_checkDades, bodyCheck);
+                    MyAsyncTask getUser = new MyAsyncTask(url_checkDades, bodyCheck);
                     getUser.execute();
                     try {
                         resultGetUser = getUser.get();
@@ -240,7 +239,7 @@ public class SettingsFragment extends Fragment{
                         throw new RuntimeException(e);
                     }
 
-                    MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(url_checkDades, bodyCheck);
+                    MyAsyncTask getUser = new MyAsyncTask(url_checkDades, bodyCheck);
                     getUser.execute();
 
                     try {

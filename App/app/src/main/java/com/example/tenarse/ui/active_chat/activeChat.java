@@ -2,8 +2,6 @@ package com.example.tenarse.ui.active_chat;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,28 +11,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.MainActivity;
-import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentActiveChatBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.httpRetrofit.ApiService;
 import com.example.tenarse.ui.active_chat.adapters.ActiveChatMultiAdapter;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
-import com.example.tenarse.ui.message.chat.chatObject;
-import com.example.tenarse.ui.register.MyAsyncTaskRegister;
+import com.example.tenarse.globals.MyAsyncTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
 
 public class activeChat extends Fragment {
 
@@ -150,7 +141,7 @@ public class activeChat extends Fragment {
         }
 
         String url_updateDades = "http://10.0.2.2:3000/newMessage";
-        MyAsyncTaskGetUser updateUser = new MyAsyncTaskGetUser(url_updateDades, body);
+        MyAsyncTask updateUser = new MyAsyncTask(url_updateDades, body);
         updateUser.execute();
         String resultUpdate = null;
         try {
@@ -179,7 +170,7 @@ public class activeChat extends Fragment {
         }
 
         String url_updateDades = "http://10.0.2.2:3000/getMessages";
-        MyAsyncTaskGetUser updateUser = new MyAsyncTaskGetUser(url_updateDades, body);
+        MyAsyncTask updateUser = new MyAsyncTask(url_updateDades, body);
         updateUser.execute();
         String resultUpdate = null;
         try {
