@@ -13,6 +13,7 @@ const io = require("socket.io")(http)
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const { log } = require('console');
+const nodemailer = require('nodemailer');
 
 const PORT = 3000
 const PORT_SOCKETS = 3001
@@ -58,19 +59,36 @@ app.post('/addNewUser', (req, res) => {
         followings: []
     }
 
-    /*const usuari = {
-        email: "1email@1gmail.com",
-        username: 'A19Narcis',
-        password: CryptoJS.SHA256("Ausias_2003").toString(),
-        url_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-        nombre: 'Narcis',
-        apellidos: 'Gomez Carretero',
-        fecha_nac: '28/08/2003'
-    }*/
-
     insertDB.insertUsuari(usuari, function (resultInsert) {
         res.send(resultInsert);
     })
+})
+
+app.post('/verifyEmail', (req, res) => {
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'tenarse.oficial@gmail.com',
+            pass: 'tdmpxtxureesvxeu'
+        }
+    });
+
+    var codigo = Math.floor(Math.random() * 9999);
+
+    codigo = ("000" + codigo).slice(-4);
+    codigo = ("000" + (parseInt(codigo) + 1)).slice(-4);
+
+
+    let mailOptions = {
+        from: 'tenarse.oficial@gmail.com', 
+        to: req.body.email, 
+        subject: 'Verificación Email',
+        html: 'Este es tu codigo de verificación: ' + codigo
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {});
+
+    res.send(codigo)
 })
 
 

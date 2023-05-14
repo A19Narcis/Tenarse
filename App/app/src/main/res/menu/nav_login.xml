@@ -9,4 +9,8 @@
         android:id="@+id/navigation_register"
         android:title="" />
 
+    <item
+        android:id="@+id/navigation_verify_code"
+        android:title="" />
+
 </menu>

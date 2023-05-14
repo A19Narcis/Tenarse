@@ -36,12 +36,12 @@ import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.search.posts.MyAsyncTaskGetPosts;
-import com.example.tenarse.ui.user.adapters.FollowAdapter;
+import com.example.tenarse.ui.user.elements.adapters.FollowAdapter;
 import com.example.tenarse.ui.user.elements.ElementUserFollow;
 import com.example.tenarse.ui.user.elements.ListElementVideo;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
-import com.example.tenarse.ui.user.adapters.MultiAdapter;
+import com.example.tenarse.ui.user.elements.adapters.MultiAdapter;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
