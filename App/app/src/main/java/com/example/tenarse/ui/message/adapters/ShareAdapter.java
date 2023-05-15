@@ -12,13 +12,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
+import com.example.tenarse.globals.MyAsyncTask;
+import com.example.tenarse.ui.active_chat.MyMessageObject;
 import com.example.tenarse.ui.message.SharePostObject;
-import com.example.tenarse.ui.profile.ProfileFragment;
-import com.example.tenarse.ui.user.UserFragment;
-import com.example.tenarse.ui.user.elements.ElementUserFollow;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -43,14 +46,36 @@ public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         SharePostObject userFollow = usersList.get(position);
         ViewHolder userViewHolder = (ViewHolder) holder;
-        Picasso.with(context).load(userFollow.getProfile_img().replace("localhost", "10.0.2.2")).into(userViewHolder.userImage);
-        userViewHolder.userName.setText("@" + userFollow.getUsername());
+        Picasso.with(context).load(userFollow.getChat_profile_img().replace("localhost", "10.0.2.2")).into(userViewHolder.userImage);
+        userViewHolder.userName.setText("@" + userFollow.getChat_username());
         userViewHolder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                sendPost(userFollow);
             }
         });
+    }
+
+    private void sendPost(SharePostObject userFollow) {
+        JSONObject body = new JSONObject();
+        try {
+            body.put("chat_id", userFollow.getId_chat());
+            body.put("emisor", userFollow.getId_emisor());
+            body.put("post_id", userFollow.getId_post());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        System.out.println("ESTE ES EL BODY QUE SE ENVIAAAAa: "+ body);
+        String url_updateDades = "http://10.0.2.2:3000/newMessage";
+        MyAsyncTask updateUser = new MyAsyncTask(url_updateDades, body);
+        updateUser.execute();
+        String resultUpdate = null;
+        try {
+            resultUpdate = updateUser.get();
+            System.out.println(resultUpdate);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

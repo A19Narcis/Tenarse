@@ -134,7 +134,6 @@ public class activeChat extends Fragment {
 
         try {
             body.put("chat_id", chat_id);
-            body.put("type", "message");
             body.put("emisor", dadesUsuari.getString("_id"));
             body.put("message", binding.msgTextView.getText().toString());
         } catch (JSONException e) {
@@ -192,11 +191,11 @@ public class activeChat extends Fragment {
                             userFound = true;
                         }
                     }
-                    if(object.getString("emisor").equals(dadesUsuari.getString("_id"))){
+                    if(object.getString("emisor").equals(dadesUsuari.getString("_id")) && !object.getString("txt_msg").equals("")){
                         arrayRecycler.add(new MyMessageObject(object.getString("emisor"), userRealName, object.getString("txt_msg")));
-                    }else {
+                    }else if(!object.getString("emisor").equals(dadesUsuari.getString("_id")) && !object.getString("txt_msg").equals("")){
                         arrayRecycler.add(new MessageObject(object.getString("emisor"), userRealName, object.getString("txt_msg")));
-                    }
+                    }//SEGUIR METIENDO AQUÍ LOS POST ENVIADOS
                 }
         } catch (JSONException e) {
             throw new RuntimeException(e);

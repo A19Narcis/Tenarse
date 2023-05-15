@@ -86,7 +86,11 @@ public class FragmentChat extends Fragment {
                     arrayParticipants.put(newUser);
                     String lastMsg = "";
                     if (json.getJSONArray("messages").length() > 0) {
-                        lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).getString("txt_msg");
+                        if(!json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).getString("txt_msg").equals("")){
+                            lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).getString("txt_msg");
+                        }else{
+                            lastMsg = "Publicació compartida";
+                        }
                     }
                     System.out.println(json);
                     arrayRecycler.add(new chatObject(json.getString("_id") ,username_image.getString("username"), lastMsg, username_image.getString("url_img"), arrayParticipants));

@@ -437,7 +437,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     newUser.put("id", idFotoChat);
                     newUser.put("username", username_image.getString("username"));
                     System.out.println("NEWWWWUSEEEEER: "+ newUser);
-                    chatsList.add(new SharePostObject(username_image.getString("username"), username_image.getString("url_img"),listElementImg.getId(), listElementImg.getUser_img_url(), listElementImg.getUsername()));
+                    chatsList.add(new SharePostObject(username_image.getString("username"), username_image.getString("url_img"),listElementImg.getId(), dadesUsuari.getString("_id"), arrayChats.getJSONObject(i).getString("_id")));
                     shareAdapter.notifyItemInserted(chatsList.size() - 1);
                 }
             }
