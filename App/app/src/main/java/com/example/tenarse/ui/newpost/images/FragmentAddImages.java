@@ -239,7 +239,7 @@ public class FragmentAddImages extends Fragment{
     private void initRetrofitClient(){
         OkHttpClient client = new OkHttpClient.Builder().build();
 
-        apiService = new Retrofit.Builder().baseUrl("http://10.0.2.2:3000").client(client).build().create(ApiService.class);
+        apiService = new Retrofit.Builder().baseUrl("http://212.227.40.235:3000").client(client).build().create(ApiService.class);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

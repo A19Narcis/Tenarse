@@ -31,7 +31,7 @@ public class SearchPostFragment extends Fragment {
     List<Object> dataListSearch;
     AdapterSearchPost myAdapter;
 
-    private final String URL = "http://10.0.2.2:3000/searchPost";
+    private final String URL = "http://212.227.40.235:3000/searchPost";
 
     private GlobalDadesUser globalDadesUser;
     private JSONObject dadesUser;
@@ -101,7 +101,7 @@ public class SearchPostFragment extends Fragment {
     }
 
     private String getUsernameFromID(JSONObject post) {
-        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
+        String url_selectUser = "http://212.227.40.235:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", post.getString("owner"));
@@ -126,7 +126,7 @@ public class SearchPostFragment extends Fragment {
         dadesUser = globalDadesUser.getDadesUser();
 
         //Recoger todos los datos de un post y verlos en un fragment nuevo
-        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + id_post;
+        String url_selectPost = "http://212.227.40.235:3000/getSelectedPost/" + id_post;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
         getSinglePost.execute();
         String resultSinglePost = null;

@@ -32,7 +32,7 @@ public class SearchQuestionsFragment extends Fragment {
     List<Object> dataListSearch;
     AdapterSearchQuestions myAdapter;
 
-    private final String URL = "http://10.0.2.2:3000/searchDoubt";
+    private final String URL = "http://212.227.40.235:3000/searchDoubt";
 
     private GlobalDadesUser globalDadesUser;
     private JSONObject dadesUser;
@@ -111,7 +111,7 @@ public class SearchQuestionsFragment extends Fragment {
     }
 
     private String getUsernameandImageFromID(JSONObject post) {
-        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
+        String url_selectUser = "http://212.227.40.235:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", post.getString("owner"));
@@ -134,7 +134,7 @@ public class SearchQuestionsFragment extends Fragment {
         globalDadesUser = GlobalDadesUser.getInstance();
         dadesUser = globalDadesUser.getDadesUser();
         isLiked = true;
-        String url = "http://10.0.2.2:3000/newLike";
+        String url = "http://212.227.40.235:3000/newLike";
         JSONObject body = new JSONObject();
         try {
             body.put("id_post", id);
@@ -157,7 +157,7 @@ public class SearchQuestionsFragment extends Fragment {
         globalDadesUser = GlobalDadesUser.getInstance();
         dadesUser = globalDadesUser.getDadesUser();
         isLiked = false;
-        String url = "http://10.0.2.2:3000/removeLike";
+        String url = "http://212.227.40.235:3000/removeLike";
         JSONObject body = new JSONObject();
         try {
             body.put("id_post", id);
@@ -180,7 +180,7 @@ public class SearchQuestionsFragment extends Fragment {
         globalDadesUser = GlobalDadesUser.getInstance();
         dadesUser = globalDadesUser.getDadesUser();
         //Recoger todos los datos de un post y verlos en un fragment nuevo
-        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + id_post;
+        String url_selectPost = "http://212.227.40.235:3000/getSelectedPost/" + id_post;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
         getSinglePost.execute();
         String resultSinglePost = null;
@@ -212,7 +212,7 @@ public class SearchQuestionsFragment extends Fragment {
     }
 
     public void selectUser(String username, View v) {
-        String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
+        String url_selectUser = "http://212.227.40.235:3000/getSelectedUser";
         JSONObject jsonBody = new JSONObject();
 
         try {

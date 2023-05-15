@@ -140,7 +140,7 @@ public class activeChat extends Fragment {
             e.printStackTrace();
         }
 
-        String url_updateDades = "http://10.0.2.2:3000/newMessage";
+        String url_updateDades = "http://212.227.40.235:3000/newMessage";
         MyAsyncTask updateUser = new MyAsyncTask(url_updateDades, body);
         updateUser.execute();
         String resultUpdate = null;
@@ -169,7 +169,7 @@ public class activeChat extends Fragment {
             e.printStackTrace();
         }
 
-        String url_updateDades = "http://10.0.2.2:3000/getMessages";
+        String url_updateDades = "http://212.227.40.235:3000/getMessages";
         MyAsyncTask updateUser = new MyAsyncTask(url_updateDades, body);
         updateUser.execute();
         String resultUpdate = null;

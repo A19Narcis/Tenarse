@@ -47,7 +47,7 @@ public class VerifyCodeFragment extends Fragment {
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://10.0.2.2:3001");
+            mSocket = IO.socket("http://212.227.40.235:3001");
 
             mSocket.on("respuestaAddNewUser", new Emitter.Listener() {
                 @Override
@@ -97,7 +97,7 @@ public class VerifyCodeFragment extends Fragment {
     }
 
     private void verifyEmailWithCode(JSONObject finalDadesUser) {
-        String url = "http:10.0.2.2:3000/verifyEmail";
+        String url = "http://212.227.40.235:3000/verifyEmail";
 
         JSONObject bodyEmailVerification = new JSONObject();
         try {
@@ -152,7 +152,7 @@ public class VerifyCodeFragment extends Fragment {
                 public void onDismissed(Snackbar snackbar, int event) {
                     super.onDismissed(snackbar, event);
 
-                    String urlGetUser = "http://10.0.2.2:3000/getSelectedUser";
+                    String urlGetUser = "http://212.227.40.235:3000/getSelectedUser";
                     JSONObject body = new JSONObject();
                     try {
                         body.put("username", finalDadesUser.getString("username"));

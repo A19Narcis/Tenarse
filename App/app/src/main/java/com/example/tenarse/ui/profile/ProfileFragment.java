@@ -161,7 +161,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 if (binding.followButton.getText().toString().equals("Seguir")){
                     //Thread per la perició de 'newFollowing'
-                    String url = "http://10.0.2.2:3000/newFollowing";
+                    String url = "http://212.227.40.235:3000/newFollowing";
 
                     JSONObject body = new JSONObject();
 
@@ -187,7 +187,7 @@ public class ProfileFragment extends Fragment {
                     binding.followButton.setText("Siguiendo ✓");
 
                     //******* UPDATE DATOS USER **********
-                    String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
+                    String url_selectUser = "http://212.227.40.235:3000/getSelectedUser";
                     JSONObject jsonBody = new JSONObject();
                     try {
                         jsonBody.put("username", dadesUsuari.getString("username"));
@@ -228,7 +228,7 @@ public class ProfileFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             //Deixar de seguir
-                            String url = "http://10.0.2.2:3000/deleteFollowing";
+                            String url = "http://212.227.40.235:3000/deleteFollowing";
 
                             JSONObject body = new JSONObject();
 
@@ -255,7 +255,7 @@ public class ProfileFragment extends Fragment {
 
 
                             //******* UPDATE DATOS USER **********
-                            String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
+                            String url_selectUser = "http://212.227.40.235:3000/getSelectedUser";
                             JSONObject jsonBody = new JSONObject();
                             try {
                                 jsonBody.put("username", dadesUsuari.getString("username"));
@@ -360,8 +360,8 @@ public class ProfileFragment extends Fragment {
         }
 
         try {
-            Picasso.with(getContext()).invalidate(userInfo.getString("url_img").replace("localhost", "10.0.2.2"));
-            Picasso.with(getContext()).load(userInfo.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
+            Picasso.with(getContext()).invalidate(userInfo.getString("url_img"));
+            Picasso.with(getContext()).load(userInfo.getString("url_img")).into(binding.fotoPerfil);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -464,7 +464,7 @@ public class ProfileFragment extends Fragment {
             recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
             //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
-            String url = "http://10.0.2.2:3000/getFollowersInfo";
+            String url = "http://212.227.40.235:3000/getFollowersInfo";
             JSONObject body = new JSONObject();
             try {
                 body.put("id_user", userInfo.getString("_id"));
@@ -549,7 +549,7 @@ public class ProfileFragment extends Fragment {
             recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
             //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
-            String url = "http://10.0.2.2:3000/getFollowingsInfo";
+            String url = "http://212.227.40.235:3000/getFollowingsInfo";
             JSONObject body = new JSONObject();
             try {
                 body.put("id_user", userInfo.getString("_id"));
@@ -614,7 +614,7 @@ public class ProfileFragment extends Fragment {
     private void refreshUserInfo(String id){
         //Actualitzar el perfil
         //******* UPDATE DATOS USER **********
-        String url_selectUser = "http://10.0.2.2:3000/getUserById";
+        String url_selectUser = "http://212.227.40.235:3000/getUserById";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", id);
@@ -634,8 +634,8 @@ public class ProfileFragment extends Fragment {
             JSONObject newDadesUser = new JSONObject(resultSearch);
             //Canviar els valors antics de l'usuari
             binding.userName.setText("@" + newDadesUser.getString("username"));
-            Picasso.with(getContext()).invalidate(newDadesUser.getString("url_img").replace("localhost", "10.0.2.2"));
-            Picasso.with(getContext()).load(newDadesUser.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
+            Picasso.with(getContext()).invalidate(newDadesUser.getString("url_img"));
+            Picasso.with(getContext()).load(newDadesUser.getString("url_img")).into(binding.fotoPerfil);
             int new_numero_followings = newDadesUser.getJSONArray("followings").length();
             if (new_numero_followings >= 10000 && new_numero_followings < 999950) {
                 String followingsString = formatFollowers10(new_numero_followings);
@@ -711,7 +711,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private String getUsernameFromID(JSONObject post) {
-        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
+        String url_selectUser = "http://212.227.40.235:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", post.getString("owner"));
@@ -741,7 +741,7 @@ public class ProfileFragment extends Fragment {
         dadesUser = globalDadesUser.getDadesUser();
 
         //Recoger todos los datos de un post y verlos en un fragment nuevo
-        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + post_img_id;
+        String url_selectPost = "http://212.227.40.235:3000/getSelectedPost/" + post_img_id;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
         getSinglePost.execute();
         String resultSinglePost = null;
