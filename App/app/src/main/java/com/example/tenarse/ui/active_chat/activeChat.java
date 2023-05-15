@@ -134,6 +134,7 @@ public class activeChat extends Fragment {
 
         try {
             body.put("chat_id", chat_id);
+            body.put("type", "message");
             body.put("emisor", dadesUsuari.getString("_id"));
             body.put("message", binding.msgTextView.getText().toString());
         } catch (JSONException e) {

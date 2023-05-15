@@ -22,6 +22,7 @@ import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.active_chat.MessageObject;
 import com.example.tenarse.ui.active_chat.MyMessageObject;
+import com.example.tenarse.ui.active_chat.MyPostObject;
 import com.example.tenarse.ui.active_chat.PostObject;
 import com.example.tenarse.ui.active_chat.activeChat;
 import com.example.tenarse.ui.home.HomeViewModel;
@@ -48,6 +49,8 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private final int TYPE_MY_MESSAGE = 2;
     private final int TYPE_POST = 3;
+
+    private final int TYPE_MY_POST = 4;
 
     public ActiveChatMultiAdapter(List<Object> dataList, Context context, activeChat AChat) {
         this.dataList = dataList;
@@ -80,6 +83,9 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 view = inflater.inflate(R.layout.list_element_normal_message_my, parent, false);
                 return new MyMessageViewHolder(view);
             case TYPE_POST:
+                view = inflater.inflate(R.layout.list_element_post_message, parent, false);
+                return new PostViewHolder(view);
+            case TYPE_MY_POST:
                 view = inflater.inflate(R.layout.list_element_post_message, parent, false);
                 return new PostViewHolder(view);
             default:
@@ -116,6 +122,12 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 PostViewHolder postViewHolder = (PostViewHolder) holder;
                 postViewHolder.usernameTxt.setText(postElement.getUserName());
                 Picasso.with(context).load(postElement.getUrl_img().replace("localhost","10.0.2.2")).into(postViewHolder.imagePost);
+                break;
+            case TYPE_MY_POST:
+                MyPostObject myPostElement = (MyPostObject) dataList.get(position);
+                PostViewHolder MypostViewHolder = (PostViewHolder) holder;
+                MypostViewHolder.usernameTxt.setText(myPostElement.getUserName());
+                Picasso.with(context).load(myPostElement.getUrl_img().replace("localhost","10.0.2.2")).into(MypostViewHolder.imagePost);
                 break;
         }
     }
@@ -161,6 +173,20 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         TextView usernameTxt;
         ImageView imagePost;
         public PostViewHolder(View itemView) {
+            super(itemView);
+            linearLayout = itemView.findViewById(R.id.chat_element_direction);
+            cardView = itemView.findViewById(R.id.cardView);
+            usernameTxt = itemView.findViewById(R.id.usernameTxt);
+            imagePost = itemView.findViewById(R.id.imagePost);
+        }
+    }
+
+    public static class MyPostViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout linearLayout;
+        CardView cardView;
+        TextView usernameTxt;
+        ImageView imagePost;
+        public MyPostViewHolder(View itemView) {
             super(itemView);
             linearLayout = itemView.findViewById(R.id.chat_element_direction);
             cardView = itemView.findViewById(R.id.cardView);
