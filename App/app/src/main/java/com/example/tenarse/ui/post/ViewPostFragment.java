@@ -406,6 +406,7 @@ public class ViewPostFragment extends Fragment {
                     JSONObject dadesRealUsername = new JSONObject(realUsername);
                     comentarioList.add(new Comentario(dadesRealUsername.getString("url_img"), dadesRealUsername.getString("username"), comentarioNuevo.getString("coment_text")));
                     adapterComentarios.notifyItemInserted(comentarioList.size());
+                    binding.recyclerViewComentarios.requestLayout();
                 }
             } else {
                 for (int i = new_dadesPost.getJSONArray("comentaris").length(); i > numeroComentariosAntes; i--) {

@@ -143,7 +143,18 @@ public class RegisterFragment extends Fragment{
                 boolean infoValida = true;
 
                 // Verificar que no hay campos vacíos o com emoticonos
-                if ((email.isEmpty() || email.matches(regexEmoticionos)) || (passwd.isEmpty() || passwd.matches(regexEmoticionos)) || (passwd_repeat.isEmpty() || passwd_repeat.matches(regexEmoticionos)) || (username.isEmpty() || username.matches(regexEmoticionos)) || (name.isEmpty() || name.matches(regexEmoticionos)) || (surname.isEmpty() || surname.matches(regexEmoticionos)) || date.isEmpty()) {
+                if ((email.isEmpty() || email.matches(regexEmoticionos))
+                        || (passwd.isEmpty()
+                        || passwd.matches(regexEmoticionos))
+                        || (passwd_repeat.isEmpty()
+                        || passwd_repeat.matches(regexEmoticionos))
+                        || (username.isEmpty()
+                        || username.matches(regexEmoticionos))
+                        || (name.isEmpty()
+                        || name.matches(regexEmoticionos))
+                        || (surname.isEmpty()
+                        || surname.matches(regexEmoticionos))
+                        || date.isEmpty()) {
                     infoValida = false;
                     System.out.println("Vacio o Emojis");
                 }
@@ -155,11 +166,16 @@ public class RegisterFragment extends Fragment{
                     System.out.println("Las passwd no son iguales");
                     infoValida = false;
                 }
-                if (!email.contains("@") || email.split("@").length != 2) {
+                if (!email.contains("@")
+                        || email.split("@").length != 2) {
                     System.out.println("Error email");
                     infoValida = false;
                 }
-                if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}") || !username.matches("[a-zA-Z0-9]+") || !name.matches("[a-zA-Z]+") || !surname.matches("[a-zA-Z]+( [a-zA-Z]+)?") || !date.matches("[0-9/]+")) {
+                if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
+                        || !username.matches("[a-zA-Z0-9]+")
+                        || !name.matches("[a-zA-ZáéíóúÁÉÍÓÚ]+")  // Permitir tildes en name
+                        || !surname.matches("[a-zA-ZáéíóúÁÉÍÓÚ]+( [a-zA-ZáéíóúÁÉÍÓÚ]+)?")  // Permitir tildes en surname
+                        || !date.matches("[0-9/]+")) {
                     infoValida = false;
                     System.out.println("Caracteres especiales");
                 }
