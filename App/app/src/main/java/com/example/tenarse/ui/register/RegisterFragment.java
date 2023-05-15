@@ -1,15 +1,23 @@
 package com.example.tenarse.ui.register;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,10 +28,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.example.tenarse.Login;
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentRegisterBinding;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.widgets.DatePickerFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -40,7 +49,7 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import okhttp3.OkHttpClient;
 
-public class RegisterFragment extends Fragment {
+public class RegisterFragment extends Fragment{
 
     Semaphore semaphore = new Semaphore(0);
     TextView iniciarSesionBtn;
@@ -53,6 +62,11 @@ public class RegisterFragment extends Fragment {
 
     private String data_usuari = "";
 
+    private String verification_code;
+
+    private JSONObject finalDadesUser;
+
+    private Login loginActivity;
     private Socket mSocket;
     {
         try {
@@ -63,7 +77,6 @@ public class RegisterFragment extends Fragment {
                 public void call(Object... args) {
                     // Manejar el mensaje recibido
                     mensaje = (String) args[0];
-                    System.out.println("Mensaje recibido: " + mensaje);
                     mSocket.disconnect();
                     semaphore.release();
                 }
@@ -71,67 +84,11 @@ public class RegisterFragment extends Fragment {
         } catch (URISyntaxException e) {}
     }
 
-    private void acabarRegistro(String resultRegister) {
-        binding.errorTextRegister.setVisibility(View.GONE);
-        if (!resultRegister.contains("false")){
-            binding.userExisteRegister.setVisibility(View.GONE);
-            Snackbar snackbar = Snackbar.make(binding.getRoot(), "Registro completado exitosamente.", Snackbar.LENGTH_LONG);
-
-            // Cambiar el color de fondo
-            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
-
-            // Cambiar el color del texto
-            TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-            textView.setTextColor(Color.WHITE);
-
-            // Obtener el TextView dentro de Snackbar
-            TextView textoSnackbar = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-            textoSnackbar.setGravity(Gravity.CENTER);
-
-            snackbar.addCallback(new Snackbar.Callback() {
-                @Override
-                public void onDismissed(Snackbar snackbar, int event) {
-                    super.onDismissed(snackbar, event);
-
-                    String urlGetUser = "http://10.0.2.2:3000/getSelectedUser";
-                    JSONObject body = new JSONObject();
-                    try {
-                        body.put("username", binding.editTextUser.getText().toString());
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                    MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(urlGetUser, body);
-                    getUser.execute();
-                    String resultGetUserRegistered = null;
-                    try {
-                        resultGetUserRegistered = getUser.get();
-                    } catch (ExecutionException | InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("infoUser", resultGetUserRegistered);
-                    editor.apply();
-
-
-                    startActivity(new Intent(getActivity(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                    getActivity().finish();
-                }
-            });
-
-            // Mostrar Snackbar personalizado
-            snackbar.show();
-
-        } else {
-            //Este usuario ya existe
-            //binding.userExisteRegister.setVisibility(View.VISIBLE);
-            System.out.println("MAL");
-        }
-    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        loginActivity = (Login) getActivity();
 
         binding = FragmentRegisterBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -160,6 +117,7 @@ public class RegisterFragment extends Fragment {
                 Navigation.findNavController(v).popBackStack();
             }
         });
+
 
 
         /* REGISTRO USER */
@@ -206,32 +164,25 @@ public class RegisterFragment extends Fragment {
                     System.out.println("Caracteres especiales");
                 }
                 if (infoValida){
-                    // Todos los campos son válidos
-                    JSONObject body = new JSONObject();
+                    finalDadesUser = new JSONObject();
                     try {
-                        body.put("email", email);
-                        body.put("passwd", passwd);
-                        body.put("passwd_repeat", passwd_repeat);
-                        body.put("username", username);
-                        body.put("name", name);
-                        body.put("surname", surname);
-                        body.put("date", date);
+                        finalDadesUser.put("email", email);
+                        finalDadesUser.put("passwd", passwd);
+                        finalDadesUser.put("passwd_repeat", passwd_repeat);
+                        finalDadesUser.put("username", username);
+                        finalDadesUser.put("name", name);
+                        finalDadesUser.put("surname", surname);
+                        finalDadesUser.put("date", date);
                     } catch (JSONException e){
                         e.printStackTrace();
                     }
 
-                    try {
-                        mSocket.connect();
-                        mSocket.emit("addNewUser", body);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("dadesUserJSON", finalDadesUser.toString());
 
-                        // Espera hasta que se libere el semáforo (es decir, hasta que se reciba la respuesta)
-                        semaphore.acquire();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    acabarRegistro(mensaje);
+                    Navigation.findNavController(v).navigate(R.id.action_registerFragment_to_verifyCodeFragment, bundle);
+
                 } else {
-                    binding.userExisteRegister.setVisibility(View.GONE);
                     binding.errorTextRegister.setVisibility(View.VISIBLE);
                 }
             }

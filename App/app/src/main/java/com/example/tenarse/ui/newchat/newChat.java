@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -13,16 +12,10 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentCreateNewChatBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
-import com.example.tenarse.ui.message.adapters.ChatAdapter;
-import com.example.tenarse.ui.message.chat.chatObject;
 import com.example.tenarse.ui.newchat.adapters.SuggestedUsersAdapter;
 import com.example.tenarse.ui.newchat.asynctask.MyAsyncTaskSuggestedUsers;
-import com.example.tenarse.ui.newpost.NewpostFragment;
-import com.example.tenarse.ui.newpost.httpUploads.MyAsyncTaskQuestion;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -39,6 +39,7 @@ import java.util.Objects;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,7 +56,38 @@ public class MainActivity extends AppCompatActivity {
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
     JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
+    public Socket mSocket;
+    {
+        try {
+            mSocket = IO.socket("http://10.0.2.2:3001");
 
+            mSocket.on("listenChats", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Modificar las vistas de la interfaz de usuario aquí
+                            changeChatIconNot();
+                        }
+                    });
+                }
+            });
+        } catch (URISyntaxException e) {}
+    }
+
+    private void changeChatIconNot() {
+        Menu menu = navView.getMenu();
+        MenuItem menuItem = menu.findItem(R.id.navigation_message);
+        menuItem.setIcon(R.drawable.unsel_chat_not);
+    }
+
+    public void changeChatIconNormal() {
+        Menu menu = navView.getMenu();
+        MenuItem menuItem = menu.findItem(R.id.navigation_message);
+        menuItem.setIcon(R.drawable.msg_icon);
+        System.out.println("ESTA ENTRADOOOOOOO!!!!!!!!!!!!!!!");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         Objects.requireNonNull(getSupportActionBar()).hide();
+
+
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -121,6 +155,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
+        mSocket.connect();
+        try {
+            mSocket.emit("updateSocket", dadesUsuari.getString("_id"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -148,5 +189,9 @@ public class MainActivity extends AppCompatActivity {
         JSONObject dadesUsuariExit = globalDadesExit.getDadesUser();
         editor.putString("infoUser", dadesUsuariExit.toString());
         editor.apply();
+    }
+
+    public Socket getmSocket() {
+        return mSocket;
     }
 }

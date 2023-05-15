@@ -12,9 +12,8 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -28,7 +27,7 @@ import com.example.tenarse.databinding.FragmentHomeBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.adapters.MultiAdapter;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskHomePosts;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
@@ -107,6 +106,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         MainActivity mainActivity = (MainActivity) getActivity();
 
         recyclerView = binding.rvHome;
+        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
         dataList = new ArrayList<>();
         multiAdapter = new MultiAdapter(dataList, getContext(), HomeFragment.this);
@@ -280,7 +280,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             e.printStackTrace();
         }
 
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
         selectedUser.execute();
         String resultSearch = null;
         try {
@@ -319,7 +319,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             e.printStackTrace();
         }
 
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
         selectedUser.execute();
         String resultSearch = null;
         try {

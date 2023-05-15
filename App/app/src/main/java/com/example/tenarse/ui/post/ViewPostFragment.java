@@ -11,8 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -27,22 +25,16 @@ import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.Toast;
 
-import com.example.tenarse.Login;
 import com.example.tenarse.R;
-import com.example.tenarse.databinding.FragmentProfileBinding;
 import com.example.tenarse.databinding.FragmentViewPostBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
-import com.example.tenarse.ui.home.HomeFragment;
-import com.example.tenarse.ui.home.adapters.MultiAdapter;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.post.adapters.AdapterComentarios;
 import com.example.tenarse.ui.post.asynctask.MyAsyncTaskComment;
 import com.example.tenarse.ui.post.asynctask.MyAsyncTaskDeletePost;
 import com.example.tenarse.ui.post.elements.Comentario;
-import com.example.tenarse.ui.search.SearchFragment;
-import com.example.tenarse.ui.user.UserFragment;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -51,8 +43,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
-import kotlin.jvm.internal.PropertyReference0Impl;
 
 public class ViewPostFragment extends Fragment {
 
@@ -446,7 +436,7 @@ public class ViewPostFragment extends Fragment {
             e.printStackTrace();
         }
 
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
         selectedUser.execute();
         String resultSearch = null;
         try {

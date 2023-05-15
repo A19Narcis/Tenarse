@@ -2,6 +2,10 @@ package com.example.tenarse.ui.active_chat.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.active_chat.MessageObject;
+import com.example.tenarse.ui.active_chat.MyMessageObject;
 import com.example.tenarse.ui.active_chat.PostObject;
 import com.example.tenarse.ui.active_chat.activeChat;
 import com.example.tenarse.ui.home.HomeViewModel;
@@ -40,7 +45,9 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private activeChat ActiveChat;
 
     private final int TYPE_MESSAGE = 1;
-    private final int TYPE_POST = 2;
+
+    private final int TYPE_MY_MESSAGE = 2;
+    private final int TYPE_POST = 3;
 
     public ActiveChatMultiAdapter(List<Object> dataList, Context context, activeChat AChat) {
         this.dataList = dataList;
@@ -52,7 +59,10 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public int getItemViewType(int position) {
         if (dataList.get(position) instanceof MessageObject) {
             return TYPE_MESSAGE;
-        } else if (dataList.get(position) instanceof PostObject) {
+        }else if (dataList.get(position) instanceof MyMessageObject) {
+            return TYPE_MY_MESSAGE;
+        }
+        else if (dataList.get(position) instanceof PostObject) {
             return TYPE_POST;
         }
         return -1;
@@ -66,6 +76,9 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             case TYPE_MESSAGE:
                 view = inflater.inflate(R.layout.list_element_normal_message, parent, false);
                 return new MessageViewHolder(view);
+            case TYPE_MY_MESSAGE:
+                view = inflater.inflate(R.layout.list_element_normal_message_my, parent, false);
+                return new MyMessageViewHolder(view);
             case TYPE_POST:
                 view = inflater.inflate(R.layout.list_element_post_message, parent, false);
                 return new PostViewHolder(view);
@@ -90,18 +103,13 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 MessageViewHolder messageViewHolder = (MessageViewHolder) holder;
                 messageViewHolder.usernameTxt.setText("@" + messageElement.getUserName());
                 messageViewHolder.msgText.setText(messageElement.getMessage());
-                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) messageViewHolder.cardView.getLayoutParams();
-                if(messageElement.getIdEmitter().equals(id)){
-                    // Eliminar la restricción layout_constraintEnd_toEndOf
-                    layoutParams.setMarginStart(150);
-                    messageViewHolder.linearLayout.setGravity(Gravity.END);
-                    messageViewHolder.cardView.setLayoutParams(layoutParams);
-                    messageViewHolder.cardView.setCardBackgroundColor(Color.BLACK);
-                    messageViewHolder.msgText.setTextColor(Color.WHITE);
-                }else{
-                    layoutParams.setMarginEnd(150);
-                    messageViewHolder.cardView.setLayoutParams(layoutParams);
-                }
+
+                break;
+            case TYPE_MY_MESSAGE:
+                MyMessageObject myMessageElement = (MyMessageObject) dataList.get(position);
+                MyMessageViewHolder myMessageViewHolder = (MyMessageViewHolder) holder;
+                myMessageViewHolder.usernameTxt.setText("@" + myMessageElement.getUserName());
+                myMessageViewHolder.msgText.setText(myMessageElement.getMessage());
                 break;
             case TYPE_POST:
                 PostObject postElement = (PostObject) dataList.get(position);
@@ -124,6 +132,21 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         TextView usernameTxt;
         TextView msgText;
         public MessageViewHolder(View itemView) {
+            super(itemView);
+            linearLayout = itemView.findViewById(R.id.chat_element_direction);
+            cardView = itemView.findViewById(R.id.cardView);
+            usernameTxt = itemView.findViewById(R.id.usernameTxt);
+            msgText = itemView.findViewById(R.id.txtMsg);
+        }
+    }
+
+    public static class MyMessageViewHolder extends RecyclerView.ViewHolder {
+
+        LinearLayout linearLayout;
+        CardView cardView;
+        TextView usernameTxt;
+        TextView msgText;
+        public MyMessageViewHolder(View itemView) {
             super(itemView);
             linearLayout = itemView.findViewById(R.id.chat_element_direction);
             cardView = itemView.findViewById(R.id.cardView);

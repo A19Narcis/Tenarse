@@ -23,14 +23,12 @@ import androidx.navigation.Navigation;
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentLoginBinding;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
-import com.example.tenarse.ui.register.MyAsyncTaskRegister;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -38,12 +36,18 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class LoginFragment extends Fragment {
-
+    Semaphore semaphore = new Semaphore(0);
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     Button googleBtn;
@@ -52,10 +56,29 @@ public class LoginFragment extends Fragment {
     TextView registrarseBtn;
 
     TextView test;
+    private String mensaje;
 
     private FragmentLoginBinding binding;
 
     private Object resultLogin;
+
+    private Socket mSocket;
+    {
+        try {
+            mSocket = IO.socket("http://10.0.2.2:3001");
+
+            mSocket.on("respuestaAddNewUser", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    // Manejar el mensaje recibido
+                    mensaje = (String) args[0];
+                    System.out.println("Mensaje recibido: " + mensaje);
+                    mSocket.disconnect();
+                    semaphore.release();
+                }
+            });
+        } catch (URISyntaxException e) {}
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -184,7 +207,18 @@ public class LoginFragment extends Fragment {
                         e.printStackTrace();
                     }
                     //Registrar el correo
-                    String url_register = "http://10.0.2.2:3000/addNewUser";
+
+                    try {
+                        mSocket.connect();
+                        mSocket.emit("addNewUser", bodyRegister);
+
+                        // Espera hasta que se libere el semáforo (es decir, hasta que se reciba la respuesta)
+                        semaphore.acquire();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    /*String url_register = "http://10.0.2.2:3000/addNewUser";
                     MyAsyncTaskRegister registerUser = new MyAsyncTaskRegister(url_register, bodyRegister);
                     registerUser.execute();
                     String resultRegister = null;
@@ -192,7 +226,7 @@ public class LoginFragment extends Fragment {
                         resultRegister = registerUser.get();
                     } catch (ExecutionException | InterruptedException e) {
                         throw new RuntimeException(e);
-                    }
+                    }*/
                     Snackbar snackbar = Snackbar.make(binding.getRoot(), "Registro completado exitosamente.", Snackbar.LENGTH_LONG);
 
                     // Cambiar el color de fondo
@@ -219,7 +253,7 @@ public class LoginFragment extends Fragment {
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);
                             }
-                            MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(urlGetUser, body);
+                            MyAsyncTask getUser = new MyAsyncTask(urlGetUser, body);
                             getUser.execute();
                             String resultGetUserRegistered = null;
                             try {
@@ -291,7 +325,7 @@ public class LoginFragment extends Fragment {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(url, jsonObject);
+        MyAsyncTask getUser = new MyAsyncTask(url, jsonObject);
         getUser.execute();
         String resultGetUser = null;
         try {
@@ -314,7 +348,7 @@ public class LoginFragment extends Fragment {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        MyAsyncTaskGetUser getUser = new MyAsyncTaskGetUser(url, jsonObject);
+        MyAsyncTask getUser = new MyAsyncTask(url, jsonObject);
         getUser.execute();
         String resultGetUser = null;
         try {

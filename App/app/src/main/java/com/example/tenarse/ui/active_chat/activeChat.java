@@ -10,14 +10,12 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tenarse.R;
+import com.example.tenarse.MainActivity;
 import com.example.tenarse.databinding.FragmentActiveChatBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.httpRetrofit.ApiService;
 import com.example.tenarse.ui.active_chat.adapters.ActiveChatMultiAdapter;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
-import com.example.tenarse.ui.message.chat.chatObject;
-import com.example.tenarse.ui.register.MyAsyncTaskRegister;
+import com.example.tenarse.globals.MyAsyncTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,8 +24,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class activeChat extends Fragment {
 
@@ -45,7 +43,12 @@ public class activeChat extends Fragment {
 
     String profile_img;
 
+    String receptor_id;
+
     ApiService apiService;
+
+    JSONArray arryParticipants;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +56,22 @@ public class activeChat extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentActiveChatBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        Socket mSocket = mainActivity.getmSocket();
+        mSocket.on("listenChats", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject message = null;
+                try {
+                    message = new JSONObject(args[0].toString());
+                    arrayRecycler.add(new MessageObject(message.getString("emisor"), message.getString("username"), message.getString("message")));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                chatAdapter.notifyItemInserted(arrayRecycler.size()-1);
+            }
+        });
 
         binding.backToMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,9 +83,15 @@ public class activeChat extends Fragment {
 
         Bundle args = getArguments();
         if (args != null){
+            receptor_id = args.getString("receptor_id");
             chat_id = args.getString("chat_id");
             username = args.getString("username");
             profile_img = args.getString("profile_img");
+            try {
+                arryParticipants = new JSONArray(args.getString("participants"));
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         /*arrayRecycler.add(new MessageObject("1","sergi", "Hola que tal?"));
@@ -81,8 +106,21 @@ public class activeChat extends Fragment {
 
         getOldMessages();
 
+        recyclerView.scrollToPosition(arrayRecycler.size() - 1);
+
         binding.sendBtn.setOnClickListener(view -> {
             if(!binding.msgTextView.getText().toString().equals("")) {
+                JSONObject body = new JSONObject();
+
+                try {
+                    body.put("chat_id", chat_id);
+                    body.put("emisor", dadesUsuari.getString("_id"));
+                    body.put("username", dadesUsuari.getString("username"));
+                    body.put("message", binding.msgTextView.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                mSocket.emit("sendMessage", body);
                 sendMessage();
             }
         });
@@ -103,7 +141,7 @@ public class activeChat extends Fragment {
         }
 
         String url_updateDades = "http://10.0.2.2:3000/newMessage";
-        MyAsyncTaskGetUser updateUser = new MyAsyncTaskGetUser(url_updateDades, body);
+        MyAsyncTask updateUser = new MyAsyncTask(url_updateDades, body);
         updateUser.execute();
         String resultUpdate = null;
         try {
@@ -112,7 +150,7 @@ public class activeChat extends Fragment {
             throw new RuntimeException(e);
         }
         try {
-            arrayRecycler.add(new MessageObject(dadesUsuari.getString("_id"), dadesUsuari.getString("username"), binding.msgTextView.getText().toString()));
+            arrayRecycler.add(new MyMessageObject(dadesUsuari.getString("_id"), dadesUsuari.getString("username"), binding.msgTextView.getText().toString()));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -132,7 +170,7 @@ public class activeChat extends Fragment {
         }
 
         String url_updateDades = "http://10.0.2.2:3000/getMessages";
-        MyAsyncTaskGetUser updateUser = new MyAsyncTaskGetUser(url_updateDades, body);
+        MyAsyncTask updateUser = new MyAsyncTask(url_updateDades, body);
         updateUser.execute();
         String resultUpdate = null;
         try {
@@ -142,13 +180,22 @@ public class activeChat extends Fragment {
         }
         try {
             JSONObject objectChat = new JSONObject(resultUpdate);
-            System.out.println(objectChat);
                 JSONArray arrayMessages = objectChat.getJSONObject("chat").getJSONArray("messages");
                 for (int j = 0; j < arrayMessages.length(); j++) {//Coje la array de mensajes
                     JSONObject object = (JSONObject) arrayMessages.get(j);
-                    String realUsername = getUsernameandImageFromID(object.getString("emisor"));
-                    JSONObject username_image = new JSONObject(realUsername);
-                    arrayRecycler.add(new MessageObject(object.getString("emisor"), username_image.getString("username"), object.getString("txt_msg")));
+                    String userRealName = dadesUsuari.getString("username");
+                    boolean userFound = false;
+                    for (int k = 0; k < arryParticipants.length() && !userFound; k++) {
+                        if(object.getString("emisor").equals(arryParticipants.getJSONObject(k).getString("id"))){
+                            userRealName = arryParticipants.getJSONObject(k).getString("username");
+                            userFound = true;
+                        }
+                    }
+                    if(object.getString("emisor").equals(dadesUsuari.getString("_id"))){
+                        arrayRecycler.add(new MyMessageObject(object.getString("emisor"), userRealName, object.getString("txt_msg")));
+                    }else {
+                        arrayRecycler.add(new MessageObject(object.getString("emisor"), userRealName, object.getString("txt_msg")));
+                    }
                 }
         } catch (JSONException e) {
             throw new RuntimeException(e);
@@ -157,26 +204,5 @@ public class activeChat extends Fragment {
         binding.msgTextView.setText("");
     }
 
-
-    private String getUsernameandImageFromID(String idUser) {
-        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
-        JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("id_user", idUser);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
-        selectedUser.execute();
-        String resultSearch = null;
-        try {
-            resultSearch = selectedUser.get();
-            System.out.println(resultSearch);
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return resultSearch;
-    }
 
 }

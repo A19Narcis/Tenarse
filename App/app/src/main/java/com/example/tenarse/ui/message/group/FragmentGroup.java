@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.message.adapters.ChatAdapter;
 import com.example.tenarse.ui.message.asynctask.MyAsyncTaskGetMyChats;
 import com.example.tenarse.ui.message.chat.chatObject;
@@ -66,17 +66,22 @@ public class FragmentGroup extends Fragment {
         }
         try {
             JSONArray arrayChats = new JSONArray(resultSuggestedUsers);
-            System.out.println(arrayChats.toString());
             for (int i = 0; i < arrayChats.length(); i++) {
                 if (arrayChats.getJSONObject(i).getString("tipo").equals("grupo")){
                     JSONObject json = arrayChats.getJSONObject(i);
                     JSONArray participants = json.getJSONArray("participants");
                     String idFotoChat = null;
                     ArrayList <String> realUsername = new ArrayList<>();
+                    JSONArray arrayParticipants = new JSONArray();
                     for (int j = 0; j < participants.length(); j++) {
+                        idFotoChat = participants.get(j).toString();
+                        realUsername.add(getUsernameandImageFromID(idFotoChat));
                         if (!dadesUsuari.getString("_id").equals(participants.get(j))) {
-                            idFotoChat = participants.get(j).toString();
-                            realUsername.add(getUsernameandImageFromID(idFotoChat));
+                            JSONObject newUser = new JSONObject();
+                            newUser.put("id", idFotoChat);
+
+                            newUser.put("username", new JSONObject(realUsername.get(j)).getString("username"));
+                            arrayParticipants.put(newUser);
                         }
                     }
                     String groupName = "";
@@ -97,7 +102,7 @@ public class FragmentGroup extends Fragment {
                         lastMsg = json.getJSONArray("messages").getJSONObject(json.getJSONArray("messages").length() - 1).getString("txt_msg");
                     }
 
-                    arrayRecycler.add(new chatObject(json.getString("_id"), groupName, lastMsg, "http://10.0.2.2:3000/uploads/user_img/default_user_img.png"));
+                    arrayRecycler.add(new chatObject(json.getString("_id"), groupName, lastMsg, "http://10.0.2.2:3000/uploads/user_img/default_user_img.png", arrayParticipants));
                     chatAdapter.notifyItemInserted(arrayRecycler.size() - 1);
                 }
             }
@@ -115,12 +120,11 @@ public class FragmentGroup extends Fragment {
             e.printStackTrace();
         }
 
-        MyAsyncTaskGetUser selectedUser = new MyAsyncTaskGetUser(url_selectUser, jsonBody);
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
         selectedUser.execute();
         String resultSearch = null;
         try {
             resultSearch = selectedUser.get();
-            System.out.println(resultSearch);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }

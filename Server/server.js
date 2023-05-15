@@ -13,6 +13,7 @@ const io = require("socket.io")(http)
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const { log } = require('console');
+const nodemailer = require('nodemailer');
 
 const PORT = 3000
 const PORT_SOCKETS = 3001
@@ -58,19 +59,36 @@ app.post('/addNewUser', (req, res) => {
         followings: []
     }
 
-    /*const usuari = {
-        email: "1email@1gmail.com",
-        username: 'A19Narcis',
-        password: CryptoJS.SHA256("Ausias_2003").toString(),
-        url_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-        nombre: 'Narcis',
-        apellidos: 'Gomez Carretero',
-        fecha_nac: '28/08/2003'
-    }*/
-
     insertDB.insertUsuari(usuari, function (resultInsert) {
         res.send(resultInsert);
     })
+})
+
+app.post('/verifyEmail', (req, res) => {
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'tenarse.oficial@gmail.com',
+            pass: 'tdmpxtxureesvxeu'
+        }
+    });
+
+    var codigo = Math.floor(Math.random() * 9999);
+
+    codigo = ("000" + codigo).slice(-4);
+    codigo = ("000" + (parseInt(codigo) + 1)).slice(-4);
+
+
+    let mailOptions = {
+        from: 'tenarse.oficial@gmail.com', 
+        to: req.body.email, 
+        subject: 'Verificación Email',
+        html: 'Este es tu codigo de verificación: ' + codigo
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {});
+
+    res.send(codigo)
 })
 
 
@@ -226,12 +244,27 @@ app.post('/getUser', (req, res) => {
 app.post('/getUsernameAndImageFromID', (req, res) => {
     var id = req.body.id_user;
 
-    /*var id = "644785f8fdc077b15553ba12"*/
-
     readDB.getUserByID(id, (dades_user) => {
         res.send({ username: dades_user.username, url_img: dades_user.url_img })
     })
 })
+
+app.post('/getFollowersInfo', (req, res) => {
+    var id = req.body.id_user
+
+    readDB.getFollowersInfo(id, (dades_followers) => {
+        res.send(dades_followers)
+    })
+})
+
+app.post('/getFollowingsInfo', (req, res) => {
+    var id = req.body.id_user
+
+    readDB.getFollowingsInfo(id, (dades_followers) => {
+        res.send(dades_followers)
+    })
+})
+
 
 app.post('/getSelectedUser', (req, res) => {
     var email_username_id = req.body.username
@@ -667,8 +700,17 @@ function getDateJavaFormat(){
     return fechaFormateada;
 }
 
+const sockets = {};
+
 io.on('connection', socket => {
-    console.log('Nuevo cliente conectado');
+
+    socket.on('updateSocket', data => {
+        readDB.getUserByID(data, function(dades_user){
+            socket.identificador = dades_user.socket;
+            sockets[socket.identificador] = socket;
+        })
+    });
+
   
     // Escuchar eventos del cliente
     socket.on('addNewUser', data => {
@@ -689,24 +731,35 @@ io.on('connection', socket => {
             followers: [],
             followings: []
         }
-    
-        /*const usuari = {
-            email: "1email@1gmail.com",
-            username: 'A19Narcis',
-            password: CryptoJS.SHA256("Ausias_2003").toString(),
-            url_img: 'http://localhost:3000/uploads/user_img/default_user_img.png',
-            nombre: 'Narcis',
-            apellidos: 'Gomez Carretero',
-            fecha_nac: '28/08/2003'
-        }*/
-    
+
         insertDB.insertUsuari(usuari, function (resultInsert) {
             socket.emit("respuestaAddNewUser", JSON.stringify(resultInsert));
         })
     });
+
+    socket.on('sendMessage', data => {
+        readDB.getChat(data.chat_id, function(dades_chat){
+            for (let i = 0; i < dades_chat.participants.length; i++) {
+                if(dades_chat.participants[i] != data.emisor){
+                    readDB.getUserByID(dades_chat.participants[i], function (dades_user){
+                        enviarMensajeASocket(dades_user.socket, data);
+                    });
+                }
+            }
+            
+        });
+    });
   
     // Escuchar desconexiones de clientes
     socket.on('disconnect', () => {
-      console.log('Cliente desconectado');
+      delete sockets[socket.identificador];
     });
 });
+
+function enviarMensajeASocket(socketId, mensaje) {
+    const socket = sockets[socketId];
+  
+    if (socket) {
+      socket.emit('listenChats', mensaje);
+    }
+  }

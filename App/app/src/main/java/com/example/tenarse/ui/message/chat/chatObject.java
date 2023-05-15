@@ -2,17 +2,23 @@ package com.example.tenarse.ui.message.chat;
 
 import android.graphics.Bitmap;
 
+import org.json.JSONArray;
+
 public class chatObject {
+
     String chat_id;
     String userName;
     String lastMsg;
     String profileImg;
 
-    public chatObject(String chat_id, String userName, String lastMsg, String profileImg) {
+    JSONArray participants;
+
+    public chatObject(String chat_id, String userName, String lastMsg, String profileImg, JSONArray participants) {
         this.chat_id = chat_id;
         this.userName = userName;
         this.lastMsg = lastMsg;
         this.profileImg = profileImg;
+        this.participants = participants;
     }
 
     public String getChat_id() {
@@ -49,5 +55,13 @@ public class chatObject {
 
     public void setProfileImg(String profileImg) {
         this.profileImg = profileImg;
+    }
+
+    public JSONArray getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(JSONArray participants) {
+        this.participants = participants;
     }
 }

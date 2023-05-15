@@ -88,6 +88,48 @@ const getPostsByQuery = async (query, callback) => {
     callback(doubts)
 }
 
+const getFollowersInfo = async (id_user, callback) => {
+    var followersInfo = [];
+    const user = await User.findOne({ _id: id_user }, { followers: 1 });    
+    const followersPromise = user.followers.map(follower => {
+      return new Promise(resolve => {
+        getUserByID(follower.user, (dades_user) => {
+          var infoUser = {};
+          infoUser.username = dades_user.username;
+          infoUser.url_img = dades_user.url_img;
+          followersInfo.push(infoUser);
+          resolve();
+        });
+      });
+    });
+    
+    Promise.all(followersPromise).then(() => {
+        followersInfo.sort((a, b) => a.username.localeCompare(b.username));
+        callback(followersInfo);
+    });
+}
+
+const getFollowingsInfo = async (id_user, callback) => {
+    var followingsInfo = [];
+    const user = await User.findOne({ _id: id_user }, { followings: 1 });    
+    const followingsPromise = user.followings.map(following => {
+      return new Promise(resolve => {
+        getUserByID(following.user, (dades_user) => {
+          var infoUser = {};
+          infoUser.username = dades_user.username;
+          infoUser.url_img = dades_user.url_img;
+          followingsInfo.push(infoUser);
+          resolve();
+        });
+      });
+    });
+    
+    Promise.all(followingsPromise).then(() => {
+        followingsInfo.sort((a, b) => a.username.localeCompare(b.username));
+        callback(followingsInfo);
+    });
+}
+
 module.exports = {
     getUser,
     checkUserExists,
@@ -101,4 +143,6 @@ module.exports = {
     getPostsByQuery,
     suggestedUserInfoByID,
     getAllMyChats,
+    getFollowersInfo,
+    getFollowingsInfo
 }
