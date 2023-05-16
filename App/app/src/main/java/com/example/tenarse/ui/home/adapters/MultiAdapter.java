@@ -28,6 +28,7 @@ import android.widget.VideoView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.globals.MyAsyncTask;
@@ -53,6 +54,7 @@ import java.util.concurrent.ExecutionException;
 
 public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private MainActivity mainActivity;
     private List<Object> dataList;
     private Context context;
     private HomeFragment mHomeFragment;
@@ -68,10 +70,11 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private JSONObject dadesUser;
 
-    public MultiAdapter(List<Object> dataList, Context context, HomeFragment mHomeFragment) {
+    public MultiAdapter(List<Object> dataList, Context context, HomeFragment mHomeFragment, MainActivity mainActivity) {
         this.dataList = dataList;
         this.context = context;
         this.mHomeFragment = mHomeFragment;
+        this.mainActivity = mainActivity;
     }
 
     @Override
@@ -129,7 +132,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         dadesUser = globalDadesUser.getDadesUser();
 
                         chatsList = new ArrayList<>();
-                        shareAdapter = new ShareAdapter(chatsList, context);
+                        shareAdapter = new ShareAdapter(chatsList, context, mainActivity);
 
                         chatsList.clear();
 
@@ -179,7 +182,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
                         //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
-                        String url = "http://10.0.2.2:3000/getAllMyChats";
+                        String url = "http://212.227.40.235:3000/getAllMyChats";
                         JSONObject body = new JSONObject();
                         try {
                             body.put("_id", dadesUser.getString("_id"));
@@ -464,7 +467,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private String getUsernameandImageFromID(String idUser) {
-        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
+        String url_selectUser = "http://212.227.40.235:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", idUser);

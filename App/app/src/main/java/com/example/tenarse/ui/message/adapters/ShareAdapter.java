@@ -11,9 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.globals.MyAsyncTask;
-import com.example.tenarse.ui.active_chat.MyMessageObject;
 import com.example.tenarse.ui.message.SharePostObject;
 import com.squareup.picasso.Picasso;
 
@@ -23,14 +23,18 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import io.socket.client.Socket;
+
 public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private MainActivity mainActivity;
     private List<SharePostObject> usersList;
     private Context context;
 
-    public ShareAdapter(List<SharePostObject> usersList, Context context) {
+    public ShareAdapter(List<SharePostObject> usersList, Context context, MainActivity mainActivity) {
         this.usersList = usersList;
         this.context = context;
+        this.mainActivity = mainActivity;
     }
 
 
@@ -46,7 +50,7 @@ public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         SharePostObject userFollow = usersList.get(position);
         ViewHolder userViewHolder = (ViewHolder) holder;
-        Picasso.with(context).load(userFollow.getChat_profile_img().replace("localhost", "10.0.2.2")).into(userViewHolder.userImage);
+        Picasso.with(context).load(userFollow.getChat_profile_img()).into(userViewHolder.userImage);
         userViewHolder.userName.setText("@" + userFollow.getChat_username());
         userViewHolder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,8 +69,10 @@ public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Socket mSocket = mainActivity.getmSocket();
+        mSocket.emit("sendMessage", body);
         System.out.println("ESTE ES EL BODY QUE SE ENVIAAAAa: "+ body);
-        String url_updateDades = "http://10.0.2.2:3000/newMessage";
+        String url_updateDades = "http://212.227.40.235:3000/newMessage";
         MyAsyncTask updateUser = new MyAsyncTask(url_updateDades, body);
         updateUser.execute();
         String resultUpdate = null;

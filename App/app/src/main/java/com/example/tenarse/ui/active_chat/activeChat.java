@@ -66,7 +66,18 @@ public class activeChat extends Fragment {
                 JSONObject message = null;
                 try {
                     message = new JSONObject(args[0].toString());
-                    arrayRecycler.add(new MessageObject(message.getString("emisor"), message.getString("username"), message.getString("message")));
+                    if(!message.getString("emisor").equals(dadesUsuari.getString("_id")) && !message.getString("txt_msg").equals("")){
+                        arrayRecycler.add(new MessageObject(message.getString("emisor"), message.getString("username"), message.getString("message")));
+                    } else if (!message.getString("emisor").equals(dadesUsuari.getString("_id")) && message.getString("txt_msg").equals("")) {
+                        JSONObject datos_post = getPost(message.getString("post_id"));
+                        if (datos_post != null) {
+                            JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
+                            arrayRecycler.add(new PostObject(message.getString("emisor"), message.getString("username"), message.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
+                        }else{
+                            arrayRecycler.add(new MessageObject(message.getString("emisor"), message.getString("username"), "/*Publicación eliminada*/"));
+                        }
+                    }
+
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -198,8 +209,20 @@ public class activeChat extends Fragment {
                         arrayRecycler.add(new MessageObject(object.getString("emisor"), userRealName, object.getString("txt_msg")));
                     }else if(object.getString("emisor").equals(dadesUsuari.getString("_id")) && object.getString("txt_msg").equals("")){
                         JSONObject datos_post = getPost(object.getString("post_id"));
-                        JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
-                        arrayRecycler.add(new MyPostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
+                        if (datos_post != null) {
+                            JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
+                            arrayRecycler.add(new MyPostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
+                        }else{
+                            arrayRecycler.add(new MyMessageObject(object.getString("emisor"), userRealName, "/*Publicación eliminada*/"));
+                        }
+                    }else if(!object.getString("emisor").equals(dadesUsuari.getString("_id")) && object.getString("txt_msg").equals("")){
+                        JSONObject datos_post = getPost(object.getString("post_id"));
+                        if (datos_post != null) {
+                            JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
+                            arrayRecycler.add(new PostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
+                        }else{
+                            arrayRecycler.add(new MessageObject(object.getString("emisor"), userRealName, "/*Publicación eliminada*/"));
+                        }
                     }
                 }
         } catch (JSONException e) {
@@ -224,7 +247,7 @@ public class activeChat extends Fragment {
         try {
             datos_post = new JSONObject(resultSinglePost);
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            datos_post = null;
         }
         return datos_post;
     }

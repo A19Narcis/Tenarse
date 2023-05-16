@@ -2,6 +2,7 @@ package com.example.tenarse.ui.active_chat.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
@@ -89,7 +90,7 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 view = inflater.inflate(R.layout.list_element_post_message, parent, false);
                 return new PostViewHolder(view);
             case TYPE_MY_POST:
-                view = inflater.inflate(R.layout.list_element_post_message, parent, false);
+                view = inflater.inflate(R.layout.list_element_my_post_message, parent, false);
                 return new MyPostViewHolder(view);
             default:
                 return null;
@@ -111,26 +112,37 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 MessageObject messageElement = (MessageObject) dataList.get(position);
                 MessageViewHolder messageViewHolder = (MessageViewHolder) holder;
                 messageViewHolder.usernameTxt.setText("@" + messageElement.getUserName());
+                if(messageElement.getMessage().equals("/*Publicación eliminada*/")){
+                    Typeface currentTypeface = messageViewHolder.msgText.getTypeface();
+                    messageViewHolder.msgText.setTypeface(currentTypeface, Typeface.BOLD);
+                    messageElement.setMessage("Publicación eliminada");
+                }
                 messageViewHolder.msgText.setText(messageElement.getMessage());
-
                 break;
             case TYPE_MY_MESSAGE:
                 MyMessageObject myMessageElement = (MyMessageObject) dataList.get(position);
                 MyMessageViewHolder myMessageViewHolder = (MyMessageViewHolder) holder;
                 myMessageViewHolder.usernameTxt.setText("@" + myMessageElement.getUserName());
+                if(myMessageElement.getMessage().equals("/*Publicación eliminada*/")){
+                    Typeface currentTypeface = myMessageViewHolder.msgText.getTypeface();
+                    myMessageViewHolder.msgText.setTypeface(currentTypeface, Typeface.BOLD);
+                    myMessageElement.setMessage("Publicación eliminada");
+                }
                 myMessageViewHolder.msgText.setText(myMessageElement.getMessage());
                 break;
             case TYPE_POST:
                 PostObject postElement = (PostObject) dataList.get(position);
                 PostViewHolder postViewHolder = (PostViewHolder) holder;
-                postViewHolder.usernameTxt.setText(postElement.getUserName());
-                Picasso.with(context).load(postElement.getUrl_img()).into(postViewHolder.imagePost);
+                postViewHolder.usernameTxt.setText("@" + postElement.getEmisor_username());
+                Picasso.with(context).load(postElement.getOwner_post_image()).into(postViewHolder.postOwnerImage);
+                Picasso.with(context).load(postElement.getPost_image()).into(postViewHolder.imagePost);
                 break;
             case TYPE_MY_POST:
                 MyPostObject myPostElement = (MyPostObject) dataList.get(position);
                 MyPostViewHolder mypostViewHolder = (MyPostViewHolder) holder;
-                mypostViewHolder.usernameTxt.setText(myPostElement.getPost_text());
-                Picasso.with(context).load(myPostElement.getPost_image().replace("localhost","10.0.2.2")).into(mypostViewHolder.imagePost);
+                mypostViewHolder.usernameTxt.setText("@" + myPostElement.getEmisor_username());
+                Picasso.with(context).load(myPostElement.getOwner_post_image()).into(mypostViewHolder.postOwnerImage);
+                Picasso.with(context).load(myPostElement.getPost_image()).into(mypostViewHolder.imagePost);
                 break;
         }
     }
@@ -170,11 +182,13 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         CardView cardView;
         TextView usernameTxt;
         ImageView imagePost;
+        ImageView postOwnerImage;
         public PostViewHolder(View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             imagePost = itemView.findViewById(R.id.imagePost);
+            postOwnerImage = itemView.findViewById(R.id.ProfileImg);
         }
     }
 
@@ -182,11 +196,13 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         CardView cardView;
         TextView usernameTxt;
         ImageView imagePost;
+        ImageView postOwnerImage;
         public MyPostViewHolder(View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             imagePost = itemView.findViewById(R.id.imagePost);
+            postOwnerImage = itemView.findViewById(R.id.ProfileImg);
         }
     }
 }

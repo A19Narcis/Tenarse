@@ -1,58 +1,70 @@
 package com.example.tenarse.ui.active_chat;
 
 public class PostObject {
-    String id;
-    String url_img;
-    String profile_img;
-    String userName;
-    String message;
+    String emisor_id;
+    String emisor_username;
+    String id_post;
+    String post_image;
+    String owner_post_image;
+    String post_text;
 
-    public String getId() {
-        return id;
+    public PostObject(String emisor_id, String emisor_username, String id_post, String post_image, String owner_post_image, String post_text) {
+        this.emisor_id = emisor_id;
+        this.emisor_username = emisor_username;
+        this.id_post = id_post;
+        this.post_image = post_image;
+        this.owner_post_image = owner_post_image;
+        this.post_text = post_text;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getEmisor_id() {
+        return emisor_id;
     }
 
-    public String getUrl_img() {
-        return url_img;
+    public void setEmisor_id(String emisor_id) {
+        this.emisor_id = emisor_id;
     }
 
-    public void setUrl_img(String url_img) {
-        this.url_img = url_img;
+    public String getEmisor_username() {
+        return emisor_username;
     }
 
-    public String getProfile_img() {
-        return profile_img;
+    public void setEmisor_username(String emisor_username) {
+        this.emisor_username = emisor_username;
     }
 
-    public void setProfile_img(String profile_img) {
-        this.profile_img = profile_img;
+    public String getId_post() {
+        return id_post;
     }
 
-    public String getUserName() {
-        return userName;
+    public void setId_post(String id_post) {
+        this.id_post = id_post;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getPost_image() {
+        return post_image;
     }
 
-    public String getMessage() {
-        return message;
+    public void setPost_image(String post_image) {
+        this.post_image = post_image;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getOwner_post_image() {
+        return owner_post_image;
     }
 
-    public PostObject(String id, String url_img, String profile_img, String userName, String message) {
-        this.id = id;
-        this.url_img = url_img;
-        this.profile_img = profile_img;
-        this.userName = userName;
-        this.message = message;
+    public void setOwner_post_image(String owner_post_image) {
+        this.owner_post_image = owner_post_image;
+    }
+
+    public String getPost_text() {
+        return post_text;
+    }
+
+    public void setPost_text(String post_text) {
+        this.post_text = post_text;
     }
 }
+
+
 

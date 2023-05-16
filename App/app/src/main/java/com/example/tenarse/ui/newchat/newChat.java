@@ -54,6 +54,7 @@ public class newChat extends Fragment {
             System.out.println("PARTICIPANTEEEEEEEEEEEEEEEEEEEES: " + participantes.size());
             if(participantes.size() > 1) {
                 enviarCrear(participantes);
+                Navigation.findNavController(view).popBackStack();
             }
         });
 

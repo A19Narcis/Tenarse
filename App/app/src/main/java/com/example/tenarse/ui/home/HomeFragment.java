@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
         dataList = new ArrayList<>();
-        multiAdapter = new MultiAdapter(dataList, getContext(), HomeFragment.this);
+        multiAdapter = new MultiAdapter(dataList, getContext(), HomeFragment.this, mainActivity);
 
         globalDadesUser = GlobalDadesUser.getInstance();
 
