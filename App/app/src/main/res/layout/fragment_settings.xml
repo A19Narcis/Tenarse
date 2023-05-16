@@ -206,7 +206,7 @@
                 android:textStyle="bold"
                 android:visibility="gone"
                 android:gravity="center_horizontal"
-                android:text="Este usuario i/o correo electronico ya esta registrado" />
+                android:text="Este usuario ya esta registrado" />
 
             <Button
                 android:backgroundTint="@color/red"

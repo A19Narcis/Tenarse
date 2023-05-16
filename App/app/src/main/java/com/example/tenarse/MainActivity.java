@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     public Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://212.227.40.235:3001");
+            mSocket = IO.socket("http://10.0.2.2:3001");
 
             mSocket.on("listenChats", new Emitter.Listener() {
                 @Override
@@ -127,6 +127,12 @@ public class MainActivity extends AppCompatActivity {
         String lastActivity = sharedPreferences.getString("infoUser", "");
 
         try {
+            GlobalDadesUser.getInstance().setDadesUser(new JSONObject(lastActivity));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
             if (dadesUsuari == null || dadesUsuari.toString().equals("{}")){
                 JSONObject jsonObject = new JSONObject(lastActivity);
                 globalDadesUser.setDadesUser(jsonObject);
@@ -135,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 MenuItem menuItem = menu.findItem(R.id.navigation_user);
                 LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
                 try {
-                    loadImageBottomNavBar.execute(dadesUsuari.getString("url_img"));
+                    loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -147,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                     dadesUsuari = globalDadesUser.getDadesUser();
                     LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
                     try {
-                        loadImageBottomNavBar.execute(dadesUsuari.getString("url_img"));
+                        loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -172,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuItem = menu.findItem(R.id.navigation_user);
         LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
         try {
-            loadImageBottomNavBar.execute(newDadesUsuari.getString("url_img").replace("localhost", "212.227.40.235"));
+            loadImageBottomNavBar.execute(newDadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -188,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("lastActivity", "Menu");
         GlobalDadesUser globalDadesExit = GlobalDadesUser.getInstance();
         JSONObject dadesUsuariExit = globalDadesExit.getDadesUser();
+        System.out.println("SALGO DADES USER: " + globalDadesExit.getDadesUser().toString());
         editor.putString("infoUser", dadesUsuariExit.toString());
         editor.apply();
     }

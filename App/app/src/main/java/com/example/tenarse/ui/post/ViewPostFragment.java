@@ -116,7 +116,7 @@ public class ViewPostFragment extends Fragment {
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Tenarse");
             try {
-                intent.putExtra(Intent.EXTRA_TEXT, "Mira esta publicacion de Tenarse: http://212.227.40.235:3000/app/publicacion_template?id=" + dadesPost.getString("_id"));
+                intent.putExtra(Intent.EXTRA_TEXT, "Mira esta publicacion de Tenarse: http://10.0.2.2:3000/app/publicacion_template?id=" + dadesPost.getString("_id"));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
@@ -128,7 +128,7 @@ public class ViewPostFragment extends Fragment {
             binding.rvUsername.setText(usernamePost);
             String userImg = urlImg;
             Picasso.with(getContext()).invalidate(userImg);
-            Picasso.with(getContext()).load(userImg).into(binding.rvUserImage);
+            Picasso.with(getContext()).load(userImg.replace("localhost", "10.0.2.2")).into(binding.rvUserImage);
 
             //Veure l'icone de borrar 'post' si es teu el post
             if (!dadesUsuari.getString("_id").equals(dadesPost.getString("owner")) || !originFragment.equals("perfil")){
@@ -144,7 +144,7 @@ public class ViewPostFragment extends Fragment {
                         alertaLogOut.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                String url = "http://212.227.40.235:3000/deletePost";
+                                String url = "http://10.0.2.2:3000/deletePost";
                                 JSONObject body = new JSONObject();
                                 try {
                                     body.put("id_post", dadesPost.getString("_id"));
@@ -204,7 +204,7 @@ public class ViewPostFragment extends Fragment {
                 params_video.height = 0;
                 binding.rvPostVideo.setLayoutParams(params_video);
                 binding.rvPostText.setText(dadesPost.getString("text"));
-                Picasso.with(getContext()).load(dadesPost.getString("url_img")).into(binding.rvPostImage);
+                Picasso.with(getContext()).load(dadesPost.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.rvPostImage);
             } else if (dadesPost.getString("tipus").equals("video")){
                 binding.rvTitle.setVisibility(View.GONE);
                 binding.rvPostImage.setVisibility(View.GONE);
@@ -259,7 +259,7 @@ public class ViewPostFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if ((binding.editTextComentario.getText().length() > 0 && binding.editTextComentario.getText().length() <= 100) || (binding.editTextComentario.getText().toString().replace(" ", "").length() > 0 && binding.editTextComentario.getText().toString().replace(" ", "").length() <= 100)){
-                        String urlUploadComment = "http://212.227.40.235:3000/addNewComment";
+                        String urlUploadComment = "http://10.0.2.2:3000/addNewComment";
                         JSONObject commentBody = new JSONObject();
                         JSONObject innerComentari = new JSONObject();
                         try {
@@ -379,7 +379,7 @@ public class ViewPostFragment extends Fragment {
 
 
     private void refreshViewPostInfoComments(String id, boolean refreshed) {
-        String url_selectPost = "http://212.227.40.235:3000/getSelectedPost/" + id;
+        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + id;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
         getSinglePost.execute();
         String resultSinglePost = null;
@@ -428,7 +428,7 @@ public class ViewPostFragment extends Fragment {
     }
 
     private String getUsernameFromID(JSONObject post) {
-        String url_selectUser = "http://212.227.40.235:3000/getUsernameAndImageFromID";
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", post.getString("user"));
@@ -449,7 +449,7 @@ public class ViewPostFragment extends Fragment {
 
     private boolean refreshViewPostInfo(String id) {
         boolean myLike = false;
-        String url_selectPost = "http://212.227.40.235:3000/getSelectedPost/" + id;
+        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + id;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
         getSinglePost.execute();
         String resultSinglePost = null;
@@ -497,7 +497,7 @@ public class ViewPostFragment extends Fragment {
         //Thread para dar like
         dadesUsuari = globalDadesUser.getDadesUser();
         isLiked = true;
-        String url = "http://212.227.40.235:3000/newLike";
+        String url = "http://10.0.2.2:3000/newLike";
         JSONObject body = new JSONObject();
         try {
             body.put("id_post", id);
@@ -533,7 +533,7 @@ public class ViewPostFragment extends Fragment {
         //Quitar like
         dadesUsuari = globalDadesUser.getDadesUser();
         isLiked = false;
-        String url = "http://212.227.40.235:3000/removeLike";
+        String url = "http://10.0.2.2:3000/removeLike";
         JSONObject body = new JSONObject();
         try {
             body.put("id_post", id);

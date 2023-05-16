@@ -9,17 +9,26 @@ public class ListElementImg {
     public String username;
     public String post_img_url;
     public String post_img_text;
-
+    public String id_owner;
     public JSONArray likes;
     public boolean isLiked;
 
-    public ListElementImg(String id, String username, String text, String urlImg, String userImg, JSONArray likes){
+    public ListElementImg(String id, String username, String text, String urlImg, String userImg, JSONArray likes, String id_owner){
         this.id = id;
         this.username = username;
         this.post_img_text = text;
         this.post_img_url = urlImg;
         this.user_img_url = userImg;
         this.likes = likes;
+        this.id_owner = id_owner;
+    }
+
+    public String getId_owner() {
+        return id_owner;
+    }
+
+    public void setId_owner(String id_owner) {
+        this.id_owner = id_owner;
     }
 
     public JSONArray getLikes() {

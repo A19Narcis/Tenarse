@@ -9,19 +9,27 @@ public class ListElementVideo {
     public String username;
     public String post_video_url;
     public String post_text;
-
+    public String id_owner;
     public JSONArray likes;
     public boolean isLiked;
 
-    public ListElementVideo(String id, String username, String userImg, String videoURL, String textPost, JSONArray likes){
+    public ListElementVideo(String id, String username, String userImg, String videoURL, String textPost, JSONArray likes, String id_owner){
         this.id = id;
         this.username = username;
         this.user_img_url = userImg;
         this.post_video_url = videoURL;
         this.post_text = textPost;
         this.likes = likes;
+        this.id_owner = id_owner;
     }
 
+    public String getId_owner() {
+        return id_owner;
+    }
+
+    public void setId_owner(String id_owner) {
+        this.id_owner = id_owner;
+    }
 
     public String getId() {
         return id;

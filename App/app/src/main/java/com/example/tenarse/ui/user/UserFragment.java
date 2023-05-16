@@ -3,6 +3,7 @@ package com.example.tenarse.ui.user;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
@@ -71,8 +72,7 @@ public class UserFragment extends Fragment {
     MultiAdapter multiAdapter;
     FollowAdapter followAdapter;
 
-    private GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
-    private JSONObject dadesUsuari = globalDadesUser.getDadesUser();
+    private JSONObject dadesUsuari = GlobalDadesUser.getInstance().getDadesUser();
 
     private Runnable mRunnable = new Runnable() {
         private int mPreviousScrollPosition = -1;
@@ -95,6 +95,8 @@ public class UserFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         UserViewModel userViewModel =
                 new ViewModelProvider(this).get(UserViewModel.class);
+
+        System.out.println("LOGIN: " + GlobalDadesUser.getInstance().getDadesUser().toString());
 
         dataList = new ArrayList<>();
         multiAdapter = new MultiAdapter(dataList, getContext(), UserFragment.this);
@@ -146,7 +148,7 @@ public class UserFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putString("dadesUser", dadesUsuari.toString());
+                bundle.putString("dadesUser", GlobalDadesUser.getInstance().getDadesUser().toString());
                 Navigation.findNavController(v).navigate(R.id.action_navigation_user_to_navigation_settings, bundle);
             }
         });
@@ -214,7 +216,7 @@ public class UserFragment extends Fragment {
             recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
             //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
-            String url = "http://212.227.40.235:3000/getFollowersInfo";
+            String url = "http://10.0.2.2:3000/getFollowersInfo";
             JSONObject body = new JSONObject();
             try {
                 body.put("id_user", dadesUsuari.getString("_id"));
@@ -299,7 +301,7 @@ public class UserFragment extends Fragment {
             recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
             //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
-            String url = "http://212.227.40.235:3000/getFollowingsInfo";
+            String url = "http://10.0.2.2:3000/getFollowingsInfo";
             JSONObject body = new JSONObject();
             try {
                 body.put("id_user", dadesUsuari.getString("_id"));
@@ -363,7 +365,7 @@ public class UserFragment extends Fragment {
     private void refreshUserInfo(String id){
         //Actualitzar el perfil
         //******* UPDATE DATOS USER **********
-        String url_selectUser = "http://212.227.40.235:3000/getUserById";
+        String url_selectUser = "http://10.0.2.2:3000/getUserById";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", id);
@@ -391,8 +393,8 @@ public class UserFragment extends Fragment {
             JSONObject newDadesUser = new JSONObject(resultSearch);
             //Canviar els valors antics de l'usuari
             binding.userName.setText("@" + newDadesUser.getString("username"));
-            Picasso.with(getContext()).invalidate(newDadesUser.getString("url_img"));
-            Picasso.with(getContext()).load(newDadesUser.getString("url_img")).into(binding.fotoPerfil);
+            Picasso.with(getContext()).invalidate(newDadesUser.getString("url_img").replace("localhost", "10.0.2.2"));
+            Picasso.with(getContext()).load(newDadesUser.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.fotoPerfil);
             int new_numero_followings = newDadesUser.getJSONArray("followings").length();
             if (new_numero_followings >= 10000 && new_numero_followings < 999950) {
                 String followingsString = formatFollowers10(new_numero_followings);
@@ -453,7 +455,7 @@ public class UserFragment extends Fragment {
     }
 
     private String getUsernameFromID(JSONObject post) {
-        String url_selectUser = "http://212.227.40.235:3000/getUsernameAndImageFromID";
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", post.getString("owner"));
@@ -480,7 +482,7 @@ public class UserFragment extends Fragment {
 
     public void selectPost(String idPost, View v, String username, String url_img){
         //Recoger todos los datos de un post y verlos en un fragment nuevo
-        String url_selectPost = "http://212.227.40.235:3000/getSelectedPost/" + idPost;
+        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + idPost;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
         getSinglePost.execute();
         String resultSinglePost = null;

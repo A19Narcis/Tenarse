@@ -14,6 +14,7 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const { log } = require('console');
 const nodemailer = require('nodemailer');
+const { SourceTextModule } = require('vm');
 
 const PORT = 3000
 const PORT_SOCKETS = 3001
@@ -123,7 +124,6 @@ app.post('/loginGoogleAccount', (req, res) => {
             followers: dadesUser.followers,
             followings: dadesUser.followings,
             publicacions:dadesUser.publicacions,
-            google: true,
             __v: 0
         }
         res.send(dadesFullUser)
@@ -156,7 +156,6 @@ app.post('/updateUser', (req, res) => {
             followers: newDadesUpdated.followers,
             followings: newDadesUpdated.followings,
             publicacions:newDadesUpdated.publicacions,
-            google: req.body.google,
             __v: 0
         }
         res.send(updatedDadesUser)
@@ -226,10 +225,10 @@ app.post('/getUser', (req, res) => {
                     nombre: dades_user_valides.nombre,
                     apellidos: dades_user_valides.apellidos,
                     fecha_nac: dades_user_valides.fecha_nac,
+                    socket: dades_user_valides.socket,
                     followers: dades_user_valides.followers,
                     followings: dades_user_valides.followings,
                     publicacions:dades_user_valides.publicacions,
-                    google: false,
                     __v: 0
                 }
                 res.send(dadesFinals)
@@ -287,10 +286,10 @@ app.post('/getSelectedUser', (req, res) => {
             nombre: dades_user.nombre,
             apellidos: dades_user.apellidos,
             fecha_nac: dades_user.fecha_nac,
+            socket: dades_user.socket,
             followers: dades_user.followers,
             followings: dades_user.followings,
             publicacions:dades_user.publicacions,
-            google: googleAccount,
             __v: 0
         }
         res.send(dadesFinals)

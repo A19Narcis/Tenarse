@@ -46,7 +46,7 @@ public class AdapterSearchUsers extends RecyclerView.Adapter<RecyclerView.ViewHo
         UserViewHolder userViewHolder = (UserViewHolder) holder;
 
         String urlImagen = listElementUser.getUser_url_img();
-        Picasso.with(context).load(urlImagen).into(userViewHolder.userImg);
+        Picasso.with(context).load(urlImagen.replace("localhost", "10.0.2.2")).into(userViewHolder.userImg);
 
         userViewHolder.username.setText("@" + listElementUser.getSearch_username());
         userViewHolder.fullname.setText(listElementUser.getFullname());

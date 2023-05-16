@@ -49,7 +49,7 @@ public class FragmentChat extends Fragment {
     }
 
     private void getMyChats() {
-        String url_chats = "http://212.227.40.235:3000/getAllMyChats";
+        String url_chats = "http://10.0.2.2:3000/getAllMyChats";
         JSONObject body = new JSONObject();
         try {
             body.put("_id", dadesUsuari.get("_id"));
@@ -102,7 +102,7 @@ public class FragmentChat extends Fragment {
     }
 
     private String getUsernameandImageFromID(String idUser) {
-        String url_selectUser = "http://212.227.40.235:3000/getUsernameAndImageFromID";
+        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", idUser);

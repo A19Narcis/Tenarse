@@ -9,17 +9,26 @@ public class ListElementDoubt {
     public String username;
     public String title;
     public String description;
-
+    public String id_owner;
     public JSONArray likes;
     public boolean isLiked;
 
-    public ListElementDoubt(String id, String username, String title, String descr, String userImg, JSONArray likes){
+    public ListElementDoubt(String id, String username, String title, String descr, String userImg, JSONArray likes, String id_owner){
         this.id = id;
         this.username = username;
         this.title = title;
         this.description = descr;
         this.user_img_url = userImg;
         this.likes = likes;
+        this.id_owner = id_owner;
+    }
+
+    public String getId_owner() {
+        return id_owner;
+    }
+
+    public void setId_owner(String id_owner) {
+        this.id_owner = id_owner;
     }
 
     public boolean isLiked() {

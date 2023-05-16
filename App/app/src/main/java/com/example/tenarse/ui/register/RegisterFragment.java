@@ -70,7 +70,7 @@ public class RegisterFragment extends Fragment{
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://212.227.40.235:3001");
+            mSocket = IO.socket("http://10.0.2.2:3001");
 
             mSocket.on("respuestaAddNewUser", new Emitter.Listener() {
                 @Override
@@ -98,7 +98,7 @@ public class RegisterFragment extends Fragment{
         etPlannedDate = binding.etPlannedDate;
 
         OkHttpClient clientNode = new OkHttpClient();
-        String url_register = "http://212.227.40.235:3000/addNewUser";
+        String url_register = "http://10.0.2.2:3000/addNewUser";
 
         etPlannedDate.setOnClickListener(new View.OnClickListener() {
             @Override

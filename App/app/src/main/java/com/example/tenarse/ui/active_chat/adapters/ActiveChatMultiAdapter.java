@@ -134,15 +134,15 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 PostObject postElement = (PostObject) dataList.get(position);
                 PostViewHolder postViewHolder = (PostViewHolder) holder;
                 postViewHolder.usernameTxt.setText("@" + postElement.getEmisor_username());
-                Picasso.with(context).load(postElement.getOwner_post_image()).into(postViewHolder.postOwnerImage);
-                Picasso.with(context).load(postElement.getPost_image()).into(postViewHolder.imagePost);
+                Picasso.with(context).load(postElement.getOwner_post_image().replace("localhost", "10.0.2.2")).into(postViewHolder.postOwnerImage);
+                Picasso.with(context).load(postElement.getPost_image().replace("localhost", "10.0.2.2")).into(postViewHolder.imagePost);
                 break;
             case TYPE_MY_POST:
                 MyPostObject myPostElement = (MyPostObject) dataList.get(position);
                 MyPostViewHolder mypostViewHolder = (MyPostViewHolder) holder;
                 mypostViewHolder.usernameTxt.setText("@" + myPostElement.getEmisor_username());
-                Picasso.with(context).load(myPostElement.getOwner_post_image()).into(mypostViewHolder.postOwnerImage);
-                Picasso.with(context).load(myPostElement.getPost_image()).into(mypostViewHolder.imagePost);
+                Picasso.with(context).load(myPostElement.getOwner_post_image().replace("localhost", "10.0.2.2")).into(mypostViewHolder.postOwnerImage);
+                Picasso.with(context).load(myPostElement.getPost_image().replace("localhost", "10.0.2.2")).into(mypostViewHolder.imagePost);
                 break;
         }
     }

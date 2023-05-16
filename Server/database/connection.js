@@ -2,13 +2,13 @@ const mongoose = require("mongoose")
 const { User, Post, Chat } = require("./esquemas");
 
 
-const user = "tenarse"
+const user = "a19nargomcar"
 const passwd = "Pedralbes22_23"
 const host = "212.227.40.235"
 const puerto = "27017"
 
-//const URL = 'mongodb+srv://' + user + ':' + passwd + '@tenarse.lyvrboh.mongodb.net/' //ATLAS
-const URL = 'mongodb://' + user + ':' + passwd + '@' + host + ':' + puerto + '/' //TENARSE SERVER
+const URL = 'mongodb+srv://' + user + ':' + passwd + '@tenarse.lyvrboh.mongodb.net/' //ATLAS
+//const URL = 'mongodb://' + user + ':' + passwd + '@' + host + ':' + puerto + '/' //TENARSE SERVER
 //const URL = 'mongodb://127.0.0.1:27017/Tenarse'
 const options = {
     dbName: 'Tenarse',
