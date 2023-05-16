@@ -65,14 +65,12 @@ public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println("ESTE ES EL BODY QUE SE ENVIAAAAa: "+ body);
         String url_updateDades = "http://10.0.2.2:3000/newMessage";
         MyAsyncTask updateUser = new MyAsyncTask(url_updateDades, body);
         updateUser.execute();
         String resultUpdate = null;
         try {
             resultUpdate = updateUser.get();
-            System.out.println(resultUpdate);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }

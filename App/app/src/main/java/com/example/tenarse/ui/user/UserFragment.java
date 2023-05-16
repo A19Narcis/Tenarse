@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentUserBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
@@ -51,6 +52,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import javax.microedition.khronos.opengles.GL;
 
 public class UserFragment extends Fragment {
 
@@ -142,7 +145,9 @@ public class UserFragment extends Fragment {
         binding.settingsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.action_navigation_user_to_navigation_settings);
+                Bundle bundle = new Bundle();
+                bundle.putString("dadesUser", dadesUsuari.toString());
+                Navigation.findNavController(v).navigate(R.id.action_navigation_user_to_navigation_settings, bundle);
             }
         });
 
@@ -371,6 +376,14 @@ public class UserFragment extends Fragment {
         try {
             resultSearch = selectedUser.get();
         } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        try {
+            GlobalDadesUser.getInstance().setDadesUser(new JSONObject(resultSearch));
+            ((MainActivity) getActivity()).updateUserImageBottom();
+        } catch (JSONException e) {
             throw new RuntimeException(e);
         }
 

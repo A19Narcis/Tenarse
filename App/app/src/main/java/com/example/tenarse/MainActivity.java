@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         Menu menu = navView.getMenu();
         MenuItem menuItem = menu.findItem(R.id.navigation_message);
         menuItem.setIcon(R.drawable.msg_icon);
-        System.out.println("ESTA ENTRADOOOOOOO!!!!!!!!!!!!!!!");
     }
 
     @Override
@@ -144,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
                 if (!dadesUsuari.getString("username").equals("false")){
                     Menu menu = navView.getMenu();
                     MenuItem menuItem = menu.findItem(R.id.navigation_user);
+                    globalDadesUser.setDadesUser(new JSONObject(lastActivity));
+                    dadesUsuari = globalDadesUser.getDadesUser();
                     LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
                     try {
                         loadImageBottomNavBar.execute(dadesUsuari.getString("url_img"));
@@ -171,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuItem = menu.findItem(R.id.navigation_user);
         LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
         try {
-            loadImageBottomNavBar.execute(newDadesUsuari.getString("url_img"));
+            loadImageBottomNavBar.execute(newDadesUsuari.getString("url_img").replace("localhost", "212.227.40.235"));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

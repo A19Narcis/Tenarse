@@ -4,8 +4,10 @@ import static android.app.Activity.RESULT_OK;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -56,9 +58,9 @@ public class SettingsFragment extends Fragment{
 
     private FragmentSettingsBinding binding;
 
-    GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
+    GlobalDadesUser globalDadesUser;
 
-    JSONObject actualDadesUser = globalDadesUser.getDadesUser();
+    JSONObject actualDadesUser;
     JSONObject removeDadesUser = new JSONObject();
 
     private String data_usuari = "";
@@ -79,11 +81,22 @@ public class SettingsFragment extends Fragment{
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        System.out.println(actualDadesUser.toString());
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String lastActivity = sharedPreferences.getString("infoUser", "");
+
+        globalDadesUser = GlobalDadesUser.getInstance();
+
+        Bundle args = getArguments();
+        if (args != null) {
+            try {
+                actualDadesUser = new JSONObject(args.getString("dadesUser"));
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         try {
             if (actualDadesUser.getString("google").contains("true")){
-                System.out.println("GOOOOOGLE");
                 binding.newEmail.setFocusable(false);
                 binding.newEmail.setClickable(false);
             }
@@ -262,7 +275,7 @@ public class SettingsFragment extends Fragment{
                         json.put("_id", actualDadesUser.getString("_id"));
                         json.put("email", newEmail);
                         json.put("username", newUsername);
-                        json.put("url_img", "http://localhost:3000/uploads\\user_img\\" + actualDadesUser.getString("_id") + ".png");
+                        json.put("url_img", "http://212.227.40.235:3000/uploads\\user_img\\" + actualDadesUser.getString("_id") + ".png");
                         json.put("nombre", newNombre);
                         json.put("apellidos", newApellidos);
                         json.put("fecha_nac", newFehca);
@@ -287,8 +300,6 @@ public class SettingsFragment extends Fragment{
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             //Actualizar datos usuario
                             GlobalDadesUser.getInstance().setDadesUser(json);
-
-                            System.out.println("NUEVOS DATOS: " + GlobalDadesUser.getInstance().getDadesUser());
 
                             ((MainActivity) getActivity()).updateUserImageBottom();
 
@@ -347,7 +358,6 @@ public class SettingsFragment extends Fragment{
                         try {
                             JSONObject updatedDades = new JSONObject(resultUpdate);
                             GlobalDadesUser.getInstance().setDadesUser(updatedDades);
-                            System.out.println("DADES NOVES: " + updatedDades.toString());
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -437,7 +447,6 @@ public class SettingsFragment extends Fragment{
             String fileName = pathImg.substring(pathImg.lastIndexOf("/") + 1);
             pathImg = getContext().getCacheDir() + "/" + fileName;
             binding.newFotoPerfil.setImageURI(resultUri);
-            System.out.println(pathImg);
 
             /*.LayoutParams layoutParams = binding.cardViewSettings.getLayoutParams();
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
