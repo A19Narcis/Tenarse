@@ -92,7 +92,6 @@ public class FragmentChat extends Fragment {
                             lastMsg = "Publicació compartida";
                         }
                     }
-                    System.out.println(json);
                     arrayRecycler.add(new chatObject(json.getString("_id") ,username_image.getString("username"), lastMsg, username_image.getString("url_img"), arrayParticipants));
                     chatAdapter.notifyItemInserted(arrayRecycler.size() - 1);
                 }
@@ -116,7 +115,6 @@ public class FragmentChat extends Fragment {
         String resultSearch = null;
         try {
             resultSearch = selectedUser.get();
-            System.out.println(resultSearch);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }

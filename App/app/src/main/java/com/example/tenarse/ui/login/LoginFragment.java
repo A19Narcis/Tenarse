@@ -23,6 +23,7 @@ import androidx.navigation.Navigation;
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentLoginBinding;
+import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.globals.MyAsyncTask;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -72,7 +73,6 @@ public class LoginFragment extends Fragment {
                 public void call(Object... args) {
                     // Manejar el mensaje recibido
                     mensaje = (String) args[0];
-                    System.out.println("Mensaje recibido: " + mensaje);
                     mSocket.disconnect();
                     semaphore.release();
                 }
@@ -118,7 +118,11 @@ public class LoginFragment extends Fragment {
                 }
 
 
-                System.out.println(resultLogin);
+                try {
+                    GlobalDadesUser.getInstance().setDadesUser(new JSONObject(resultLogin));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
 
                 if (!resultLogin.contains("{\"username\":false}")){
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
@@ -262,7 +266,6 @@ public class LoginFragment extends Fragment {
                                 throw new RuntimeException(e);
                             }
 
-                            System.out.println(resultGetUserRegistered);
 
                             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
