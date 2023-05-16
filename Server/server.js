@@ -571,11 +571,24 @@ app.post('/newMessage', (req, res) => {
     const formatoFecha = 'ddd MMM DD HH:mm:ss z YYYY';
     let fechaFormateada = getDateJavaFormat();
 
+
     var chat_id = req.body.chat_id
-    var message = {
-        emisor: req.body.emisor,
-        txt_msg: req.body.message,
-        hora: fechaFormateada
+    console.log(req.body);
+
+    if(req.body.post_id == ""){
+        var message = {
+            emisor: req.body.emisor,
+            txt_msg: req.body.message,
+            post_id: "",
+            hora: fechaFormateada
+        }
+    }else{
+        var message = {
+            emisor: req.body.emisor,
+            txt_msg: "",
+            post_id: req.body.post_id,
+            hora: fechaFormateada
+        }
     }
 
     updateDB.addMessageChat(message, chat_id, function () {
