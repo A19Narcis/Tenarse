@@ -68,6 +68,9 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         else if (dataList.get(position) instanceof PostObject) {
             return TYPE_POST;
         }
+        else if (dataList.get(position) instanceof MyPostObject) {
+            return TYPE_MY_POST;
+        }
         return -1;
     }
 
@@ -87,7 +90,7 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 return new PostViewHolder(view);
             case TYPE_MY_POST:
                 view = inflater.inflate(R.layout.list_element_post_message, parent, false);
-                return new PostViewHolder(view);
+                return new MyPostViewHolder(view);
             default:
                 return null;
         }
@@ -125,9 +128,9 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 break;
             case TYPE_MY_POST:
                 MyPostObject myPostElement = (MyPostObject) dataList.get(position);
-                PostViewHolder MypostViewHolder = (PostViewHolder) holder;
-                MypostViewHolder.usernameTxt.setText(myPostElement.getUserName());
-                Picasso.with(context).load(myPostElement.getUrl_img().replace("localhost","10.0.2.2")).into(MypostViewHolder.imagePost);
+                MyPostViewHolder mypostViewHolder = (MyPostViewHolder) holder;
+                mypostViewHolder.usernameTxt.setText(myPostElement.getPost_text());
+                Picasso.with(context).load(myPostElement.getPost_image().replace("localhost","10.0.2.2")).into(mypostViewHolder.imagePost);
                 break;
         }
     }
@@ -140,13 +143,11 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout linearLayout;
-        CardView cardView;
         TextView usernameTxt;
         TextView msgText;
         public MessageViewHolder(View itemView) {
             super(itemView);
             linearLayout = itemView.findViewById(R.id.chat_element_direction);
-            cardView = itemView.findViewById(R.id.cardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             msgText = itemView.findViewById(R.id.txtMsg);
         }
@@ -155,26 +156,22 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public static class MyMessageViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout linearLayout;
-        CardView cardView;
         TextView usernameTxt;
         TextView msgText;
         public MyMessageViewHolder(View itemView) {
             super(itemView);
             linearLayout = itemView.findViewById(R.id.chat_element_direction);
-            cardView = itemView.findViewById(R.id.cardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             msgText = itemView.findViewById(R.id.txtMsg);
         }
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout linearLayout;
         CardView cardView;
         TextView usernameTxt;
         ImageView imagePost;
         public PostViewHolder(View itemView) {
             super(itemView);
-            linearLayout = itemView.findViewById(R.id.chat_element_direction);
             cardView = itemView.findViewById(R.id.cardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             imagePost = itemView.findViewById(R.id.imagePost);
@@ -182,13 +179,11 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public static class MyPostViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout linearLayout;
         CardView cardView;
         TextView usernameTxt;
         ImageView imagePost;
         public MyPostViewHolder(View itemView) {
             super(itemView);
-            linearLayout = itemView.findViewById(R.id.chat_element_direction);
             cardView = itemView.findViewById(R.id.cardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             imagePost = itemView.findViewById(R.id.imagePost);
