@@ -16,6 +16,7 @@ import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.httpRetrofit.ApiService;
 import com.example.tenarse.ui.active_chat.adapters.ActiveChatMultiAdapter;
 import com.example.tenarse.globals.MyAsyncTask;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -196,7 +197,9 @@ public class activeChat extends Fragment {
                     }else if(!object.getString("emisor").equals(dadesUsuari.getString("_id")) && !object.getString("txt_msg").equals("")){
                         arrayRecycler.add(new MessageObject(object.getString("emisor"), userRealName, object.getString("txt_msg")));
                     }else if(object.getString("emisor").equals(dadesUsuari.getString("_id")) && object.getString("txt_msg").equals("")){
-                        //arrayRecycler.add(new MyPostObject(object.getString("post_id"), userRealName, object.getString("txt_msg")));
+                        JSONObject datos_post = getPost(object.getString("post_id"));
+                        JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
+                        arrayRecycler.add(new MyPostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
                     }
                 }
         } catch (JSONException e) {
@@ -206,5 +209,51 @@ public class activeChat extends Fragment {
         binding.msgTextView.setText("");
     }
 
+    private JSONObject getPost(String post_id) {
+        //Recoger todos los datos de un post y verlos en un fragment nuevo
+        String url_selectPost = "http://212.227.40.235:3000/getSelectedPost/" + post_id;
+        MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
+        getSinglePost.execute();
+        String resultSinglePost = null;
+        JSONObject datos_post = null;
+        try {
+            resultSinglePost = getSinglePost.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            datos_post = new JSONObject(resultSinglePost);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return datos_post;
+    }
+
+    private JSONObject getOwnerPost(String idUser) {
+        String url_selectUser = "http://212.227.40.235:3000/getUsernameAndImageFromID";
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("id_user", idUser);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyAsyncTask selectedUser = new MyAsyncTask(url_selectUser, jsonBody);
+        selectedUser.execute();
+        String resultSearch = null;
+        JSONObject datos_owner = null;
+        try {
+            resultSearch = selectedUser.get();
+            System.out.println(resultSearch);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            datos_owner = new JSONObject(resultSearch);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return datos_owner;
+    }
 
 }
