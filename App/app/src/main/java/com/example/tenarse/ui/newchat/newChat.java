@@ -51,7 +51,6 @@ public class newChat extends Fragment {
                     participantes.add(arrayRecycler.get(i).getId());
                 }
             }
-            System.out.println("PARTICIPANTEEEEEEEEEEEEEEEEEEEES: " + participantes.size());
             if(participantes.size() > 1) {
                 enviarCrear(participantes);
             }
