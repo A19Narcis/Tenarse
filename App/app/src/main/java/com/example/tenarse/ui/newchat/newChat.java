@@ -79,7 +79,7 @@ public class newChat extends Fragment {
     }
 
     private void getSuggestedUsers() {
-        String url_register = "http://10.0.2.2:3000/getSuggestedUsersChat";
+        String url_register = "http://212.227.40.235:3000/getSuggestedUsersChat";
         JSONObject body = new JSONObject();
         try {
             body.put("_id", dadesUsuari.get("_id"));
@@ -107,7 +107,7 @@ public class newChat extends Fragment {
     }
 
     private void enviarCrear(ArrayList<String> participantes) {
-        String url_register = "http://10.0.2.2:3000/createChat";
+        String url_register = "http://212.227.40.235:3000/createChat";
         JSONObject body = new JSONObject();
         JSONArray array = new JSONArray(participantes);
         try {

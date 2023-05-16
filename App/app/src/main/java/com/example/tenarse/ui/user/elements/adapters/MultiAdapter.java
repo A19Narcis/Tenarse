@@ -82,7 +82,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case TYPE_IMAGE:
                 ListElementImg imgElement = (ListElementImg) dataList.get(position);
                 ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
-                Picasso.with(context).load(imgElement.getPost_img_url().replace("localhost", "10.0.2.2")).into(imageViewHolder.imageView);
+                Picasso.with(context).load(imgElement.getPost_img_url()).into(imageViewHolder.imageView);
                 imageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -133,7 +133,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 });
 
                 /* Cargar VIDEO */
-                String videoPath = videoElement.post_video_url.replace("localhost", "10.0.2.2");
+                String videoPath = videoElement.post_video_url;
                 /*Uri uri = Uri.parse(videoPath);*/
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                 retriever.setDataSource(videoPath);

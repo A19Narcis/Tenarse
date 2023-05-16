@@ -5,8 +5,8 @@
     android:layout_marginStart="5dp"
     android:layout_gravity="center_horizontal"
     android:layout_marginTop="5dp"
-    android:layout_width="450px"
-    android:layout_height="450px">
+    android:layout_width="345px"
+    android:layout_height="345px">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

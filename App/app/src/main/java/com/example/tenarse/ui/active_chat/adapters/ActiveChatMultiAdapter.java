@@ -121,7 +121,7 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 PostObject postElement = (PostObject) dataList.get(position);
                 PostViewHolder postViewHolder = (PostViewHolder) holder;
                 postViewHolder.usernameTxt.setText(postElement.getUserName());
-                Picasso.with(context).load(postElement.getUrl_img().replace("localhost","10.0.2.2")).into(postViewHolder.imagePost);
+                Picasso.with(context).load(postElement.getUrl_img()).into(postViewHolder.imagePost);
                 break;
             case TYPE_MY_POST:
                 MyPostObject myPostElement = (MyPostObject) dataList.get(position);

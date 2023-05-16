@@ -47,7 +47,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private static final int DELAY_MILLIS = 500;
 
     private static int numPagina = 0;
-    private static String url = "http://10.0.2.2:3000/getPosts/" + numPagina;
+    private static String url = "http://212.227.40.235:3000/getPosts/" + numPagina;
 
     private Handler mHandler = new Handler();
 
@@ -203,7 +203,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void checkIfNewPostReload() {
         numPagina = 0;
-        url = "http://10.0.2.2:3000/getPosts/" + numPagina;
+        url = "http://212.227.40.235:3000/getPosts/" + numPagina;
         dataList.clear();
         checkIfNewPost();
         multiAdapter.notifyDataSetChanged();
@@ -272,7 +272,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
     private String getUsernameandImageFromID(JSONObject post) {
-        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
+        String url_selectUser = "http://212.227.40.235:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", post.getString("owner"));
@@ -309,7 +309,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void selectUser(String username, View view){
         //Recoger todos los datos del usuario que tiene ese `username` y luego cambiar de fragment para ver su perfil
-        String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
+        String url_selectUser = "http://212.227.40.235:3000/getSelectedUser";
         JSONObject jsonBody = new JSONObject();
 
 
@@ -344,7 +344,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void selectPost(String idPost, View view, String username, String url_img){
         //Recoger todos los datos de un post y verlos en un fragment nuevo
-        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + idPost;
+        String url_selectPost = "http://212.227.40.235:3000/getSelectedPost/" + idPost;
         MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
         getSinglePost.execute();
         String resultSinglePost = null;
@@ -388,7 +388,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         //Thread para dar like
         dadesUser = globalDadesUser.getDadesUser();
         isLiked = true;
-        String url = "http://10.0.2.2:3000/newLike";
+        String url = "http://212.227.40.235:3000/newLike";
         JSONObject body = new JSONObject();
         try {
             body.put("id_post", idPost);
@@ -411,7 +411,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         //Quitar like
         dadesUser = globalDadesUser.getDadesUser();
         isLiked = false;
-        String url = "http://10.0.2.2:3000/removeLike";
+        String url = "http://212.227.40.235:3000/removeLike";
         JSONObject body = new JSONObject();
         try {
             body.put("id_post", idPost);
@@ -436,7 +436,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void run() {
                 if (!noMorePosts){
                     numPagina++;
-                    url = "http://10.0.2.2:3000/getPosts/" + numPagina;
+                    url = "http://212.227.40.235:3000/getPosts/" + numPagina;
                     checkIfNewPost();
                 }
             }

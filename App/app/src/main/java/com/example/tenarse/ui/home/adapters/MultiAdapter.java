@@ -224,11 +224,11 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
                 /* Cargar imagen con PISCASSO */
-                String urlImagen = imgElement.getPost_img_url().replace("localhost", "10.0.2.2");
+                String urlImagen = imgElement.getPost_img_url();
                 Picasso.with(context).load(urlImagen).into(imageViewHolder.imageView);
 
                 /* Cargar USER IMAGE BITMAT Hilo */
-                String urlUserImg = imgElement.getUser_img_url().replace("localhost", "10.0.2.2");
+                String urlUserImg = imgElement.getUser_img_url();
                 ImageView userImageView = imageViewHolder.userImageView;
                 new HomeViewModel.DownloadImageTask(userImageView).execute(urlUserImg);
 
@@ -260,13 +260,21 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 });
 
+                imageViewHolder.sharePost.setOnClickListener(view -> {
+                    animateButton(imageViewHolder.sharePost);
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Tenarse");
+                    intent.putExtra(Intent.EXTRA_TEXT, "http://212.227.40.235:4000/app/publicacion_template?id=" + imgElement.getId());
+                    mHomeFragment.startActivity(Intent.createChooser(intent, "Comparte:"));
+                });
 
                 break;
             case TYPE_DOUBT:
                 ListElementDoubt doubtElement = (ListElementDoubt) dataList.get(position);
                 DoubtViewHolder doubtViewHolder = (DoubtViewHolder) holder;
                 doubtViewHolder.username.setText(doubtElement.getUsername());
-                Picasso.with(context).load(doubtElement.getUser_img_url().replace("localhost", "10.0.2.2")).into(doubtViewHolder.userImageView);
+                Picasso.with(context).load(doubtElement.getUser_img_url()).into(doubtViewHolder.userImageView);
 
 
                 doubtViewHolder.username.setOnClickListener(new View.OnClickListener() {
@@ -314,7 +322,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "Tenarse");
-                    intent.putExtra(Intent.EXTRA_TEXT, "Mira esta publicacion de Tenarse: http://10.0.2.2:3000/app/publicacion_template?id=" + doubtElement.getId());
+                    intent.putExtra(Intent.EXTRA_TEXT, "http://212.227.40.235:4000/app/publicacion_template?id=" + doubtElement.getId());
                     mHomeFragment.startActivity(Intent.createChooser(intent, "Comparte:"));
                 });
 
@@ -324,7 +332,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 ListElementVideo videoElement = (ListElementVideo) dataList.get(position);
                 VideoViewHolder videoViewHolder = (VideoViewHolder) holder;
                 videoViewHolder.username.setText(videoElement.getUsername());
-                String urImg = videoElement.getUser_img_url().replace("localhost", "10.0.2.2");
+                String urImg = videoElement.getUser_img_url();
                 Picasso.with(context).load(urImg).into(videoViewHolder.userImageView);
 
                 videoViewHolder.username.setOnClickListener(new View.OnClickListener() {
@@ -345,7 +353,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 verProgressBar(videoViewHolder);
 
-                String videoPath = videoElement.getPost_video_url().replace("localhost", "10.0.2.2");
+                String videoPath = videoElement.getPost_video_url();
                 /*Uri uri = Uri.parse(videoPath);
                 videoViewHolder.post_video.setVideoURI(uri);*/
                 videoViewHolder.post_video.setVideoPath(videoPath);
@@ -365,7 +373,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public boolean onError(MediaPlayer mp, int what, int extra) {
                         System.out.println("Error al reproducir el video: " + what + ", " + extra);
-                        videoViewHolder.post_video.setVideoURI(Uri.parse(videoElement.getPost_video_url().replace("localhost", "10.0.2.2")));
+                        videoViewHolder.post_video.setVideoURI(Uri.parse(videoElement.getPost_video_url()));
                         videoViewHolder.post_video.setOnPreparedListener(mp1 -> {
                             MultiAdapter.this.ocultarProgressBar(videoViewHolder);
                             mp1.setLooping(true);
@@ -413,6 +421,15 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     public void onClick(View v) {
                         mHomeFragment.selectPost(videoElement.getId(), v, videoElement.getUsername(), videoElement.getUser_img_url());
                     }
+                });
+
+                videoViewHolder.sharePost.setOnClickListener(view -> {
+                    animateButton(videoViewHolder.sharePost);
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Tenarse");
+                    intent.putExtra(Intent.EXTRA_TEXT, "http://212.227.40.235:4000/app/publicacion_template?id=" + videoElement.getId());
+                    mHomeFragment.startActivity(Intent.createChooser(intent, "Comparte:"));
                 });
 
                 break;
@@ -498,6 +515,8 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView post_text;
         ImageView likeImage;
         ImageView send_image;
+        ImageView sharePost;
+
 
         public ImageViewHolder(View itemView) {
             super(itemView);
@@ -507,6 +526,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             post_text = itemView.findViewById(R.id.rv_post_text);
             likeImage = itemView.findViewById(R.id.like_image);
             send_image = itemView.findViewById(R.id.send_image);
+            sharePost = itemView.findViewById(R.id.share_icon);
         }
     }
 
@@ -536,7 +556,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ImageView userImageView;
         VideoView post_video;
         ImageView likeImage;
-
+        ImageView sharePost;
         ProgressBar progressBar;
 
         public VideoViewHolder(View itemView){
@@ -547,6 +567,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             post_video = itemView.findViewById(R.id.rv_post_video);
             likeImage = itemView.findViewById(R.id.like_image);
             progressBar = itemView.findViewById(R.id.progress_bar);
+            sharePost = itemView.findViewById(R.id.share_icon);
         }
     }
 }

@@ -12,7 +12,9 @@ const deletePost = async function (idPost, username, callback) {
     readDB.getPublicacio(idPost, (deletedPost) => {
         if (deletedPost.tipus == 'image') {
             const path_inicial = deletedPost.url_img;
-            const path_final = path_inicial.replace('http://localhost:3000', path.join(__dirname, '..', ''));
+        
+            const path_final = path_inicial.replace('http://212.227.40.235', path.join(__dirname, '..', ''));
+            console.log(path_final);
             fs.unlink(path_final, (err) => {
                 if (err) throw err;
             });

@@ -65,7 +65,7 @@ public class LoginFragment extends Fragment {
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://10.0.2.2:3001");
+            mSocket = IO.socket("http://212.227.40.235:3001");
 
             mSocket.on("respuestaAddNewUser", new Emitter.Listener() {
                 @Override
@@ -90,7 +90,7 @@ public class LoginFragment extends Fragment {
 
         registrarseBtn = binding.registrarseBtn;
 
-        String url_login = "http://10.0.2.2:3000/getUser";
+        String url_login = "http://212.227.40.235:3000/getUser";
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,7 +218,7 @@ public class LoginFragment extends Fragment {
                         e.printStackTrace();
                     }
 
-                    /*String url_register = "http://10.0.2.2:3000/addNewUser";
+                    /*String url_register = "http://212.227.40.235:3000/addNewUser";
                     MyAsyncTaskRegister registerUser = new MyAsyncTaskRegister(url_register, bodyRegister);
                     registerUser.execute();
                     String resultRegister = null;
@@ -245,7 +245,7 @@ public class LoginFragment extends Fragment {
                         public void onDismissed(Snackbar snackbar, int event) {
                             super.onDismissed(snackbar, event);
 
-                            String urlGetUser = "http://10.0.2.2:3000/getSelectedUser";
+                            String urlGetUser = "http://212.227.40.235:3000/getSelectedUser";
                             JSONObject body = new JSONObject();
                             try {
                                 body.put("username", bodyRegister.getString("username"));
@@ -280,7 +280,7 @@ public class LoginFragment extends Fragment {
 
                 } else {
                     //Ya esta registrado, por lo tango login
-                    String url = "http://10.0.2.2:3000/loginGoogleAccount";
+                    String url = "http://212.227.40.235:3000/loginGoogleAccount";
                     JSONObject jsonBody = new JSONObject();
 
                     try {
@@ -318,7 +318,7 @@ public class LoginFragment extends Fragment {
 
     private boolean checkifUsernameIsUsed(String username) {
         boolean result = false;
-        String url = "http://10.0.2.2:3000/checkUserExists";
+        String url = "http://212.227.40.235:3000/checkUserExists";
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("username", username);
@@ -341,7 +341,7 @@ public class LoginFragment extends Fragment {
 
     private boolean checkIfEmailIsUsed(String email) {
         boolean result = false;
-        String url = "http://10.0.2.2:3000/checkEmailExists";
+        String url = "http://212.227.40.235:3000/checkEmailExists";
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("email", email);
