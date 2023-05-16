@@ -195,7 +195,9 @@ public class activeChat extends Fragment {
                         arrayRecycler.add(new MyMessageObject(object.getString("emisor"), userRealName, object.getString("txt_msg")));
                     }else if(!object.getString("emisor").equals(dadesUsuari.getString("_id")) && !object.getString("txt_msg").equals("")){
                         arrayRecycler.add(new MessageObject(object.getString("emisor"), userRealName, object.getString("txt_msg")));
-                    }//SEGUIR METIENDO AQUÍ LOS POST ENVIADOS
+                    }else if(object.getString("emisor").equals(dadesUsuari.getString("_id")) && object.getString("txt_msg").equals("")){
+                        //arrayRecycler.add(new MyPostObject(object.getString("post_id"), userRealName, object.getString("txt_msg")));
+                    }
                 }
         } catch (JSONException e) {
             throw new RuntimeException(e);
