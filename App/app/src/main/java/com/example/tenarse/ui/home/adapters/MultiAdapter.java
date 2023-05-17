@@ -446,9 +446,12 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 verProgressBar(videoViewHolder);
 
-                String videoPath = videoElement.getPost_video_url();
+                String videoPath = videoElement.getPost_video_url().replace("localhost", "10.0.2.2");
                 /*Uri uri = Uri.parse(videoPath);
                 videoViewHolder.post_video.setVideoURI(uri);*/
+
+                System.out.println("VIDEO PATH: " + videoPath);
+
                 videoViewHolder.post_video.setVideoPath(videoPath);
                 MediaController mediaController = new MediaController(context);
                 videoViewHolder.post_video.setMediaController(null);
@@ -634,7 +637,6 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     JSONObject newUser = new JSONObject();
                     newUser.put("id", idFotoChat);
                     newUser.put("username", username_image.getString("username"));
-                    System.out.println("NEWWWWUSEEEEER: "+ newUser);
                     chatsList.add(new SharePostObject(username_image.getString("username"), username_image.getString("url_img"), id, dadesUsuari.getString("_id"), arrayChats.getJSONObject(i).getString("_id")));
                     shareAdapter.notifyItemInserted(chatsList.size() - 1);
                 }

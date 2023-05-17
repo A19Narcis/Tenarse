@@ -1,12 +1,14 @@
 package com.example.tenarse.ui.active_chat.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.media.MediaMetadataRetriever;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -137,7 +139,15 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 if (postElement.getPost_image().length() > 0){
                     postViewHolder.imagePost.setVisibility(View.VISIBLE);
                     postViewHolder.textPost.setVisibility(View.GONE);
-                    Picasso.with(context).load(postElement.getPost_image().replace("localhost", "10.0.2.2")).into(postViewHolder.imagePost);
+                    if (postElement.getPost_image().endsWith(".mp4")){
+                        String videoPath = postElement.getPost_image();
+                        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                        retriever.setDataSource(videoPath);
+                        Bitmap bitmap = retriever.getFrameAtTime(0);
+                        postViewHolder.imagePost.setImageBitmap(bitmap);
+                    } else {
+                        Picasso.with(context).load(postElement.getPost_image().replace("localhost", "10.0.2.2")).into(postViewHolder.imagePost);
+                    }
                 } else {
                     postViewHolder.textPost.setText(postElement.getPost_text());
                     postViewHolder.imagePost.setVisibility(View.GONE);
@@ -152,7 +162,15 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 if (myPostElement.getPost_image().length() > 0){
                     mypostViewHolder.imagePost.setVisibility(View.VISIBLE);
                     mypostViewHolder.textPost.setVisibility(View.GONE);
-                    Picasso.with(context).load(myPostElement.getPost_image().replace("localhost", "10.0.2.2")).into(mypostViewHolder.imagePost);
+                    if (myPostElement.getPost_image().endsWith(".mp4")){
+                        String videoPath = myPostElement.getPost_image();
+                        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                        retriever.setDataSource(videoPath);
+                        Bitmap bitmap = retriever.getFrameAtTime(0);
+                        mypostViewHolder.imagePost.setImageBitmap(bitmap);
+                    } else {
+                        Picasso.with(context).load(myPostElement.getPost_image().replace("localhost", "10.0.2.2")).into(mypostViewHolder.imagePost);
+                    }
                 } else {
                     mypostViewHolder.textPost.setText(myPostElement.getPost_text());
                     mypostViewHolder.imagePost.setVisibility(View.GONE);

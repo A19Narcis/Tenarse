@@ -81,7 +81,7 @@ public class activeChat extends Fragment {
                                         } else if (datos_post.getString("tipus").equals("image")){
                                             arrayRecycler.add(new PostObject(message.getString("emisor"), realUsernameStr, message.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
                                         } else if (datos_post.getString("tipus").equals("video")){
-
+                                            arrayRecycler.add(new PostObject(message.getString("emisor"), realUsernameStr, message.getString("post_id"), datos_post.getString("url_video"), datos_owner.getString("url_img"), datos_post.getString("text")));
                                         }
                                     } else {
                                         arrayRecycler.add(new MessageObject(message.getString("emisor"), realUsernameStr, "/*Publicación eliminada*/"));
