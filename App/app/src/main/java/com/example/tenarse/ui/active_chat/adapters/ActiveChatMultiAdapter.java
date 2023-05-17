@@ -2,14 +2,8 @@ package com.example.tenarse.ui.active_chat.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.media.MediaMetadataRetriever;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
@@ -28,10 +21,6 @@ import com.example.tenarse.ui.active_chat.MyMessageObject;
 import com.example.tenarse.ui.active_chat.MyPostObject;
 import com.example.tenarse.ui.active_chat.PostObject;
 import com.example.tenarse.ui.active_chat.activeChat;
-import com.example.tenarse.ui.home.HomeViewModel;
-import com.example.tenarse.ui.home.elements.ListElementDoubt;
-import com.example.tenarse.ui.home.elements.ListElementImg;
-import com.example.tenarse.ui.home.elements.ListElementVideo;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -136,11 +125,13 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 PostObject postElement = (PostObject) dataList.get(position);
                 PostViewHolder postViewHolder = (PostViewHolder) holder;
                 postViewHolder.usernameTxt.setText("@" + postElement.getEmisor_username());
+
                 if (postElement.getPost_image().length() > 0){
+                    System.out.println("Post element: "+ postElement.getPost_image());
                     postViewHolder.imagePost.setVisibility(View.VISIBLE);
                     postViewHolder.textPost.setVisibility(View.GONE);
-                    if (postElement.getPost_image().endsWith(".mp4")){
-                        String videoPath = postElement.getPost_image();
+                    if (postElement.getPost_image().contains(".mp4")){
+                        String videoPath = postElement.getPost_image().replace("localhost", "10.0.2.2");
                         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                         retriever.setDataSource(videoPath);
                         Bitmap bitmap = retriever.getFrameAtTime(0);
@@ -154,6 +145,11 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     postViewHolder.textPost.setVisibility(View.VISIBLE);
                 }
                 Picasso.with(context).load(postElement.getOwner_post_image().replace("localhost", "10.0.2.2")).into(postViewHolder.postOwnerImage);
+
+                postViewHolder.cardView.setOnClickListener(view -> {
+                    this.ActiveChat.selectPost(postElement.getId_post(), view, postElement.getUsername(), postElement.getOwner_post_image());
+                });
+
                 break;
             case TYPE_MY_POST:
                 MyPostObject myPostElement = (MyPostObject) dataList.get(position);
@@ -162,8 +158,8 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 if (myPostElement.getPost_image().length() > 0){
                     mypostViewHolder.imagePost.setVisibility(View.VISIBLE);
                     mypostViewHolder.textPost.setVisibility(View.GONE);
-                    if (myPostElement.getPost_image().endsWith(".mp4")){
-                        String videoPath = myPostElement.getPost_image();
+                    if (myPostElement.getPost_image().contains(".mp4")){
+                        String videoPath = myPostElement.getPost_image().replace("localhost", "10.0.2.2");
                         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                         retriever.setDataSource(videoPath);
                         Bitmap bitmap = retriever.getFrameAtTime(0);
@@ -177,6 +173,9 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     mypostViewHolder.textPost.setVisibility(View.VISIBLE);
                 }
                 Picasso.with(context).load(myPostElement.getOwner_post_image().replace("localhost", "10.0.2.2")).into(mypostViewHolder.postOwnerImage);
+                mypostViewHolder.cardView.setOnClickListener(view -> {
+                    this.ActiveChat.selectPost(myPostElement.getId_post(), view, myPostElement.getUsername(), myPostElement.getOwner_post_image());
+                });
                 break;
         }
     }
@@ -221,7 +220,7 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         public PostViewHolder(View itemView) {
             super(itemView);
-            cardView = itemView.findViewById(R.id.cardView);
+            cardView = itemView.findViewById(R.id.mainCardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             imagePost = itemView.findViewById(R.id.imagePost);
             postOwnerImage = itemView.findViewById(R.id.ProfileImg);
@@ -239,7 +238,7 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         public MyPostViewHolder(View itemView) {
             super(itemView);
-            cardView = itemView.findViewById(R.id.cardView);
+            cardView = itemView.findViewById(R.id.mainCardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             imagePost = itemView.findViewById(R.id.imagePost);
             postOwnerImage = itemView.findViewById(R.id.ProfileImg);

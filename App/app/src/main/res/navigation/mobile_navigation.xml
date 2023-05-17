@@ -97,6 +97,10 @@
     <fragment
         android:id="@+id/activeChat"
         android:name="com.example.tenarse.ui.active_chat.activeChat"
-        android:label="activeChat" />
+        android:label="activeChat" >
+        <action
+            android:id="@+id/action_activeChat_to_viewPostFragment"
+            app:destination="@id/viewPostFragment" />
+    </fragment>
 
 </navigation>

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.MainActivity;
+import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentActiveChatBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.httpRetrofit.ApiService;
@@ -79,9 +80,9 @@ public class activeChat extends Fragment {
                                         if (datos_post.getString("tipus").equals("doubt")){
                                             arrayRecycler.add(new PostObject(message.getString("emisor"), realUsernameStr, message.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text"), datos_post.getString("titol")));
                                         } else if (datos_post.getString("tipus").equals("image")){
-                                            arrayRecycler.add(new PostObject(message.getString("emisor"), realUsernameStr, message.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
+                                            arrayRecycler.add(new PostObject(message.getString("emisor"), realUsernameStr, message.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text"), datos_owner.getString("username")));
                                         } else if (datos_post.getString("tipus").equals("video")){
-                                            arrayRecycler.add(new PostObject(message.getString("emisor"), realUsernameStr, message.getString("post_id"), datos_post.getString("url_video"), datos_owner.getString("url_img"), datos_post.getString("text")));
+                                            arrayRecycler.add(new PostObject(message.getString("emisor"), realUsernameStr, message.getString("post_id"), datos_post.getString("url_video"), datos_owner.getString("url_img"), datos_post.getString("text"), datos_owner.getString("username")));
                                         }
                                     } else {
                                         arrayRecycler.add(new MessageObject(message.getString("emisor"), realUsernameStr, "/*Publicación eliminada*/"));
@@ -119,7 +120,7 @@ public class activeChat extends Fragment {
             }
         }
 
-        chatAdapter = new ActiveChatMultiAdapter(arrayRecycler, getContext(), new activeChat());
+        chatAdapter = new ActiveChatMultiAdapter(arrayRecycler, getContext(),activeChat.this);
         recyclerView = binding.rvChat;
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -221,15 +222,28 @@ public class activeChat extends Fragment {
                         JSONObject datos_post = getPost(object.getString("post_id"));
                         if (datos_post != null) {
                             JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
-                            arrayRecycler.add(new MyPostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
+                            if(datos_post.getString("tipus").equals("image")) {
+                                arrayRecycler.add(new MyPostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text"), datos_owner.getString("username")));
+                            }else if(datos_post.getString("tipus").equals("video")){
+                                arrayRecycler.add(new MyPostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_video"), datos_owner.getString("url_img"), datos_post.getString("text"), datos_owner.getString("username")));
+                            }else{
+                                arrayRecycler.add(new MyPostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_video"), datos_owner.getString("url_img"), datos_post.getString("titol"), datos_owner.getString("username")));
+                            }
                         }else{
                             arrayRecycler.add(new MyMessageObject(object.getString("emisor"), userRealName, "/*Publicación eliminada*/"));
                         }
                     }else if(!object.getString("emisor").equals(dadesUsuari.getString("_id")) && object.getString("txt_msg").equals("")){
                         JSONObject datos_post = getPost(object.getString("post_id"));
+                        System.out.println(datos_post);
                         if (datos_post != null) {
                             JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
-                            arrayRecycler.add(new PostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
+                            if(datos_post.getString("tipus").equals("image")) {
+                                arrayRecycler.add(new PostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text"), datos_owner.getString("username")));
+                            }else if(datos_post.getString("tipus").equals("video")){
+                                arrayRecycler.add(new PostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_video"), datos_owner.getString("url_img"), datos_post.getString("text"), datos_owner.getString("username")));
+                            }else{
+                                arrayRecycler.add(new PostObject(object.getString("emisor"), userRealName, object.getString("post_id"), datos_post.getString("url_video"), datos_owner.getString("url_img"), datos_post.getString("titol"), datos_owner.getString("username")));
+                            }
                         }else{
                             arrayRecycler.add(new MessageObject(object.getString("emisor"), userRealName, "/*Publicación eliminada*/"));
                         }
@@ -288,4 +302,42 @@ public class activeChat extends Fragment {
         return datos_owner;
     }
 
+    public void selectPost(String idPost, View view, String username, String url_img){
+        //Recoger todos los datos de un post y verlos en un fragment nuevo
+        String url_selectPost = "http://10.0.2.2:3000/getSelectedPost/" + idPost;
+        MyAsyncTaskGetSinglePost getSinglePost = new MyAsyncTaskGetSinglePost(url_selectPost);
+        getSinglePost.execute();
+        String resultSinglePost = null;
+        try {
+            resultSinglePost = getSinglePost.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Ver si el post que hemos seleccionado tiene mi `Like`
+        boolean myLike = false;
+        try {
+            JSONObject dadesPostResult = new JSONObject(resultSinglePost);
+            for (int i = 0; i < dadesPostResult.getJSONArray("likes").length() && !myLike; i++) {
+                if (dadesPostResult.getJSONArray("likes").get(i).equals(GlobalDadesUser.getInstance().getDadesUser().getString("_id"))){
+                    myLike = true;
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        viewSelectedPost(resultSinglePost, myLike, view, username, url_img);
+    }
+
+    public void viewSelectedPost(String infoPost, boolean myLike, View view, String username, String url_img) {
+        //Carregar el nou fragment amb les seves dades
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("infoPost", infoPost);
+        bundle.putSerializable("origin", "home");
+        bundle.putSerializable("isLiked", myLike);
+        bundle.putSerializable("usernamePost", username);
+        bundle.putSerializable("url_img", url_img);
+        Navigation.findNavController(view).navigate(R.id.action_activeChat_to_viewPostFragment, bundle);
+    }
 }

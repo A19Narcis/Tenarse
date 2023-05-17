@@ -4,17 +4,20 @@ public class MyPostObject {
     String emisor_id;
     String emisor_username;
     String id_post;
+
+    String username;
     String post_image;
     String owner_post_image;
     String post_text;
 
-    public MyPostObject(String emisor_id, String emisor_username, String id_post, String post_image, String owner_post_image, String post_text) {
+    public MyPostObject(String emisor_id, String emisor_username, String id_post, String post_image, String owner_post_image, String post_text, String username) {
         this.emisor_id = emisor_id;
         this.emisor_username = emisor_username;
         this.id_post = id_post;
         this.post_image = post_image;
         this.owner_post_image = owner_post_image;
         this.post_text = post_text;
+        this.username = username;
     }
 
     public String getEmisor_id() {
@@ -63,6 +66,14 @@ public class MyPostObject {
 
     public void setPost_text(String post_text) {
         this.post_text = post_text;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
 

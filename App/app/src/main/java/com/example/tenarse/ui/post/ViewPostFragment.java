@@ -209,7 +209,7 @@ public class ViewPostFragment extends Fragment {
                 binding.rvTitle.setVisibility(View.GONE);
                 binding.rvPostImage.setVisibility(View.GONE);
                 binding.progressBar.setVisibility(View.VISIBLE);
-                String videoPath = dadesPost.getString("url_video");
+                String videoPath = dadesPost.getString("url_video").replace("localhost", "10.0.2.2");
                 binding.rvPostVideo.setVideoPath(videoPath);
                 binding.rvPostText.setText(dadesPost.getString("text"));
                 MediaController mediaController = new MediaController(getContext());
