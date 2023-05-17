@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayoutImgUserPost"
-    android:layout_gravity="center_horizontal"
-    android:layout_marginTop="5dp"
     android:backgroundTint="@color/black"
-    android:layout_marginStart="5dp"
-    android:layout_width="395px"
-    android:layout_height="395px">
+    android:layout_width="match_parent"
+    android:layout_marginStart="3dp"
+    android:layout_marginTop="3dp"
+    android:layout_marginEnd="3dp"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/videoIcon"
@@ -25,7 +25,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="125dp"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

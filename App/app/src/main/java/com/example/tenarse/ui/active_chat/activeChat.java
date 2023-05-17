@@ -42,8 +42,6 @@ public class activeChat extends Fragment {
 
     String username;
 
-    String profile_img;
-
     String receptor_id;
 
     ApiService apiService;
@@ -63,25 +61,35 @@ public class activeChat extends Fragment {
         mSocket.on("listenChats", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                JSONObject message = null;
-                try {
-                    message = new JSONObject(args[0].toString());
-                    if(!message.getString("emisor").equals(dadesUsuari.getString("_id")) && !message.getString("txt_msg").equals("")){
-                        arrayRecycler.add(new MessageObject(message.getString("emisor"), message.getString("username"), message.getString("message")));
-                    } else if (!message.getString("emisor").equals(dadesUsuari.getString("_id")) && message.getString("txt_msg").equals("")) {
-                        JSONObject datos_post = getPost(message.getString("post_id"));
-                        if (datos_post != null) {
-                            JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
-                            arrayRecycler.add(new PostObject(message.getString("emisor"), message.getString("username"), message.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
-                        }else{
-                            arrayRecycler.add(new MessageObject(message.getString("emisor"), message.getString("username"), "/*Publicación eliminada*/"));
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject message = null;
+                        try {
+                            message = new JSONObject(args[0].toString());
+                            System.out.println("MESSAGE: " + message);
+                            JSONObject realUsernameObject = getOwnerPost(message.getString("emisor"));
+                            String realUsernameStr = realUsernameObject.getString("username");
+                            if(!message.getString("emisor").equals(dadesUsuari.getString("_id")) && !message.getString("message").equals("")){
+                                arrayRecycler.add(new MessageObject(message.getString("emisor"), realUsernameStr, message.getString("message")));
+                            } else if (!message.getString("emisor").equals(dadesUsuari.getString("_id")) && message.getString("message").equals("")) {
+                                JSONObject datos_post = getPost(message.getString("post_id"));
+                                System.out.println("DATOS POST: " + datos_post);
+                                if (datos_post != null) {
+                                    JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
+                                    System.out.println("DADES POST: " + datos_post);
+                                    arrayRecycler.add(new PostObject(message.getString("emisor"), realUsernameStr, message.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
+                                } else {
+                                    arrayRecycler.add(new MessageObject(message.getString("emisor"), realUsernameStr, "/*Publicación eliminada*/"));
+                                }
+                            }
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
                         }
+                        chatAdapter.notifyItemInserted(arrayRecycler.size()-1);
+                        recyclerView.scrollToPosition(arrayRecycler.size() - 1);
                     }
-
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-                chatAdapter.notifyItemInserted(arrayRecycler.size()-1);
+                });
             }
         });
 
@@ -98,7 +106,6 @@ public class activeChat extends Fragment {
             receptor_id = args.getString("receptor_id");
             chat_id = args.getString("chat_id");
             username = args.getString("username");
-            profile_img = args.getString("profile_img");
             try {
                 arryParticipants = new JSONArray(args.getString("participants"));
             } catch (JSONException e) {
@@ -106,10 +113,6 @@ public class activeChat extends Fragment {
             }
         }
 
-        /*arrayRecycler.add(new MessageObject("1","sergi", "Hola que tal?"));
-        arrayRecycler.add(new MessageObject("2","teo", "Toi bien"));
-        arrayRecycler.add(new PostObject("2","http://localhost:3000/uploads\\user_img\\6459f1fb6e52fac56af41ad7.png", "http://localhost:3000/uploads\\user_img\\6459f1fb6e52fac56af41ad7.png", "@narcis", ""));
-*/
         chatAdapter = new ActiveChatMultiAdapter(arrayRecycler, getContext(), new activeChat());
         recyclerView = binding.rvChat;
         recyclerView.setHasFixedSize(true);
@@ -127,7 +130,6 @@ public class activeChat extends Fragment {
                 try {
                     body.put("chat_id", chat_id);
                     body.put("emisor", dadesUsuari.getString("_id"));
-                    body.put("username", dadesUsuari.getString("username"));
                     body.put("message", binding.msgTextView.getText().toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -148,6 +150,7 @@ public class activeChat extends Fragment {
             body.put("chat_id", chat_id);
             body.put("emisor", dadesUsuari.getString("_id"));
             body.put("message", binding.msgTextView.getText().toString());
+            body.put("post_id", "");
         } catch (JSONException e) {
             e.printStackTrace();
         }

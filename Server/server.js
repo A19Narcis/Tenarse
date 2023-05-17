@@ -572,7 +572,6 @@ app.post('/newMessage', (req, res) => {
 
 
     var chat_id = req.body.chat_id
-    console.log(req.body);
 
     if(req.body.post_id == ""){
         var message = {

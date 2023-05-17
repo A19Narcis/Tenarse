@@ -194,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("lastActivity", "Menu");
         GlobalDadesUser globalDadesExit = GlobalDadesUser.getInstance();
         JSONObject dadesUsuariExit = globalDadesExit.getDadesUser();
-        System.out.println("SALGO DADES USER: " + globalDadesExit.getDadesUser().toString());
         editor.putString("infoUser", dadesUsuariExit.toString());
         editor.apply();
     }

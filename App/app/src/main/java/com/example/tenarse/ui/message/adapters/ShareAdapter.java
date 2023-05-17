@@ -66,6 +66,7 @@ public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             body.put("chat_id", userFollow.getId_chat());
             body.put("emisor", userFollow.getId_emisor());
             body.put("post_id", userFollow.getId_post());
+            body.put("message", "");
         } catch (JSONException e) {
             e.printStackTrace();
         }

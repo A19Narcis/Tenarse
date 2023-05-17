@@ -97,13 +97,15 @@ public class FragmentAddQuestions extends Fragment {
                 actionId = actionID;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     String userInput = autoCompleteTextView.getText().toString();
-                    if (userInput.length() > 0 && userInput.startsWith("#")){
+                    if (userInput.length() > 0 && userInput.startsWith("#") || userInput.length() == 0){
                         if (errorText.getVisibility() == View.VISIBLE){
                             errorText.setVisibility(View.GONE);
                         }
-                        arrayRecycler.add(userInput);
-                        hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
-                        autoCompleteTextView.setText("");
+                        if (userInput.length() > 0 && userInput.startsWith("#")){
+                            arrayRecycler.add(userInput);
+                            hashtagAdapter.notifyItemInserted(arrayRecycler.size() - 1);
+                            autoCompleteTextView.setText("");
+                        }
                     } else if (!userInput.startsWith("#")) {
                         errorText.setVisibility(View.VISIBLE);
                     }
