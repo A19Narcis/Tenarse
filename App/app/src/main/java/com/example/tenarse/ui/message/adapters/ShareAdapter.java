@@ -1,5 +1,6 @@
 package com.example.tenarse.ui.message.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,10 +32,13 @@ public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private List<SharePostObject> usersList;
     private Context context;
 
-    public ShareAdapter(List<SharePostObject> usersList, Context context, MainActivity mainActivity) {
+    private Dialog dialog;
+
+    public ShareAdapter(List<SharePostObject> usersList, Context context, MainActivity mainActivity, Dialog dialog) {
         this.usersList = usersList;
         this.context = context;
         this.mainActivity = mainActivity;
+        this.dialog = dialog;
     }
 
 
@@ -56,6 +60,7 @@ public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             @Override
             public void onClick(View view) {
                 sendPost(userFollow);
+                dialog.dismiss();
             }
         });
     }

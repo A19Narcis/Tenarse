@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.DisplayMetrics;
@@ -128,16 +129,17 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 imageViewHolder.send_image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        animateButton(imageViewHolder.send_image);
                         globalDadesUser = GlobalDadesUser.getInstance();
                         dadesUser = globalDadesUser.getDadesUser();
 
-                        chatsList = new ArrayList<>();
-                        shareAdapter = new ShareAdapter(chatsList, context, mainActivity);
-
-                        chatsList.clear();
-
                         Dialog dialog = new Dialog(context);
                         dialog.setContentView(R.layout.seguidores_dialog);
+
+                        chatsList = new ArrayList<>();
+                        shareAdapter = new ShareAdapter(chatsList, context, mainActivity, dialog);
+
+                        chatsList.clear();
 
                         DisplayMetrics displayMetrics = new DisplayMetrics();
                         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -198,7 +200,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                             JSONArray followsArray = new JSONArray(result);
 
-                            cargarChats(followsArray, dadesUser, imgElement.getId(), imgElement);
+                            cargarChats(followsArray, dadesUser, imgElement.getId());
 
                             recyclerView.setLayoutManager(new LinearLayoutManager(context));
                             recyclerView.setHasFixedSize(true);
@@ -329,6 +331,94 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     mHomeFragment.startActivity(Intent.createChooser(intent, "Comparte:"));
                 });
 
+                doubtViewHolder.send_image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        animateButton(doubtViewHolder.send_image);
+                        globalDadesUser = GlobalDadesUser.getInstance();
+                        dadesUser = globalDadesUser.getDadesUser();
+
+                        Dialog dialog = new Dialog(context);
+                        dialog.setContentView(R.layout.seguidores_dialog);
+
+                        chatsList = new ArrayList<>();
+                        shareAdapter = new ShareAdapter(chatsList, context, mainActivity, dialog);
+
+                        chatsList.clear();
+
+                        DisplayMetrics displayMetrics = new DisplayMetrics();
+                        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                        if (windowManager != null) {
+                            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+                            int screenWidth = displayMetrics.widthPixels;
+                            int screenHeight = displayMetrics.heightPixels;
+
+                            // Calcular el ancho deseado para el diálogo (la mitad de la pantalla)
+                            int desiredWidth = (int) (screenWidth / 1.45f);
+                            int desiredHeight = screenHeight / 3;
+
+                            // Obtener la ventana del diálogo
+                            Window window = dialog.getWindow();
+                            if (window != null) {
+                                // Establecer el ancho y alto personalizados
+                                WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+                                params.copyFrom(window.getAttributes());
+                                params.width = desiredWidth;
+                                params.height = desiredHeight;
+
+                                // Establecer la gravedad para centrar horizontalmente
+                                params.gravity = Gravity.CENTER_HORIZONTAL;
+
+                                window.setAttributes(params);
+
+                                // Aplicar bordes redondeados al diálogo
+                                int cornerRadius = 20; // Valor en píxeles, ajusta según tus necesidades
+                                ShapeDrawable shapeDrawable = new ShapeDrawable();
+                                shapeDrawable.getPaint().setColor(Color.WHITE); // Color del fondo del diálogo
+                                shapeDrawable.getPaint().setStyle(Paint.Style.FILL);
+                                shapeDrawable.getPaint().setAntiAlias(true);
+                                shapeDrawable.setShape(new RoundRectShape(
+                                        new float[]{cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius},
+                                        null,
+                                        null));
+                                window.setBackgroundDrawable(shapeDrawable);
+                            }
+                        }
+
+                        RecyclerView recyclerView = dialog.findViewById(R.id.recyclerViewSeguidores);
+                        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+                        //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
+                        String url = "http://10.0.2.2:3000/getAllMyChats";
+                        JSONObject body = new JSONObject();
+                        try {
+                            body.put("_id", dadesUser.getString("_id"));
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+                        getInfoFollowers.execute();
+                        String result = null;
+                        try {
+                            result = getInfoFollowers.get();
+
+                            JSONArray followsArray = new JSONArray(result);
+
+                            cargarChats(followsArray, dadesUser, doubtElement.getId());
+
+                            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                            recyclerView.setHasFixedSize(true);
+                            recyclerView.setAdapter(shareAdapter);
+
+                        } catch (ExecutionException | InterruptedException | JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        dialog.show();
+                    }
+                });
+
                 break;
 
             case TYPE_VIDEO:
@@ -435,11 +525,99 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     mHomeFragment.startActivity(Intent.createChooser(intent, "Comparte:"));
                 });
 
+                videoViewHolder.send_image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        animateButton(videoViewHolder.send_image);
+                        globalDadesUser = GlobalDadesUser.getInstance();
+                        dadesUser = globalDadesUser.getDadesUser();
+
+                        Dialog dialog = new Dialog(context);
+                        dialog.setContentView(R.layout.seguidores_dialog);
+
+                        chatsList = new ArrayList<>();
+                        shareAdapter = new ShareAdapter(chatsList, context, mainActivity, dialog);
+
+                        chatsList.clear();
+
+                        DisplayMetrics displayMetrics = new DisplayMetrics();
+                        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                        if (windowManager != null) {
+                            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+                            int screenWidth = displayMetrics.widthPixels;
+                            int screenHeight = displayMetrics.heightPixels;
+
+                            // Calcular el ancho deseado para el diálogo (la mitad de la pantalla)
+                            int desiredWidth = (int) (screenWidth / 1.45f);
+                            int desiredHeight = screenHeight / 3;
+
+                            // Obtener la ventana del diálogo
+                            Window window = dialog.getWindow();
+                            if (window != null) {
+                                // Establecer el ancho y alto personalizados
+                                WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+                                params.copyFrom(window.getAttributes());
+                                params.width = desiredWidth;
+                                params.height = desiredHeight;
+
+                                // Establecer la gravedad para centrar horizontalmente
+                                params.gravity = Gravity.CENTER_HORIZONTAL;
+
+                                window.setAttributes(params);
+
+                                // Aplicar bordes redondeados al diálogo
+                                int cornerRadius = 20; // Valor en píxeles, ajusta según tus necesidades
+                                ShapeDrawable shapeDrawable = new ShapeDrawable();
+                                shapeDrawable.getPaint().setColor(Color.WHITE); // Color del fondo del diálogo
+                                shapeDrawable.getPaint().setStyle(Paint.Style.FILL);
+                                shapeDrawable.getPaint().setAntiAlias(true);
+                                shapeDrawable.setShape(new RoundRectShape(
+                                        new float[]{cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius},
+                                        null,
+                                        null));
+                                window.setBackgroundDrawable(shapeDrawable);
+                            }
+                        }
+
+                        RecyclerView recyclerView = dialog.findViewById(R.id.recyclerViewSeguidores);
+                        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+                        //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
+                        String url = "http://10.0.2.2:3000/getAllMyChats";
+                        JSONObject body = new JSONObject();
+                        try {
+                            body.put("_id", dadesUser.getString("_id"));
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+                        getInfoFollowers.execute();
+                        String result = null;
+                        try {
+                            result = getInfoFollowers.get();
+
+                            JSONArray followsArray = new JSONArray(result);
+
+                            cargarChats(followsArray, dadesUser, videoElement.getId());
+
+                            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                            recyclerView.setHasFixedSize(true);
+                            recyclerView.setAdapter(shareAdapter);
+
+                        } catch (ExecutionException | InterruptedException | JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        dialog.show();
+                    }
+                });
+
                 break;
         }
     }
 
-    private void cargarChats(JSONArray arrayChats, JSONObject dadesUsuari, String id, ListElementImg listElementImg) {
+    private void cargarChats(JSONArray arrayChats, JSONObject dadesUsuari, String id) {
         try {
             for (int i = 0; i < arrayChats.length(); i++) {
                 if (arrayChats.getJSONObject(i).getString("tipo").equals("chat")) {
@@ -457,7 +635,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     newUser.put("id", idFotoChat);
                     newUser.put("username", username_image.getString("username"));
                     System.out.println("NEWWWWUSEEEEER: "+ newUser);
-                    chatsList.add(new SharePostObject(username_image.getString("username"), username_image.getString("url_img"),listElementImg.getId(), dadesUsuari.getString("_id"), arrayChats.getJSONObject(i).getString("_id")));
+                    chatsList.add(new SharePostObject(username_image.getString("username"), username_image.getString("url_img"), id, dadesUsuari.getString("_id"), arrayChats.getJSONObject(i).getString("_id")));
                     shareAdapter.notifyItemInserted(chatsList.size() - 1);
                 }
             }
@@ -539,6 +717,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView description;
         ImageView userImageView;
         ImageView likeImage;
+        ImageView send_image;
         ImageView sharePost;
 
 
@@ -550,6 +729,8 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             userImageView = itemView.findViewById(R.id.rv_userImage);
             likeImage = itemView.findViewById(R.id.like_image);
             sharePost = itemView.findViewById(R.id.share_icon);
+            send_image = itemView.findViewById(R.id.send_image);
+
         }
     }
 
@@ -561,6 +742,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ImageView likeImage;
         ImageView sharePost;
         ProgressBar progressBar;
+        ImageView send_image;
 
         public VideoViewHolder(View itemView){
             super(itemView);
@@ -571,6 +753,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             likeImage = itemView.findViewById(R.id.like_image);
             progressBar = itemView.findViewById(R.id.progress_bar);
             sharePost = itemView.findViewById(R.id.share_icon);
+            send_image = itemView.findViewById(R.id.send_image);
         }
     }
 }

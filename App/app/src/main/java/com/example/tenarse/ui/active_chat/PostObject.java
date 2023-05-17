@@ -8,6 +8,8 @@ public class PostObject {
     String owner_post_image;
     String post_text;
 
+    String post_title;
+
     public PostObject(String emisor_id, String emisor_username, String id_post, String post_image, String owner_post_image, String post_text) {
         this.emisor_id = emisor_id;
         this.emisor_username = emisor_username;
@@ -15,6 +17,24 @@ public class PostObject {
         this.post_image = post_image;
         this.owner_post_image = owner_post_image;
         this.post_text = post_text;
+    }
+
+    public PostObject(String emisor_id, String emisor_username, String id_post, String post_image, String owner_post_image, String post_text, String post_title) {
+        this.emisor_id = emisor_id;
+        this.emisor_username = emisor_username;
+        this.id_post = id_post;
+        this.post_image = post_image;
+        this.owner_post_image = owner_post_image;
+        this.post_text = post_text;
+        this.post_title = post_title;
+    }
+
+    public String getPost_title() {
+        return post_title;
+    }
+
+    public void setPost_title(String post_title) {
+        this.post_title = post_title;
     }
 
     public String getEmisor_id() {

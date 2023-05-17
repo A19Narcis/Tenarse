@@ -41,7 +41,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         chatViewHolder cvh = (chatViewHolder) holder;
         cvh.textoUsuario.setText("@" + dataList.get(position).getUserName());
-        cvh.lastMsg.setText(dataList.get(position).getLastMsg());
+        if(dataList.get(position).getLastMsg().length() > 25) {
+            cvh.lastMsg.setText(dataList.get(position).getLastMsg().substring(0, 25) + "...");
+        } else {
+            cvh.lastMsg.setText(dataList.get(position).getLastMsg());
+        }
         cvh.unreadMessagesIco.setVisibility(View.GONE);
         Picasso.with(context).load(dataList.get(position).getProfileImg().replace("localhost", "10.0.2.2")).into(cvh.profileImg);
         cvh.element_chat.setOnClickListener(view -> {

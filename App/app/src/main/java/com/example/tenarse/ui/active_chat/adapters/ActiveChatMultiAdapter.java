@@ -134,15 +134,31 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 PostObject postElement = (PostObject) dataList.get(position);
                 PostViewHolder postViewHolder = (PostViewHolder) holder;
                 postViewHolder.usernameTxt.setText("@" + postElement.getEmisor_username());
+                if (postElement.getPost_image().length() > 0){
+                    postViewHolder.imagePost.setVisibility(View.VISIBLE);
+                    postViewHolder.textPost.setVisibility(View.GONE);
+                    Picasso.with(context).load(postElement.getPost_image().replace("localhost", "10.0.2.2")).into(postViewHolder.imagePost);
+                } else {
+                    postViewHolder.textPost.setText(postElement.getPost_text());
+                    postViewHolder.imagePost.setVisibility(View.GONE);
+                    postViewHolder.textPost.setVisibility(View.VISIBLE);
+                }
                 Picasso.with(context).load(postElement.getOwner_post_image().replace("localhost", "10.0.2.2")).into(postViewHolder.postOwnerImage);
-                Picasso.with(context).load(postElement.getPost_image().replace("localhost", "10.0.2.2")).into(postViewHolder.imagePost);
                 break;
             case TYPE_MY_POST:
                 MyPostObject myPostElement = (MyPostObject) dataList.get(position);
                 MyPostViewHolder mypostViewHolder = (MyPostViewHolder) holder;
                 mypostViewHolder.usernameTxt.setText("@" + myPostElement.getEmisor_username());
+                if (myPostElement.getPost_image().length() > 0){
+                    mypostViewHolder.imagePost.setVisibility(View.VISIBLE);
+                    mypostViewHolder.textPost.setVisibility(View.GONE);
+                    Picasso.with(context).load(myPostElement.getPost_image().replace("localhost", "10.0.2.2")).into(mypostViewHolder.imagePost);
+                } else {
+                    mypostViewHolder.textPost.setText(myPostElement.getPost_text());
+                    mypostViewHolder.imagePost.setVisibility(View.GONE);
+                    mypostViewHolder.textPost.setVisibility(View.VISIBLE);
+                }
                 Picasso.with(context).load(myPostElement.getOwner_post_image().replace("localhost", "10.0.2.2")).into(mypostViewHolder.postOwnerImage);
-                Picasso.with(context).load(myPostElement.getPost_image().replace("localhost", "10.0.2.2")).into(mypostViewHolder.imagePost);
                 break;
         }
     }
@@ -183,12 +199,15 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         TextView usernameTxt;
         ImageView imagePost;
         ImageView postOwnerImage;
+        TextView textPost;
+
         public PostViewHolder(View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             imagePost = itemView.findViewById(R.id.imagePost);
             postOwnerImage = itemView.findViewById(R.id.ProfileImg);
+            textPost = itemView.findViewById(R.id.textPost);
         }
     }
 
@@ -197,12 +216,16 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         TextView usernameTxt;
         ImageView imagePost;
         ImageView postOwnerImage;
+        TextView textPost;
+
+
         public MyPostViewHolder(View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardView);
             usernameTxt = itemView.findViewById(R.id.usernameTxt);
             imagePost = itemView.findViewById(R.id.imagePost);
             postOwnerImage = itemView.findViewById(R.id.ProfileImg);
+            textPost = itemView.findViewById(R.id.textPost);
         }
     }
 }

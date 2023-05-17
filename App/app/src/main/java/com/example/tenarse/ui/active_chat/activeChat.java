@@ -61,35 +61,41 @@ public class activeChat extends Fragment {
         mSocket.on("listenChats", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        JSONObject message = null;
-                        try {
-                            message = new JSONObject(args[0].toString());
-                            System.out.println("MESSAGE: " + message);
-                            JSONObject realUsernameObject = getOwnerPost(message.getString("emisor"));
-                            String realUsernameStr = realUsernameObject.getString("username");
-                            if(!message.getString("emisor").equals(dadesUsuari.getString("_id")) && !message.getString("message").equals("")){
-                                arrayRecycler.add(new MessageObject(message.getString("emisor"), realUsernameStr, message.getString("message")));
-                            } else if (!message.getString("emisor").equals(dadesUsuari.getString("_id")) && message.getString("message").equals("")) {
-                                JSONObject datos_post = getPost(message.getString("post_id"));
-                                System.out.println("DATOS POST: " + datos_post);
-                                if (datos_post != null) {
-                                    JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
-                                    System.out.println("DADES POST: " + datos_post);
-                                    arrayRecycler.add(new PostObject(message.getString("emisor"), realUsernameStr, message.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
-                                } else {
-                                    arrayRecycler.add(new MessageObject(message.getString("emisor"), realUsernameStr, "/*Publicación eliminada*/"));
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            JSONObject message = null;
+                            try {
+                                message = new JSONObject(args[0].toString());
+                                JSONObject realUsernameObject = getOwnerPost(message.getString("emisor"));
+                                String realUsernameStr = realUsernameObject.getString("username");
+                                if(!message.getString("emisor").equals(dadesUsuari.getString("_id")) && !message.getString("message").equals("")){
+                                    arrayRecycler.add(new MessageObject(message.getString("emisor"), realUsernameStr, message.getString("message")));
+                                } else if (!message.getString("emisor").equals(dadesUsuari.getString("_id")) && message.getString("message").equals("")) {
+                                    JSONObject datos_post = getPost(message.getString("post_id"));
+                                    if (datos_post != null) {
+                                        JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
+                                        if (datos_post.getString("tipus").equals("doubt")){
+                                            arrayRecycler.add(new PostObject(message.getString("emisor"), realUsernameStr, message.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text"), datos_post.getString("titol")));
+                                        } else if (datos_post.getString("tipus").equals("image")){
+                                            arrayRecycler.add(new PostObject(message.getString("emisor"), realUsernameStr, message.getString("post_id"), datos_post.getString("url_img"), datos_owner.getString("url_img"), datos_post.getString("text")));
+                                        } else if (datos_post.getString("tipus").equals("video")){
+
+                                        }
+                                    } else {
+                                        arrayRecycler.add(new MessageObject(message.getString("emisor"), realUsernameStr, "/*Publicación eliminada*/"));
+                                    }
                                 }
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
                             }
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
+                            chatAdapter.notifyItemInserted(arrayRecycler.size()-1);
+                            recyclerView.scrollToPosition(arrayRecycler.size() - 1);
                         }
-                        chatAdapter.notifyItemInserted(arrayRecycler.size()-1);
-                        recyclerView.scrollToPosition(arrayRecycler.size() - 1);
-                    }
-                });
+                    });
+                }
+
             }
         });
 
@@ -136,6 +142,7 @@ public class activeChat extends Fragment {
                 }
                 mSocket.emit("sendMessage", body);
                 sendMessage();
+                recyclerView.scrollToPosition(arrayRecycler.size() - 1);
             }
         });
         return root;
@@ -270,7 +277,6 @@ public class activeChat extends Fragment {
         JSONObject datos_owner = null;
         try {
             resultSearch = selectedUser.get();
-            System.out.println(resultSearch);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
