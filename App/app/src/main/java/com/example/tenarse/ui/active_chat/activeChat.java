@@ -126,7 +126,10 @@ public class activeChat extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(chatAdapter);
 
-        getOldMessages();
+        if (arrayRecycler.size() == 0){
+            getOldMessages();
+        }
+
 
         recyclerView.scrollToPosition(arrayRecycler.size() - 1);
 
