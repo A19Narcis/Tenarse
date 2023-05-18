@@ -54,7 +54,7 @@ public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         SharePostObject userFollow = usersList.get(position);
         ViewHolder userViewHolder = (ViewHolder) holder;
-        Picasso.with(context).load(userFollow.getChat_profile_img().replace("localhost", "10.0.2.2")).into(userViewHolder.userImage);
+        Picasso.with(context).load(userFollow.getChat_profile_img().replace("localhost", "212.227.40.235")).into(userViewHolder.userImage);
         userViewHolder.userName.setText("@" + userFollow.getChat_username());
         userViewHolder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +77,7 @@ public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
         Socket mSocket = mainActivity.getmSocket();
         mSocket.emit("sendMessage", body);
-        String url_updateDades = "http://10.0.2.2:3000/newMessage";
+        String url_updateDades = "http://212.227.40.235:3000/newMessage";
         MyAsyncTask updateUser = new MyAsyncTask(url_updateDades, body);
         updateUser.execute();
         String resultUpdate = null;

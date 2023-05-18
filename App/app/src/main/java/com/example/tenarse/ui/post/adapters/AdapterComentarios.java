@@ -40,7 +40,7 @@ public class AdapterComentarios extends RecyclerView.Adapter<RecyclerView.ViewHo
         ComentarioViewHolder comentarioViewHolder = (ComentarioViewHolder) holder;
 
         String userImagenLocal = comentario.getCom_user_img();
-        Picasso.with(context).load(userImagenLocal.replace("localhost", "10.0.2.2")).into(comentarioViewHolder.userImage);
+        Picasso.with(context).load(userImagenLocal.replace("localhost", "212.227.40.235")).into(comentarioViewHolder.userImage);
 
         comentarioViewHolder.userName.setText(comentario.getCom_username());
         comentarioViewHolder.comentario.setText(comentario.getCom_text());

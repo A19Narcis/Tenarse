@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     public Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://10.0.2.2:3001");
+            mSocket = IO.socket("http://212.227.40.235:3001");
 
             mSocket.on("listenChats", new Emitter.Listener() {
                 @Override
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 MenuItem menuItem = menu.findItem(R.id.navigation_user);
                 LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
                 try {
-                    loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
+                    loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("localhost", "212.227.40.235"));
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                     dadesUsuari = globalDadesUser.getDadesUser();
                     LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
                     try {
-                        loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
+                        loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("localhost", "212.227.40.235"));
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuItem = menu.findItem(R.id.navigation_user);
         LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
         try {
-            loadImageBottomNavBar.execute(newDadesUsuari.getString("url_img").replace("localhost", "10.0.2.2"));
+            loadImageBottomNavBar.execute(newDadesUsuari.getString("url_img").replace("localhost", "212.227.40.235"));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

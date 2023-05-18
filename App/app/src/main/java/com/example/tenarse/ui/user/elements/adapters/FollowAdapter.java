@@ -49,7 +49,7 @@ public class FollowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ElementUserFollow userFollow = (ElementUserFollow) usersList.get(position);
         ViewHolder userViewHolder = (ViewHolder) holder;
-        Picasso.with(context).load(userFollow.getUrl_image_user().replace("localhost", "10.0.2.2")).into(userViewHolder.userImage);
+        Picasso.with(context).load(userFollow.getUrl_image_user().replace("localhost", "212.227.40.235")).into(userViewHolder.userImage);
         userViewHolder.userName.setText("@" + userFollow.getUsername());
     }
 

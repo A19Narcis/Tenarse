@@ -28,7 +28,7 @@ public class SearchUsersFragment extends Fragment{
     /*Adapter and List*/
     List<Object> dataSearchList;
     AdapterSearchUsers myAdpater;
-    private final String URL = "http://10.0.2.2:3000/searchUsers";
+    private final String URL = "http://212.227.40.235:3000/searchUsers";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,7 +96,7 @@ public class SearchUsersFragment extends Fragment{
 
     public void selectUser(String id_user, View v) {
         //Recoger todos los datos del usuario que tiene ese `username` y luego cambiar de fragment para ver su perfil
-        String url_selectUser = "http://10.0.2.2:3000/getUserById";
+        String url_selectUser = "http://212.227.40.235:3000/getUserById";
         JSONObject jsonBody = new JSONObject();
 
 

@@ -115,7 +115,7 @@ public class FragmentAddQuestions extends Fragment {
             }
         });
 
-        String url_register = "http://10.0.2.2:3000/addPostDubt";
+        String url_register = "http://212.227.40.235:3000/addPostDubt";
 
         submitBtnQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,7 +157,7 @@ public class FragmentAddQuestions extends Fragment {
                         newpostFragment.postUploaded();
 
                         //Update global dades
-                        String url_selectUser = "http://10.0.2.2:3000/getSelectedUser";
+                        String url_selectUser = "http://212.227.40.235:3000/getSelectedUser";
                         JSONObject jsonBody = new JSONObject();
                         try {
                             jsonBody.put("username", dadesUsuari.getString("username"));

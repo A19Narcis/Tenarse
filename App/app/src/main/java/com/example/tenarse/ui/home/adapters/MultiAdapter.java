@@ -184,7 +184,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
                         //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
-                        String url = "http://10.0.2.2:3000/getAllMyChats";
+                        String url = "http://212.227.40.235:3000/getAllMyChats";
                         JSONObject body = new JSONObject();
                         try {
                             body.put("_id", dadesUser.getString("_id"));
@@ -230,7 +230,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 /* Cargar imagen con PISCASSO */
                 String urlImagen = imgElement.getPost_img_url();
-                Picasso.with(context).load(urlImagen.replace("localhost", "10.0.2.2")).into(imageViewHolder.imageView);
+                Picasso.with(context).load(urlImagen.replace("localhost", "212.227.40.235")).into(imageViewHolder.imageView);
 
                 /* Cargar USER IMAGE BITMAT Hilo */
                 String urlUserImg = imgElement.getUser_img_url();
@@ -270,7 +270,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "Tenarse");
-                    intent.putExtra(Intent.EXTRA_TEXT, "http://10.0.2.2:4000/app/publicacion_template?id=" + imgElement.getId());
+                    intent.putExtra(Intent.EXTRA_TEXT, "http://212.227.40.235:4000/app/publicacion_template?id=" + imgElement.getId());
                     mHomeFragment.startActivity(Intent.createChooser(intent, "Comparte:"));
                 });
 
@@ -279,7 +279,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 ListElementDoubt doubtElement = (ListElementDoubt) dataList.get(position);
                 DoubtViewHolder doubtViewHolder = (DoubtViewHolder) holder;
                 doubtViewHolder.username.setText(doubtElement.getUsername());
-                Picasso.with(context).load(doubtElement.getUser_img_url().replace("localhost", "10.0.2.2")).into(doubtViewHolder.userImageView);
+                Picasso.with(context).load(doubtElement.getUser_img_url().replace("localhost", "212.227.40.235")).into(doubtViewHolder.userImageView);
 
 
                 doubtViewHolder.username.setOnClickListener(new View.OnClickListener() {
@@ -327,7 +327,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "Tenarse");
-                    intent.putExtra(Intent.EXTRA_TEXT, "http://10.0.2.2:4000/app/publicacion_template?id=" + doubtElement.getId());
+                    intent.putExtra(Intent.EXTRA_TEXT, "http://212.227.40.235:4000/app/publicacion_template?id=" + doubtElement.getId());
                     mHomeFragment.startActivity(Intent.createChooser(intent, "Comparte:"));
                 });
 
@@ -389,7 +389,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
                         //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
-                        String url = "http://10.0.2.2:3000/getAllMyChats";
+                        String url = "http://212.227.40.235:3000/getAllMyChats";
                         JSONObject body = new JSONObject();
                         try {
                             body.put("_id", dadesUser.getString("_id"));
@@ -426,7 +426,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 VideoViewHolder videoViewHolder = (VideoViewHolder) holder;
                 videoViewHolder.username.setText(videoElement.getUsername());
                 String urImg = videoElement.getUser_img_url();
-                Picasso.with(context).load(urImg.replace("localhost", "10.0.2.2")).into(videoViewHolder.userImageView);
+                Picasso.with(context).load(urImg.replace("localhost", "212.227.40.235")).into(videoViewHolder.userImageView);
 
                 videoViewHolder.username.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -446,7 +446,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 verProgressBar(videoViewHolder);
 
-                String videoPath = videoElement.getPost_video_url().replace("localhost", "10.0.2.2");
+                String videoPath = videoElement.getPost_video_url().replace("localhost", "212.227.40.235");
                 /*Uri uri = Uri.parse(videoPath);
                 videoViewHolder.post_video.setVideoURI(uri);*/
 
@@ -524,7 +524,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "Tenarse");
-                    intent.putExtra(Intent.EXTRA_TEXT, "http://10.0.2.2:4000/app/publicacion_template?id=" + videoElement.getId());
+                    intent.putExtra(Intent.EXTRA_TEXT, "http://212.227.40.235:4000/app/publicacion_template?id=" + videoElement.getId());
                     mHomeFragment.startActivity(Intent.createChooser(intent, "Comparte:"));
                 });
 
@@ -586,7 +586,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
                         //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
-                        String url = "http://10.0.2.2:3000/getAllMyChats";
+                        String url = "http://212.227.40.235:3000/getAllMyChats";
                         JSONObject body = new JSONObject();
                         try {
                             body.put("_id", dadesUser.getString("_id"));
@@ -647,7 +647,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private String getUsernameandImageFromID(String idUser) {
-        String url_selectUser = "http://10.0.2.2:3000/getUsernameAndImageFromID";
+        String url_selectUser = "http://212.227.40.235:3000/getUsernameAndImageFromID";
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_user", idUser);

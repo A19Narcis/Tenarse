@@ -101,7 +101,7 @@ public class SettingsFragment extends Fragment{
 
         //Cargar los datos del usuario en los editText
         try {
-            Picasso.with(getContext()).load(actualDadesUser.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.newFotoPerfil);
+            Picasso.with(getContext()).load(actualDadesUser.getString("url_img").replace("localhost", "212.227.40.235")).into(binding.newFotoPerfil);
             binding.newEmail.setText(actualDadesUser.getString("email"));
             binding.newUsername.setText(actualDadesUser.getString("username"));
             binding.newNombre.setText(actualDadesUser.getString("nombre"));
@@ -209,7 +209,7 @@ public class SettingsFragment extends Fragment{
                 //Ver si el nuevo Email / Username es valido
                 String resultGetUser = "false";
                 if (newUsernameInput) {
-                    String url_checkDades = "http://10.0.2.2:3000/checkUserExists";
+                    String url_checkDades = "http://212.227.40.235:3000/checkUserExists";
 
                     JSONObject bodyCheck = new JSONObject();
 
@@ -244,7 +244,7 @@ public class SettingsFragment extends Fragment{
                         json.put("_id", actualDadesUser.getString("_id"));
                         json.put("email", newEmail);
                         json.put("username", newUsername);
-                        json.put("url_img", "http://10.0.2.2:3000/uploads\\user_img\\" + actualDadesUser.getString("_id") + ".png");
+                        json.put("url_img", "http://212.227.40.235:3000/uploads\\user_img\\" + actualDadesUser.getString("_id") + ".png");
                         json.put("nombre", newNombre);
                         json.put("apellidos", newApellidos);
                         json.put("fecha_nac", newFehca);
@@ -311,7 +311,7 @@ public class SettingsFragment extends Fragment{
                             e.printStackTrace();
                         }
 
-                        String url_updateDades = "http://10.0.2.2:3000/updateUser";
+                        String url_updateDades = "http://212.227.40.235:3000/updateUser";
                         MyAsyncTaskRegister updateUser = new MyAsyncTaskRegister(url_updateDades, body);
                         updateUser.execute();
                         String resultUpdate = null;
@@ -428,7 +428,7 @@ public class SettingsFragment extends Fragment{
     private void initRetrofitClient(){
         OkHttpClient client = new OkHttpClient.Builder().build();
 
-        apiService = new Retrofit.Builder().baseUrl("http://10.0.2.2:3000").client(client).build().create(ApiService.class);
+        apiService = new Retrofit.Builder().baseUrl("http://212.227.40.235:3000").client(client).build().create(ApiService.class);
     }
 
 }

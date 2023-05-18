@@ -131,20 +131,20 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     postViewHolder.imagePost.setVisibility(View.VISIBLE);
                     postViewHolder.textPost.setVisibility(View.GONE);
                     if (postElement.getPost_image().contains(".mp4")){
-                        String videoPath = postElement.getPost_image().replace("localhost", "10.0.2.2");
+                        String videoPath = postElement.getPost_image().replace("localhost", "212.227.40.235");
                         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                         retriever.setDataSource(videoPath);
                         Bitmap bitmap = retriever.getFrameAtTime(0);
                         postViewHolder.imagePost.setImageBitmap(bitmap);
                     } else {
-                        Picasso.with(context).load(postElement.getPost_image().replace("localhost", "10.0.2.2")).into(postViewHolder.imagePost);
+                        Picasso.with(context).load(postElement.getPost_image().replace("localhost", "212.227.40.235")).into(postViewHolder.imagePost);
                     }
                 } else {
                     postViewHolder.textPost.setText(postElement.getPost_text());
                     postViewHolder.imagePost.setVisibility(View.GONE);
                     postViewHolder.textPost.setVisibility(View.VISIBLE);
                 }
-                Picasso.with(context).load(postElement.getOwner_post_image().replace("localhost", "10.0.2.2")).into(postViewHolder.postOwnerImage);
+                Picasso.with(context).load(postElement.getOwner_post_image().replace("localhost", "212.227.40.235")).into(postViewHolder.postOwnerImage);
 
                 postViewHolder.cardView.setOnClickListener(view -> {
                     this.ActiveChat.selectPost(postElement.getId_post(), view, postElement.getUsername(), postElement.getOwner_post_image());
@@ -159,20 +159,20 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     mypostViewHolder.imagePost.setVisibility(View.VISIBLE);
                     mypostViewHolder.textPost.setVisibility(View.GONE);
                     if (myPostElement.getPost_image().contains(".mp4")){
-                        String videoPath = myPostElement.getPost_image().replace("localhost", "10.0.2.2");
+                        String videoPath = myPostElement.getPost_image().replace("localhost", "212.227.40.235");
                         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                         retriever.setDataSource(videoPath);
                         Bitmap bitmap = retriever.getFrameAtTime(0);
                         mypostViewHolder.imagePost.setImageBitmap(bitmap);
                     } else {
-                        Picasso.with(context).load(myPostElement.getPost_image().replace("localhost", "10.0.2.2")).into(mypostViewHolder.imagePost);
+                        Picasso.with(context).load(myPostElement.getPost_image().replace("localhost", "212.227.40.235")).into(mypostViewHolder.imagePost);
                     }
                 } else {
                     mypostViewHolder.textPost.setText(myPostElement.getPost_text());
                     mypostViewHolder.imagePost.setVisibility(View.GONE);
                     mypostViewHolder.textPost.setVisibility(View.VISIBLE);
                 }
-                Picasso.with(context).load(myPostElement.getOwner_post_image().replace("localhost", "10.0.2.2")).into(mypostViewHolder.postOwnerImage);
+                Picasso.with(context).load(myPostElement.getOwner_post_image().replace("localhost", "212.227.40.235")).into(mypostViewHolder.postOwnerImage);
                 mypostViewHolder.cardView.setOnClickListener(view -> {
                     this.ActiveChat.selectPost(myPostElement.getId_post(), view, myPostElement.getUsername(), myPostElement.getOwner_post_image());
                 });

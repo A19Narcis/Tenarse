@@ -60,7 +60,7 @@ public class AdapterSearchQuestions extends RecyclerView.Adapter<RecyclerView.Vi
 
         /* Cargar USER IMAGE BITMAT Hilo */
         String urlUserDoubt = doubtElement.getUser_img_url();
-        Picasso.with(context).load(urlUserDoubt.replace("localhost", "10.0.2.2")).into(doubtViewHolder.userImageView);
+        Picasso.with(context).load(urlUserDoubt.replace("localhost", "212.227.40.235")).into(doubtViewHolder.userImageView);
 
         doubtViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +96,7 @@ public class AdapterSearchQuestions extends RecyclerView.Adapter<RecyclerView.Vi
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_SUBJECT, "Tenarse");
-            intent.putExtra(Intent.EXTRA_TEXT, "Mira esta publicacion de Tenarse: http://10.0.2.2:3000/app/publicacion_template?id=" + doubtElement.getId());
+            intent.putExtra(Intent.EXTRA_TEXT, "Mira esta publicacion de Tenarse: http://212.227.40.235:3000/app/publicacion_template?id=" + doubtElement.getId());
             mSearchQuestionsFragment.startActivity(Intent.createChooser(intent, "Comparte:"));
         });
     }
