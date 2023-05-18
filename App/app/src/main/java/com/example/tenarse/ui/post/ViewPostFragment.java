@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -204,7 +206,9 @@ public class ViewPostFragment extends Fragment {
                 params_video.height = 0;
                 binding.rvPostVideo.setLayoutParams(params_video);
                 binding.rvPostText.setText(dadesPost.getString("text"));
-                Picasso.with(getContext()).load(dadesPost.getString("url_img").replace("localhost", "10.0.2.2")).into(binding.rvPostImage);
+                Picasso.with(getContext())
+                        .load(dadesPost.getString("url_img").replace("localhost", "10.0.2.2"))
+                        .into(binding.rvPostImage);
             } else if (dadesPost.getString("tipus").equals("video")){
                 binding.rvTitle.setVisibility(View.GONE);
                 binding.rvPostImage.setVisibility(View.GONE);

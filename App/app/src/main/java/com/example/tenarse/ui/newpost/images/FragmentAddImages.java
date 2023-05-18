@@ -80,9 +80,12 @@ public class FragmentAddImages extends Fragment{
     String pathImg;
 
     ApiService apiService;
+
+    ImageView imagenView;
+
     private static final int GALLERY_REQUEST_CODE = 1;
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "CutPasteId"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -93,6 +96,7 @@ public class FragmentAddImages extends Fragment{
         image.setClickable(true);
         image.setFocusable(true);
         cardView = rootView.findViewById(R.id.card_view_rv_image);
+        imagenView = rootView.findViewById(R.id.rv_post_image);
         scrollView = rootView.findViewById(R.id.scrollV_add_images);
         submitBtnImg = rootView.findViewById(R.id.submitBtnImg);
         postText = rootView.findViewById(R.id.postText);
@@ -164,6 +168,18 @@ public class FragmentAddImages extends Fragment{
                 startActivityForResult(intent, GALLERY_REQUEST_CODE);
             }
         });
+
+        imagenView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                // Iniciar la actividad de la galería
+                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+            }
+        });
+
+
 
 
         submitBtnImg.setOnClickListener(new View.OnClickListener() {
@@ -258,6 +274,7 @@ public class FragmentAddImages extends Fragment{
             image.setLayoutParams(layoutParams);
 
             image.setImageURI(selectedImage);
+            image.setAdjustViewBounds(true);
             Intent intent = new Intent(getActivity(), CropperActivity.class);
             intent.putExtra("DATA", selectedImage.toString());
             startActivityForResult(intent, 101);

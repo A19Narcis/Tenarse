@@ -127,26 +127,20 @@
                     app:layout_constraintStart_toStartOf="@+id/rv_cardViewUserImage"
                     app:layout_constraintTop_toBottomOf="@+id/rv_title" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_view_rv_image"
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/rv_post_image"
                     android:layout_width="match_parent"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="10dp"
-                    android:layout_marginTop="10dp"
+                    android:adjustViewBounds="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="20dp"
+                    app:shapeAppearance="@style/roundedImageView"
                     app:layout_constraintEnd_toEndOf="@+id/share_icon"
                     app:layout_constraintStart_toStartOf="@+id/rv_cardViewUserImage"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_post_text">
-
-                    <ImageView
-                        android:id="@+id/rv_post_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/image_post_test"/>
-
-                </androidx.cardview.widget.CardView>
+                    app:layout_constraintTop_toBottomOf="@+id/rv_post_text"
+                    android:src="@drawable/image_post_test" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_view_rv_video"
@@ -159,12 +153,12 @@
                     android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="@+id/share_icon"
                     app:layout_constraintStart_toStartOf="@+id/rv_cardViewUserImage"
-                    app:layout_constraintTop_toBottomOf="@+id/card_view_rv_image">
+                    app:layout_constraintTop_toBottomOf="@+id/rv_post_image">
 
                     <VideoView
                         android:id="@+id/rv_post_video"
                         android:layout_width="match_parent"
-                        android:layout_height="1000dp"
+                        android:layout_height="200dp"
                         android:layout_gravity="center"
                         android:scaleType="fitXY"/>
 
