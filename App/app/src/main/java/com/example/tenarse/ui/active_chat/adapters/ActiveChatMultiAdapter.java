@@ -127,7 +127,6 @@ public class ActiveChatMultiAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 postViewHolder.usernameTxt.setText("@" + postElement.getEmisor_username());
 
                 if (postElement.getPost_image().length() > 0){
-                    System.out.println("Post element: "+ postElement.getPost_image());
                     postViewHolder.imagePost.setVisibility(View.VISIBLE);
                     postViewHolder.textPost.setVisibility(View.GONE);
                     if (postElement.getPost_image().contains(".mp4")){

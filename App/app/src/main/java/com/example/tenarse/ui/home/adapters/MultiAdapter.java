@@ -450,7 +450,6 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 /*Uri uri = Uri.parse(videoPath);
                 videoViewHolder.post_video.setVideoURI(uri);*/
 
-                System.out.println("VIDEO PATH: " + videoPath);
 
                 videoViewHolder.post_video.setVideoPath(videoPath);
                 MediaController mediaController = new MediaController(context);
@@ -468,7 +467,6 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 videoViewHolder.post_video.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                     @Override
                     public boolean onError(MediaPlayer mp, int what, int extra) {
-                        System.out.println("Error al reproducir el video: " + what + ", " + extra);
                         videoViewHolder.post_video.setVideoURI(Uri.parse(videoElement.getPost_video_url()));
                         videoViewHolder.post_video.setOnPreparedListener(mp1 -> {
                             MultiAdapter.this.ocultarProgressBar(videoViewHolder);
@@ -660,7 +658,6 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         String resultSearch = null;
         try {
             resultSearch = selectedUser.get();
-            System.out.println(resultSearch);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }

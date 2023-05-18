@@ -228,7 +228,6 @@ public class ViewPostFragment extends Fragment {
                 binding.rvPostVideo.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                     @Override
                     public boolean onError(MediaPlayer mp, int what, int extra) {
-                        System.out.println("Error al reproducir el video: " + what + ", " + extra);
                         try {
                             binding.rvPostVideo.setVideoURI(Uri.parse(dadesPost.getString("url_video")));
                         } catch (JSONException e) {

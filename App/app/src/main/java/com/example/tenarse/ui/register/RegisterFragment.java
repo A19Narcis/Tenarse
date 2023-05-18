@@ -156,19 +156,15 @@ public class RegisterFragment extends Fragment{
                         || surname.matches(regexEmoticionos))
                         || date.isEmpty()) {
                     infoValida = false;
-                    System.out.println("Vacio o Emojis");
                 }
                 if (!passwd.matches(regexPassword)){
-                    System.out.println("La passwd no cumple requisitos");
                     infoValida = false;
                 }
                 if (!passwd.equals(passwd_repeat)) {
-                    System.out.println("Las passwd no son iguales");
                     infoValida = false;
                 }
                 if (!email.contains("@")
                         || email.split("@").length != 2) {
-                    System.out.println("Error email");
                     infoValida = false;
                 }
                 if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
@@ -177,7 +173,6 @@ public class RegisterFragment extends Fragment{
                         || !surname.matches("[a-zA-ZáéíóúÁÉÍÓÚ]+( [a-zA-ZáéíóúÁÉÍÓÚ]+)?")  // Permitir tildes en surname
                         || !date.matches("[0-9/]+")) {
                     infoValida = false;
-                    System.out.println("Caracteres especiales");
                 }
                 if (infoValida){
                     finalDadesUser = new JSONObject();

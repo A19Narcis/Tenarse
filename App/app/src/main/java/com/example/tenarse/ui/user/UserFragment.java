@@ -96,8 +96,6 @@ public class UserFragment extends Fragment {
         UserViewModel userViewModel =
                 new ViewModelProvider(this).get(UserViewModel.class);
 
-        System.out.println("LOGIN: " + GlobalDadesUser.getInstance().getDadesUser().toString());
-
         dataList = new ArrayList<>();
         multiAdapter = new MultiAdapter(dataList, getContext(), UserFragment.this);
 

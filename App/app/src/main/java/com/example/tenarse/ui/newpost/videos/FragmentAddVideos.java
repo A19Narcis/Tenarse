@@ -191,11 +191,7 @@ public class FragmentAddVideos extends Fragment {
                             errorFaltanCampos.setVisibility(View.GONE);
                         }
                         File file = new File(pathVideo);
-                        if (file.exists()) {
-                            System.out.println("File ok");
-                        } else {
-                            System.out.println("Files does not exists");
-                        }
+
 
                         // Crear un objeto JSONObject y agregar los campos necesarios
                         String idUser = "null";
@@ -229,10 +225,6 @@ public class FragmentAddVideos extends Fragment {
                         req.enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                                if (response.code() == 200) {
-                                    System.out.println("Video uploaded successfully");
-                                }
 
                                 Toast.makeText(getContext(), "¡Post subido!", Toast.LENGTH_SHORT).show();
 

@@ -184,17 +184,14 @@ public class SettingsFragment extends Fragment{
                 // Verificar que no hay campos vacíos o com emoticonos
                 if ((newEmail.isEmpty() || newEmail.matches(regexEmoticionos)) || (newUsername.isEmpty() || newUsername.matches(regexEmoticionos)) || (newNombre.isEmpty() || newNombre.matches(regexEmoticionos)) || (newApellidos.isEmpty() || newApellidos.matches(regexEmoticionos))) {
                     infoValida = false;
-                    System.out.println("Vacio o Emojis");
                 }
 
                 if (!newEmail.contains("@") || newEmail.split("@").length != 2) {
-                    System.out.println("Error email");
                     infoValida = false;
                 }
 
                 if (!newEmail.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}") || !newUsername.matches("[a-zA-Z0-9]+") || !newNombre.matches("[a-zA-Z]+") || !newApellidos.matches("[a-zA-Z]+( [a-zA-Z]+)?") || !newFehca.matches("[0-9/]+")) {
                     infoValida = false;
-                    System.out.println("Caracteres especiales");
                 }
 
                 //Ver si ya existe este nuevo email - username

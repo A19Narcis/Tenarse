@@ -234,7 +234,6 @@ public class activeChat extends Fragment {
                         }
                     }else if(!object.getString("emisor").equals(dadesUsuari.getString("_id")) && object.getString("txt_msg").equals("")){
                         JSONObject datos_post = getPost(object.getString("post_id"));
-                        System.out.println(datos_post);
                         if (datos_post != null) {
                             JSONObject datos_owner = getOwnerPost(datos_post.getString("owner"));
                             if(datos_post.getString("tipus").equals("image")) {

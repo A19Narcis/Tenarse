@@ -124,7 +124,6 @@ public class LoginFragment extends Fragment {
                     throw new RuntimeException(e);
                 }
 
-                System.out.println("RESULT LOGIN: " + resultLogin);
 
                 if (!resultLogin.contains("{\"username\":false}")){
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
