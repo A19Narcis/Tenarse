@@ -64,7 +64,7 @@ public class SearchPostFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskGetPosts searchPosts = new MyAsyncTaskGetPosts(URL, body);
+        MyAsyncTask searchPosts = new MyAsyncTask(URL, body);
         searchPosts.execute();
         String resultSearchPost = null;
         try {

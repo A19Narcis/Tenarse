@@ -4,10 +4,6 @@ import android.os.AsyncTask;
 
 import com.example.tenarse.ui.home.HomeFragment;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 
 import okhttp3.OkHttpClient;
@@ -17,8 +13,6 @@ import okhttp3.Response;
 public class MyAsyncTaskGetSinglePost extends AsyncTask<Void, Void, String> {
 
     private final String url;
-    private final HomeFragment homeFragment = new HomeFragment();
-
     public MyAsyncTaskGetSinglePost(String url){
         this.url = url;
     }

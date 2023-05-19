@@ -1,19 +1,16 @@
 package com.example.tenarse.widgets;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.tenarse.R;
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.model.AspectRatio;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class CropperActivity extends AppCompatActivity {

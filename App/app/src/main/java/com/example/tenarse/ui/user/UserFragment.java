@@ -3,7 +3,6 @@ package com.example.tenarse.ui.user;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
@@ -37,13 +36,12 @@ import com.example.tenarse.databinding.FragmentUserBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.globals.MyAsyncTask;
-import com.example.tenarse.ui.search.posts.MyAsyncTaskGetPosts;
-import com.example.tenarse.ui.user.elements.adapters.FollowAdapter;
+import com.example.tenarse.ui.user.adapters.FollowAdapter;
 import com.example.tenarse.ui.user.elements.ElementUserFollow;
 import com.example.tenarse.ui.user.elements.ListElementVideo;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
-import com.example.tenarse.ui.user.elements.adapters.MultiAdapter;
+import com.example.tenarse.ui.user.adapters.MultiAdapter;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -53,8 +51,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
-import javax.microedition.khronos.opengles.GL;
 
 public class UserFragment extends Fragment {
 
@@ -222,7 +218,7 @@ public class UserFragment extends Fragment {
                 throw new RuntimeException(e);
             }
 
-            MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+            MyAsyncTask getInfoFollowers = new MyAsyncTask(url, body);
             getInfoFollowers.execute();
             String result = null;
             try {
@@ -307,7 +303,7 @@ public class UserFragment extends Fragment {
                 throw new RuntimeException(e);
             }
 
-            MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+            MyAsyncTask getInfoFollowers = new MyAsyncTask(url, body);
             getInfoFollowers.execute();
             String result = null;
             try {

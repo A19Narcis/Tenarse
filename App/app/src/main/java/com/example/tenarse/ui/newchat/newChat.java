@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.databinding.FragmentCreateNewChatBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
+import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.newchat.adapters.SuggestedUsersAdapter;
-import com.example.tenarse.ui.newchat.asynctask.MyAsyncTaskSuggestedUsers;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -87,7 +87,7 @@ public class newChat extends Fragment {
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskSuggestedUsers addQuestionTask = new MyAsyncTaskSuggestedUsers(url_register, body);
+        MyAsyncTask addQuestionTask = new MyAsyncTask(url_register, body);
         addQuestionTask.execute();
         String resultSuggestedUsers = null;
         try {
@@ -116,7 +116,7 @@ public class newChat extends Fragment {
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskSuggestedUsers addQuestionTask = new MyAsyncTaskSuggestedUsers(url_register, body);
+        MyAsyncTask addQuestionTask = new MyAsyncTask(url_register, body);
         addQuestionTask.execute();
         String resultSuggestedUsers = null;
         try {

@@ -1,28 +1,18 @@
 package com.example.tenarse.ui.newpost.adapters;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
-import com.example.tenarse.ui.home.HomeViewModel;
-import com.example.tenarse.ui.home.elements.ListElementDoubt;
-import com.example.tenarse.ui.home.elements.ListElementImg;
-import com.example.tenarse.ui.home.elements.ListElementVideo;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HashtagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

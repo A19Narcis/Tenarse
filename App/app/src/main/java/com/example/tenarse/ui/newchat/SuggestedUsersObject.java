@@ -1,7 +1,5 @@
 package com.example.tenarse.ui.newchat;
 
-import android.net.Uri;
-
 public class SuggestedUsersObject {
     String porfileImg;
     String userName;

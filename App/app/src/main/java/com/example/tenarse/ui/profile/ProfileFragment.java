@@ -36,13 +36,11 @@ import com.example.tenarse.databinding.FragmentProfileBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.globals.MyAsyncTask;
-import com.example.tenarse.ui.profile.asynctask.MyAsyncTaskFollowing;
-import com.example.tenarse.ui.search.posts.MyAsyncTaskGetPosts;
-import com.example.tenarse.ui.user.elements.adapters.FollowAdapter;
+import com.example.tenarse.ui.user.adapters.FollowAdapter;
 import com.example.tenarse.ui.user.elements.ElementUserFollow;
 import com.example.tenarse.ui.user.elements.ListElementImg;
 import com.example.tenarse.ui.user.elements.ListElementDoubt;
-import com.example.tenarse.ui.user.elements.adapters.MultiAdapter;
+import com.example.tenarse.ui.user.adapters.MultiAdapter;
 import com.example.tenarse.ui.user.elements.ListElementVideo;
 import com.squareup.picasso.Picasso;
 
@@ -172,7 +170,7 @@ public class ProfileFragment extends Fragment {
                         e.printStackTrace();
                     }
 
-                    MyAsyncTaskFollowing startFollowing = new MyAsyncTaskFollowing(url, body);
+                    MyAsyncTask startFollowing = new MyAsyncTask(url, body);
                     startFollowing.execute();
                     String resultFollowing = null;
                     try {
@@ -239,7 +237,7 @@ public class ProfileFragment extends Fragment {
                                 e.printStackTrace();
                             }
 
-                            MyAsyncTaskFollowing startFollowing = new MyAsyncTaskFollowing(url, body);
+                            MyAsyncTask startFollowing = new MyAsyncTask(url, body);
                             startFollowing.execute();
                             String resultFollowing = null;
                             try {
@@ -472,7 +470,7 @@ public class ProfileFragment extends Fragment {
                 throw new RuntimeException(e);
             }
 
-            MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+            MyAsyncTask getInfoFollowers = new MyAsyncTask(url, body);
             getInfoFollowers.execute();
             String result = null;
             try {
@@ -557,7 +555,7 @@ public class ProfileFragment extends Fragment {
                 throw new RuntimeException(e);
             }
 
-            MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+            MyAsyncTask getInfoFollowers = new MyAsyncTask(url, body);
             getInfoFollowers.execute();
             String result = null;
             try {

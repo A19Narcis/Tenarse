@@ -56,7 +56,7 @@ public class SearchUsersFragment extends Fragment{
         }
 
 
-        MyAsyncTaskSearchUsers searchUsers = new MyAsyncTaskSearchUsers(URL, body);
+        MyAsyncTask searchUsers = new MyAsyncTask(URL, body);
         searchUsers.execute();
 
         String resultSearchUser = null;

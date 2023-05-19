@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
-import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.DisplayMetrics;
@@ -39,10 +38,7 @@ import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
 import com.example.tenarse.ui.message.SharePostObject;
-import com.example.tenarse.ui.message.adapters.ChatAdapter;
 import com.example.tenarse.ui.message.adapters.ShareAdapter;
-import com.example.tenarse.ui.message.chat.chatObject;
-import com.example.tenarse.ui.search.posts.MyAsyncTaskGetPosts;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -192,7 +188,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             throw new RuntimeException(e);
                         }
 
-                        MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+                        MyAsyncTask getInfoFollowers = new MyAsyncTask(url, body);
                         getInfoFollowers.execute();
                         String result = null;
                         try {
@@ -397,7 +393,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             throw new RuntimeException(e);
                         }
 
-                        MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+                        MyAsyncTask getInfoFollowers = new MyAsyncTask(url, body);
                         getInfoFollowers.execute();
                         String result = null;
                         try {
@@ -592,7 +588,7 @@ public class MultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             throw new RuntimeException(e);
                         }
 
-                        MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+                        MyAsyncTask getInfoFollowers = new MyAsyncTask(url, body);
                         getInfoFollowers.execute();
                         String result = null;
                         try {

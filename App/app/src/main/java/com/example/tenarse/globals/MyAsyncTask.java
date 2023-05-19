@@ -2,11 +2,8 @@ package com.example.tenarse.globals;
 
 import android.os.AsyncTask;
 
-import com.example.tenarse.ui.home.HomeFragment;
-
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;

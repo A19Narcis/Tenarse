@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
@@ -15,13 +14,6 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -36,20 +28,22 @@ import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.tenarse.MainActivity;
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentViewPostBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.globals.MyAsyncTask;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
+import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.ui.message.SharePostObject;
 import com.example.tenarse.ui.message.adapters.ShareAdapter;
 import com.example.tenarse.ui.post.adapters.AdapterComentarios;
-import com.example.tenarse.ui.post.asynctask.MyAsyncTaskComment;
-import com.example.tenarse.ui.post.asynctask.MyAsyncTaskDeletePost;
 import com.example.tenarse.ui.post.elements.Comentario;
-import com.example.tenarse.ui.search.posts.MyAsyncTaskGetPosts;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -173,7 +167,7 @@ public class ViewPostFragment extends Fragment {
                                     throw new RuntimeException(e);
                                 }
 
-                                MyAsyncTaskDeletePost deletePost = new MyAsyncTaskDeletePost(url, body);
+                                MyAsyncTask deletePost = new MyAsyncTask(url, body);
                                 deletePost.execute();
                                 String resultDelete = null;
                                 try {
@@ -292,7 +286,7 @@ public class ViewPostFragment extends Fragment {
                         }
 
 
-                        MyAsyncTaskComment addNewComment = new MyAsyncTaskComment(urlUploadComment, commentBody);
+                        MyAsyncTask addNewComment = new MyAsyncTask(urlUploadComment, commentBody);
                         addNewComment.execute();
                         String resultAddComment = null;
                         try {
@@ -456,7 +450,7 @@ public class ViewPostFragment extends Fragment {
                 throw new RuntimeException(e);
             }
 
-            MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+            MyAsyncTask getInfoFollowers = new MyAsyncTask(url, body);
             getInfoFollowers.execute();
             String result = null;
             try {
@@ -545,7 +539,7 @@ public class ViewPostFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+        MyAsyncTask getInfoFollowers = new MyAsyncTask(url, body);
         getInfoFollowers.execute();
         String result = null;
         try {
@@ -749,7 +743,7 @@ public class ViewPostFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskLikes likesTask = new MyAsyncTaskLikes(url, body);
+        MyAsyncTask likesTask = new MyAsyncTask(url, body);
         likesTask.execute();
         String resultLikes = "";
         try {
@@ -785,7 +779,7 @@ public class ViewPostFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskLikes likesTask = new MyAsyncTaskLikes(url, body);
+        MyAsyncTask likesTask = new MyAsyncTask(url, body);
         likesTask.execute();
         String resultLikes = "";
         try {

@@ -14,7 +14,6 @@ import com.example.tenarse.R;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.message.adapters.ChatAdapter;
-import com.example.tenarse.ui.message.asynctask.MyAsyncTaskGetMyChats;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,7 +56,7 @@ public class FragmentChat extends Fragment {
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskGetMyChats addQuestionTask = new MyAsyncTaskGetMyChats(url_chats, body);
+        MyAsyncTask addQuestionTask = new MyAsyncTask(url_chats, body);
         addQuestionTask.execute();
         String resultSuggestedUsers = null;
         try {

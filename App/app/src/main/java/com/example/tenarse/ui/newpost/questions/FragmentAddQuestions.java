@@ -27,12 +27,10 @@ import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.newpost.NewpostFragment;
 import com.example.tenarse.ui.newpost.adapters.HashtagAdapter;
-import com.example.tenarse.ui.newpost.httpUploads.MyAsyncTaskQuestion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -154,7 +152,7 @@ public class FragmentAddQuestions extends Fragment {
                         throw new RuntimeException(e);
                     }
 
-                    MyAsyncTaskQuestion addQuestionTask = new MyAsyncTaskQuestion(url_register, body);
+                    MyAsyncTask addQuestionTask = new MyAsyncTask(url_register, body);
                     addQuestionTask.execute();
                     String resultAddQuestion = null;
                     try {

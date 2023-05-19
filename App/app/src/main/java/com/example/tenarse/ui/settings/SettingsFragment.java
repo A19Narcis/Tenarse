@@ -4,10 +4,8 @@ import static android.app.Activity.RESULT_OK;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,7 +29,6 @@ import com.example.tenarse.databinding.FragmentSettingsBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.httpRetrofit.ApiService;
 import com.example.tenarse.globals.MyAsyncTask;
-import com.example.tenarse.ui.register.MyAsyncTaskRegister;
 import com.example.tenarse.widgets.CropperActivity;
 import com.example.tenarse.widgets.DatePickerFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -309,7 +306,7 @@ public class SettingsFragment extends Fragment{
                         }
 
                         String url_updateDades = "http://212.227.40.235:3000/updateUser";
-                        MyAsyncTaskRegister updateUser = new MyAsyncTaskRegister(url_updateDades, body);
+                        MyAsyncTask updateUser = new MyAsyncTask(url_updateDades, body);
                         updateUser.execute();
                         String resultUpdate = null;
                         try {

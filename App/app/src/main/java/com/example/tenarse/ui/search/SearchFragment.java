@@ -15,15 +15,11 @@ import androidx.navigation.Navigation;
 
 import com.example.tenarse.R;
 import com.example.tenarse.databinding.FragmentSearchBinding;
-import com.example.tenarse.ui.profile.ProfileFragment;
 import com.example.tenarse.ui.search.posts.SearchPostFragment;
 import com.example.tenarse.ui.search.questions.SearchQuestionsFragment;
-import com.example.tenarse.ui.search.users.ListElementUser;
 import com.example.tenarse.ui.search.users.SearchUsersFragment;
 
 import org.json.JSONObject;
-
-import java.io.Serializable;
 
 public class SearchFragment extends Fragment {
 

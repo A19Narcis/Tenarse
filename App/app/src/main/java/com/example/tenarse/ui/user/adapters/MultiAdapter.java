@@ -1,4 +1,4 @@
-package com.example.tenarse.ui.user.elements.adapters;
+package com.example.tenarse.ui.user.adapters;
 
 
 import android.content.Context;

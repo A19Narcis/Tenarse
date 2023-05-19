@@ -3,8 +3,6 @@ package com.example.tenarse.ui.search.questions;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +13,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tenarse.R;
-import com.example.tenarse.ui.home.HomeViewModel;
-
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

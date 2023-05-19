@@ -55,7 +55,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.PrimitiveIterator;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;

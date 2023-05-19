@@ -29,7 +29,6 @@ import com.example.tenarse.ui.home.adapters.MultiAdapter;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.globals.MyAsyncTask;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskHomePosts;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.home.elements.ListElementDoubt;
 import com.example.tenarse.ui.home.elements.ListElementImg;
 import com.example.tenarse.ui.home.elements.ListElementVideo;
@@ -396,7 +395,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskLikes likesTask = new MyAsyncTaskLikes(url, body);
+        MyAsyncTask likesTask = new MyAsyncTask(url, body);
         likesTask.execute();
         String resultLikes = "";
         try {
@@ -419,7 +418,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskLikes likesTask = new MyAsyncTaskLikes(url, body);
+        MyAsyncTask likesTask = new MyAsyncTask(url, body);
         likesTask.execute();
         String resultLikes = "";
         try {

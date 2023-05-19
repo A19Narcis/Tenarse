@@ -13,9 +13,7 @@ import com.example.tenarse.databinding.FragmentSearchQuestionsBinding;
 import com.example.tenarse.globals.GlobalDadesUser;
 import com.example.tenarse.ui.home.asynctask.MyAsyncTaskGetSinglePost;
 import com.example.tenarse.globals.MyAsyncTask;
-import com.example.tenarse.ui.home.asynctask.MyAsyncTaskLikes;
 import com.example.tenarse.ui.search.SearchFragment;
-import com.example.tenarse.ui.search.posts.MyAsyncTaskGetPosts;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,7 +63,7 @@ public class SearchQuestionsFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskGetPosts searchPosts = new MyAsyncTaskGetPosts(URL, body);
+        MyAsyncTask searchPosts = new MyAsyncTask(URL, body);
         searchPosts.execute();
         String resultSearchPost = null;
         try {
@@ -143,7 +141,7 @@ public class SearchQuestionsFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskLikes likesTask = new MyAsyncTaskLikes(url, body);
+        MyAsyncTask likesTask = new MyAsyncTask(url, body);
         likesTask.execute();
         String resultLikes = "";
         try {
@@ -166,7 +164,7 @@ public class SearchQuestionsFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        MyAsyncTaskLikes likesTask = new MyAsyncTaskLikes(url, body);
+        MyAsyncTask likesTask = new MyAsyncTask(url, body);
         likesTask.execute();
         String resultLikes = "";
         try {

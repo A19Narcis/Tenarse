@@ -2,33 +2,21 @@ package com.example.tenarse.ui.threads;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.tenarse.R;
 
 import java.util.concurrent.ExecutionException;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LoadImageBottomNavBar extends AsyncTask<String, Void, Bitmap> {
     private MenuItem menuItem;

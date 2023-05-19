@@ -1,7 +1,5 @@
 package com.example.tenarse.ui.message.chat;
 
-import android.graphics.Bitmap;
-
 import org.json.JSONArray;
 
 public class chatObject {
