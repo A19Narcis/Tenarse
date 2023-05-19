@@ -101,7 +101,7 @@ public class SettingsFragment extends Fragment{
 
         //Cargar los datos del usuario en los editText
         try {
-            Picasso.with(getContext()).load(actualDadesUser.getString("url_img").replace("localhost", "212.227.40.235")).into(binding.newFotoPerfil);
+            Picasso.with(getContext()).load(actualDadesUser.getString("url_img").replace("https://tenarse.online", "http://212.227.40.235")).into(binding.newFotoPerfil);
             binding.newEmail.setText(actualDadesUser.getString("email"));
             binding.newUsername.setText(actualDadesUser.getString("username"));
             binding.newNombre.setText(actualDadesUser.getString("nombre"));

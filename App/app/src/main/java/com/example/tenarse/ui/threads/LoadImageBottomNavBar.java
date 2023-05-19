@@ -42,7 +42,7 @@ public class LoadImageBottomNavBar extends AsyncTask<String, Void, Bitmap> {
     @Override
     protected Bitmap doInBackground(String... params) {
         String imageUrl = params[0];
-        imageUrl = imageUrl.replace("\\", "/");
+        imageUrl = imageUrl.replace("\\", "/").replace("https://tenarse.online", "http://212.227.40.235");
         Bitmap bitmap = null;
         boolean imageLoaded = false;
 

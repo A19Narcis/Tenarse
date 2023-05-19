@@ -6,9 +6,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -42,6 +45,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ObjectInput;
 import java.util.ArrayList;
 
 import okhttp3.MediaType;
@@ -83,6 +87,10 @@ public class FragmentAddImages extends Fragment{
 
     ImageView imagenView;
 
+    TextView longitudTexto;
+
+    boolean textValid;
+
     private static final int GALLERY_REQUEST_CODE = 1;
 
     @SuppressLint({"MissingInflatedId", "CutPasteId"})
@@ -102,6 +110,7 @@ public class FragmentAddImages extends Fragment{
         postText = rootView.findViewById(R.id.postText);
         errorText = rootView.findViewById(R.id.errorText);
         errorFaltanCampos = rootView.findViewById(R.id.errorFaltanCampos);
+        longitudTexto = rootView.findViewById(R.id.textoLength);
 
         autoCompleteTextView = rootView.findViewById(R.id.autoCompleteImg);
         adapter = new ArrayAdapter<String>(getContext(),
@@ -185,7 +194,7 @@ public class FragmentAddImages extends Fragment{
         submitBtnImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (postText.getText().toString().length() == 0 || pathImg.length() == 0){
+                if (postText.getText().toString().length() == 0 || pathImg.length() == 0 || !textValid){
                     errorFaltanCampos.setVisibility(View.VISIBLE);
                 } else {
                     if (errorFaltanCampos.getVisibility() == View.VISIBLE){
@@ -239,6 +248,30 @@ public class FragmentAddImages extends Fragment{
                         }
                     });
                 }
+            }
+        });
+
+        postText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                longitudTexto.setText(s.length() + "/75");
+                if (s.length() > 75){
+                    textValid = false;
+                    longitudTexto.setTextColor(Color.RED);
+                } else if (s.length() <= 75){
+                    textValid = true;
+                    longitudTexto.setTextColor(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 

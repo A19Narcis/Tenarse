@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -14,10 +15,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,6 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -50,6 +55,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.PrimitiveIterator;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -81,11 +87,17 @@ public class FragmentAddVideos extends Fragment {
 
     HashtagAdapter hashtagAdapter;
 
+    TextView longitudTexto;
+
+    private ProgressBar subiendoVideo;
+
     ArrayList<String> arrayRecycler = new ArrayList<>();
 
     private static final int PERMISSION_REQUEST_EXTERNAL_STORAGE = 1;
     private static final int GALLERY_REQUEST_CODE = 1;
     ApiService apiService;
+
+    boolean textValid;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -116,12 +128,14 @@ public class FragmentAddVideos extends Fragment {
             }
         }
 
+        subiendoVideo = rootView.findViewById(R.id.barraCarga);
         submitBtnVideo = rootView.findViewById(R.id.uploadVideo);
         cardView = rootView.findViewById(R.id.card_view_rv_image);
         imageView = rootView.findViewById(R.id.preopen_video);
         videoView = rootView.findViewById(R.id.rv_post_video);
         postText = rootView.findViewById(R.id.postText);
         errorText = rootView.findViewById(R.id.errorText);
+        longitudTexto = rootView.findViewById(R.id.textoLength);
         imageView.setVisibility(View.GONE);
         errorFaltanCampos = rootView.findViewById(R.id.errorFaltanCampos);
 
@@ -184,7 +198,7 @@ public class FragmentAddVideos extends Fragment {
         submitBtnVideo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (postText.getText().toString().length() == 0 || pathVideo.length() == 0){
+                    if (postText.getText().toString().length() == 0 || pathVideo.length() == 0 || !textValid){
                         errorFaltanCampos.setVisibility(View.VISIBLE);
                     } else {
                         if (errorFaltanCampos.getVisibility() == View.VISIBLE){
@@ -219,22 +233,28 @@ public class FragmentAddVideos extends Fragment {
                         MultipartBody.Part body = MultipartBody.Part.createFormData("post", idUser+".", postVideo);
                         RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "postImage");
 
-                        // Enviar la solicitud POST con el multipart y el JSON como parte del cuerpo de la solicitud
+                        subiendoVideo.setVisibility(View.VISIBLE);
+                        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                         Call<ResponseBody> req = apiService.postVideo(body, name, jsonBody);
 
                         req.enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                subiendoVideo.setVisibility(View.INVISIBLE);
+                                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
                                 Toast.makeText(getContext(), "¡Post subido!", Toast.LENGTH_SHORT).show();
 
                                 NewpostFragment newpostFragment = (NewpostFragment) getParentFragment();
                                 newpostFragment.postUploaded();
-
                             }
 
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                subiendoVideo.setVisibility(View.INVISIBLE);
+                                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                                 t.printStackTrace();
                             }
                         });
@@ -248,6 +268,30 @@ public class FragmentAddVideos extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("video/*");
                 startActivityForResult(intent, GALLERY_REQUEST_CODE);
+            }
+        });
+
+        postText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                longitudTexto.setText(s.length() + "/75");
+                if (s.length() > 75){
+                    textValid = false;
+                    longitudTexto.setTextColor(Color.RED);
+                } else if (s.length() <= 75){
+                    textValid = true;
+                    longitudTexto.setTextColor(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 

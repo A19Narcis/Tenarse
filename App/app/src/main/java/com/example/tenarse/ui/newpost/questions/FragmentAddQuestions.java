@@ -1,6 +1,10 @@
 package com.example.tenarse.ui.newpost.questions;
 
+import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +32,7 @@ import com.example.tenarse.ui.newpost.httpUploads.MyAsyncTaskQuestion;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -49,6 +54,12 @@ public class FragmentAddQuestions extends Fragment {
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
     JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
+    TextView textLengthTitol;
+    TextView textLengthText;
+    boolean validText;
+    boolean validTitol;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,6 +76,8 @@ public class FragmentAddQuestions extends Fragment {
         errorText = rootView.findViewById(R.id.errorText);
         errorFaltanCampos = rootView.findViewById(R.id.errorFaltanCampos);
 
+        textLengthTitol = rootView.findViewById(R.id.textoLengthTitol);
+        textLengthText = rootView.findViewById(R.id.textoLengthText);
 
         hashtagAdapter = new HashtagAdapter(arrayRecycler, adapter, getContext());
         recyclerView = rootView.findViewById(R.id.add_recyclerView_doubt);
@@ -121,7 +134,7 @@ public class FragmentAddQuestions extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (title.getText().toString().length() == 0 || bodyQuestion.getText().toString().length() == 0){
+                if (title.getText().toString().length() == 0 || bodyQuestion.getText().toString().length() == 0 || !validText || !validTitol){
                     errorFaltanCampos.setVisibility(View.VISIBLE);
                 } else {
                     if (errorFaltanCampos.getVisibility() == View.VISIBLE){
@@ -182,6 +195,54 @@ public class FragmentAddQuestions extends Fragment {
                         }
                     }
                 }
+            }
+        });
+
+        title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+               textLengthTitol.setText(s.length() + "/75");
+                if (s.length() > 75){
+                    validTitol = false;
+                    textLengthTitol.setTextColor(Color.RED);
+                } else if (s.length() <= 75){
+                    validTitol = true;
+                    textLengthTitol.setTextColor(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        bodyQuestion.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                textLengthText.setText(s.length() + "/500");
+                if (s.length() > 500){
+                    validText = false;
+                    textLengthText.setTextColor(Color.RED);
+                } else if (s.length() <= 500){
+                    validText = true;
+                    textLengthText.setTextColor(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 

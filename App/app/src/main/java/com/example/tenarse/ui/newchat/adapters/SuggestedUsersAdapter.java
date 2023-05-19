@@ -39,7 +39,7 @@ public class SuggestedUsersAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         SuggestedUsersAdapter.usersViewHolder uvh = (SuggestedUsersAdapter.usersViewHolder) holder;
         uvh.userName.setText("@" + dataList.get(position).getUserName());
-        Picasso.with(context).load(dataList.get(position).getPorfileImg().replace("localhost", "212.227.40.235")).into(uvh.profileImg);
+        Picasso.with(context).load(dataList.get(position).getPorfileImg().replace("https://tenarse.online", "http://212.227.40.235")).into(uvh.profileImg);
         uvh.constraintLayout.setOnClickListener(view ->{
             if (uvh.selectBtn.isChecked()){
                 uvh.selectBtn.setChecked(false);

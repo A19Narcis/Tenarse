@@ -34,6 +34,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/textoLength"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/75"
+                android:layout_marginTop="10dp"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/postText"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/postText"
+                app:layout_constraintTop_toBottomOf="@id/postText" />
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_view_rv_image"
                 android:layout_width="0dp"
@@ -44,7 +56,7 @@
                 app:cardCornerRadius="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/postText"
+                app:layout_constraintTop_toBottomOf="@+id/textoLength"
                 app:cardElevation="10dp">
 
                 <ImageView
@@ -134,7 +146,9 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="35dp"
                 android:visibility="gone"
-                android:text="Faltan campos por rellenar"
+                android:text="Faltan campos por rellenar o el texto es muy largo"
+                android:layout_marginBottom="35dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/submitBtnImg"
                 app:layout_constraintStart_toStartOf="@+id/submitBtnImg"
                 app:layout_constraintTop_toBottomOf="@+id/submitBtnImg" />

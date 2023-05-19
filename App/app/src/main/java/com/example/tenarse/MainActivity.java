@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();
     JSONObject dadesUsuari = globalDadesUser.getDadesUser();
 
+
+
     public Socket mSocket;
     {
         try {
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 MenuItem menuItem = menu.findItem(R.id.navigation_user);
                 LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
                 try {
-                    loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("localhost", "212.227.40.235"));
+                    loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("https://tenarse.online", "http://212.227.40.235"));
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                     dadesUsuari = globalDadesUser.getDadesUser();
                     LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
                     try {
-                        loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("localhost", "212.227.40.235"));
+                        loadImageBottomNavBar.execute(dadesUsuari.getString("url_img").replace("https://tenarse.online", "http://212.227.40.235"));
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -178,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuItem = menu.findItem(R.id.navigation_user);
         LoadImageBottomNavBar loadImageBottomNavBar = new LoadImageBottomNavBar(menuItem, this);
         try {
-            loadImageBottomNavBar.execute(newDadesUsuari.getString("url_img").replace("localhost", "212.227.40.235"));
+            loadImageBottomNavBar.execute(newDadesUsuari.getString("url_img").replace("https://tenarse.online", "http://212.227.40.235"));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

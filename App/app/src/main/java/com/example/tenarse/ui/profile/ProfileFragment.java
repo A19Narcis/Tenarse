@@ -361,7 +361,7 @@ public class ProfileFragment extends Fragment {
 
         try {
             Picasso.with(getContext()).invalidate(userInfo.getString("url_img"));
-            Picasso.with(getContext()).load(userInfo.getString("url_img").replace("localhost", "212.227.40.235")).into(binding.fotoPerfil);
+            Picasso.with(getContext()).load(userInfo.getString("url_img").replace("https://tenarse.online", "http://212.227.40.235")).into(binding.fotoPerfil);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -635,7 +635,7 @@ public class ProfileFragment extends Fragment {
             //Canviar els valors antics de l'usuari
             binding.userName.setText("@" + newDadesUser.getString("username"));
             Picasso.with(getContext()).invalidate(newDadesUser.getString("url_img"));
-            Picasso.with(getContext()).load(newDadesUser.getString("url_img").replace("localhost", "212.227.40.235")).into(binding.fotoPerfil);
+            Picasso.with(getContext()).load(newDadesUser.getString("url_img").replace("https://tenarse.online", "http://212.227.40.235")).into(binding.fotoPerfil);
             int new_numero_followings = newDadesUser.getJSONArray("followings").length();
             if (new_numero_followings >= 10000 && new_numero_followings < 999950) {
                 String followingsString = formatFollowers10(new_numero_followings);

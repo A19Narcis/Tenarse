@@ -33,7 +33,7 @@ public class HomeViewModel extends ViewModel {
         }
 
         protected Bitmap doInBackground(String... urls) {
-            String urlOfImage = urls[0];
+            String urlOfImage = urls[0].replace("https://tenarse.online", "http://212.227.40.235");
             Bitmap downloadedImage = null;
             try {
                 InputStream inputStream = new URL(urlOfImage).openStream();

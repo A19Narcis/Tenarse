@@ -228,7 +228,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 JSONObject username_image = new JSONObject(realUsername);
                 if (post.getString("tipus").equals("image")){
                     isLiked = false;
-                    ListElementImg listElementImg = new ListElementImg(post.getString("_id"), username_image.getString("username"), post.getString("text"), post.getString("url_img"), username_image.getString("url_img").replace("localhost", "212.227.40.235"), post.getJSONArray("likes"), post.getString("owner"));
+                    ListElementImg listElementImg = new ListElementImg(post.getString("_id"), username_image.getString("username"), post.getString("text"), post.getString("url_img"), username_image.getString("url_img").replace("https://tenarse.online", "http://212.227.40.235"), post.getJSONArray("likes"), post.getString("owner"));
                     for (int j = 0; j < listElementImg.getLikes().length() && !isLiked; j++) {
                         if (listElementImg.getLikes().get(j).toString().equals(dadesUser.getString("_id"))) {
                             isLiked = true;

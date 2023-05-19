@@ -29,6 +29,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/textoLengthTitol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/75"
+                android:layout_marginTop="10dp"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/editTextTitleQuestion"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/editTextTitleQuestion"
+                app:layout_constraintTop_toBottomOf="@id/editTextTitleQuestion" />
+
             <EditText
                 android:id="@+id/editTextQuestionBody"
                 android:layout_width="0dp"
@@ -36,14 +48,26 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/text_multiline_border"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextTitleQuestion" />
+                app:layout_constraintTop_toBottomOf="@+id/textoLengthTitol" />
+
+            <TextView
+                android:id="@+id/textoLengthText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/500"
+                android:layout_marginTop="10dp"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/editTextQuestionBody"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/editTextQuestionBody"
+                app:layout_constraintTop_toBottomOf="@id/editTextQuestionBody" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/add_recyclerView_doubt"
@@ -56,7 +80,7 @@
                 android:minHeight="190dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextQuestionBody">
+                app:layout_constraintTop_toBottomOf="@+id/textoLengthText">
 
             </androidx.recyclerview.widget.RecyclerView>
 
@@ -112,7 +136,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="35dp"
                 android:visibility="gone"
-                android:text="Faltan campos por rellenar"
+                android:text="Faltan campos por rellenar o el texto es muy largo"
                 app:layout_constraintEnd_toEndOf="@+id/submitBtnQuestion"
                 app:layout_constraintStart_toStartOf="@+id/submitBtnQuestion"
                 app:layout_constraintTop_toBottomOf="@+id/submitBtnQuestion" />
