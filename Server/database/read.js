@@ -69,7 +69,7 @@ const getPublicacio = async (id_publi, callback) => {
 }
 
 const getPosts = async (numPagina, callback) => {
-    const posts = await Post.find().sort({ hora: -1 }).skip(numPagina * 5).limit(5) //SKIP -> numPagina * numPostQueCargan - LIMIT .> numeroPostQueCargan
+    const posts = await Post.find().sort({ hora: -1 }).skip(numPagina * 15).limit(15) //SKIP -> numPagina * numPostQueCargan - LIMIT .> numeroPostQueCargan
     callback(posts)
 }
 
