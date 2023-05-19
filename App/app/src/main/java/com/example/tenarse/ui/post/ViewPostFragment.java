@@ -82,9 +82,6 @@ public class ViewPostFragment extends Fragment {
     private String urlImg;
     private JSONObject dadesPost;
 
-    ShareAdapter shareAdapter;
-    private ArrayList<SharePostObject> chatsList;
-
     @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -483,8 +480,6 @@ public class ViewPostFragment extends Fragment {
         return root;
     }
 
-<<<<<<< HEAD
-=======
     private void verVentanaChats() {
         animateButton(binding.sendImage);
         globalDadesUser = GlobalDadesUser.getInstance();
@@ -571,7 +566,7 @@ public class ViewPostFragment extends Fragment {
         dialog.show();
     }
 
->>>>>>> 581c811e97f859d8866a833346f3103d21a68c24
+
     private void cargarChats(JSONArray arrayChats, JSONObject dadesUsuari, String id) {
         try {
             for (int i = 0; i < arrayChats.length(); i++) {
