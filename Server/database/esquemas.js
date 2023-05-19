@@ -12,7 +12,7 @@ const comSchema = new mongoose.Schema({
     coment_text: {
         type: String,
         required: true,
-        maxlength: 100
+        maxlength: 255
     }
 })
 
@@ -27,7 +27,7 @@ const publiSchema = new mongoose.Schema({
     },
     text: {
         type: String,
-        maxlength: 175
+        maxlength: 500
     },
     hashtags: {
         type: [String],

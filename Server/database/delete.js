@@ -13,6 +13,7 @@ const deletePost = async function (idPost, username, callback) {
         if (deletedPost.tipus == 'image') {
             const path_inicial = deletedPost.url_img;
             const path_final = path_inicial.replace('https://tenarse.online/Tenarse/Server/', ""); //localhost:3000 -> 212.227.40.235
+            console.log(path_final);
             fs.unlink(path_final, (err) => {
                 if (err) throw err;
             });
