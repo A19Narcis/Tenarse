@@ -75,6 +75,9 @@ public class ViewPostFragment extends Fragment {
     String fragmentAnterior = "";
 
     private boolean isLiked;
+
+    private ArrayList<SharePostObject> chatsList;
+    ShareAdapter shareAdapter;
     private String usernamePost;
     private String urlImg;
     private JSONObject dadesPost;
@@ -317,6 +320,9 @@ public class ViewPostFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
+        binding.sendImage.setOnClickListener(view -> {
+            verVentanaChats();
+        });
 
         binding.editTextComentario.addTextChangedListener(new TextWatcher() {
             @Override
@@ -477,6 +483,95 @@ public class ViewPostFragment extends Fragment {
         return root;
     }
 
+<<<<<<< HEAD
+=======
+    private void verVentanaChats() {
+        animateButton(binding.sendImage);
+        globalDadesUser = GlobalDadesUser.getInstance();
+
+        Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.seguidores_dialog);
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+
+        chatsList = new ArrayList<>();
+        shareAdapter = new ShareAdapter(chatsList, getContext(), mainActivity, dialog);
+
+        chatsList.clear();
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        if (windowManager != null) {
+            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+            int screenWidth = displayMetrics.widthPixels;
+            int screenHeight = displayMetrics.heightPixels;
+
+            // Calcular el ancho deseado para el diálogo (la mitad de la pantalla)
+            int desiredWidth = (int) (screenWidth / 1.45f);
+            int desiredHeight = screenHeight / 3;
+
+            // Obtener la ventana del diálogo
+            Window window = dialog.getWindow();
+            if (window != null) {
+                // Establecer el ancho y alto personalizados
+                WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+                params.copyFrom(window.getAttributes());
+                params.width = desiredWidth;
+                params.height = desiredHeight;
+
+                // Establecer la gravedad para centrar horizontalmente
+                params.gravity = Gravity.CENTER_HORIZONTAL;
+
+                window.setAttributes(params);
+
+                // Aplicar bordes redondeados al diálogo
+                int cornerRadius = 20; // Valor en píxeles, ajusta según tus necesidades
+                ShapeDrawable shapeDrawable = new ShapeDrawable();
+                shapeDrawable.getPaint().setColor(Color.WHITE); // Color del fondo del diálogo
+                shapeDrawable.getPaint().setStyle(Paint.Style.FILL);
+                shapeDrawable.getPaint().setAntiAlias(true);
+                shapeDrawable.setShape(new RoundRectShape(
+                        new float[]{cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius},
+                        null,
+                        null));
+                window.setBackgroundDrawable(shapeDrawable);
+            }
+        }
+
+        RecyclerView recyclerView = dialog.findViewById(R.id.recyclerViewSeguidores);
+        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+        //Cargar seguidores /*IMAGEN PERFIL*/ - /*@USERNAME*/
+        String url = "http://212.227.40.235:3000/getAllMyChats";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("_id", globalDadesUser.getDadesUser().getString("_id"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        MyAsyncTaskGetPosts getInfoFollowers = new MyAsyncTaskGetPosts(url, body);
+        getInfoFollowers.execute();
+        String result = null;
+        try {
+            result = getInfoFollowers.get();
+
+            JSONArray followsArray = new JSONArray(result);
+
+            cargarChats(followsArray, globalDadesUser.getDadesUser(), dadesPost.getString("_id"));
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(shareAdapter);
+
+        } catch (ExecutionException | InterruptedException | JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        dialog.show();
+    }
+
+>>>>>>> 581c811e97f859d8866a833346f3103d21a68c24
     private void cargarChats(JSONArray arrayChats, JSONObject dadesUsuari, String id) {
         try {
             for (int i = 0; i < arrayChats.length(); i++) {

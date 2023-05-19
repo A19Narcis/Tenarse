@@ -43,7 +43,7 @@ app.use(cors({
 app.post('/addNewUser', (req, res) => {
 
 
-    var urlImagen = 'http://localhost:3000/uploads/user_img/default_user_img.png';
+    var urlImagen = 'http://212.227.40.235/Tenarse/Server/uploads/user_img/default_user_img.png';
     if (req.body.url_img) {
         urlImagen = req.body.url_img;
     }
@@ -182,7 +182,7 @@ app.post('/updateUserWithImage', uploadImageUser.single('post'), (req, res, next
     const id = body._id
 
 
-    let URLServer = "http://localhost:3000/";
+    let URLServer = "http://212.227.40.235/Tenarse/Server/";
 
     const newDadesUser = {
         email: body.email,
@@ -422,7 +422,7 @@ function addPost(body, postUrl) {
         segundos = '0' + segundos;
     }
     let tiempoActual = dia + '/' + mes + '/' + year + '_' + hora + ':' + minutos + ':' + segundos
-    let URLServer = "http://localhost:3000/";
+    let URLServer = "http://212.227.40.235/Tenarse/Server/";
 
     var post;
     switch (body.type) {
@@ -725,7 +725,7 @@ io.on('connection', socket => {
   
     // Escuchar eventos del cliente
     socket.on('addNewUser', data => {
-        var urlImagen = 'http://localhost:3000/uploads/user_img/default_user_img.png';
+        var urlImagen = 'http://212.227.40.235/Tenarse/Server/uploads/user_img/default_user_img.png';
         if (data.url_img) {
             urlImagen = data.url_img;
         }
