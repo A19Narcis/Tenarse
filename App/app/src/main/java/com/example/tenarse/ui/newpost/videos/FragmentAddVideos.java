@@ -74,7 +74,7 @@ public class FragmentAddVideos extends Fragment {
     ImageView imageView;
     VideoView videoView;
     CardView cardView;
-    String pathVideo;
+    String pathVideo = "";
     EditText postText;
     TextView errorText;
     TextView errorFaltanCampos;

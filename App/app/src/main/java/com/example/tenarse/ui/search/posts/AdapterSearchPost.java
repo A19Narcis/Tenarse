@@ -87,7 +87,7 @@ public class AdapterSearchPost extends RecyclerView.Adapter<RecyclerView.ViewHol
                 });
 
                 /* Cargar VIDEO */
-                String videoPath = videoElement.post_video_url;
+                String videoPath = videoElement.post_video_url.replace("https://tenarse.online", "http://212.227.40.235");
                 /*Uri uri = Uri.parse(videoPath);*/
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                 retriever.setDataSource(videoPath);

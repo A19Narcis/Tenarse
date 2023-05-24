@@ -75,7 +75,7 @@ public class FragmentAddImages extends Fragment{
     EditText postText;
     ArrayList<String> arrayRecycler = new ArrayList<>();
 
-    String pathImg;
+    String pathImg = "";
 
     ApiService apiService;
 
@@ -188,14 +188,15 @@ public class FragmentAddImages extends Fragment{
         submitBtnImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (postText.getText().toString().length() == 0 || pathImg.length() == 0 || !textValid){
                     errorFaltanCampos.setVisibility(View.VISIBLE);
                 } else {
                     if (errorFaltanCampos.getVisibility() == View.VISIBLE){
                         errorFaltanCampos.setVisibility(View.GONE);
                     }
-                    File file = new File(pathImg);
 
+                    File file = new File(pathImg);
                     // Crear un objeto JSONObject y agregar los campos necesarios
                     String idUser = "null";
                     GlobalDadesUser globalDadesUser = GlobalDadesUser.getInstance();

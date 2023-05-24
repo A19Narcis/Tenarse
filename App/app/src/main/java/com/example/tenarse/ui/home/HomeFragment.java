@@ -240,6 +240,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     isLiked = false;
                     ListElementDoubt listElementDoubt = new ListElementDoubt(post.getString("_id"), username_image.getString("username"), post.getString("titol"), post.getString("text"),  username_image.getString("url_img"), post.getJSONArray("likes"), post.getString("owner"));
                     listElementDoubt.setLiked(false);
+                    System.out.println("USERNAME_IMAGE: " + username_image.toString());
+                    System.out.println("POST: " + listElementDoubt.toString());
                     for (int j = 0; j < listElementDoubt.getLikes().length() && !isLiked; j++) {
                         if (listElementDoubt.getLikes().get(j).toString().equals(dadesUser.getString("_id"))){
                             isLiked = true;
@@ -351,6 +353,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        System.out.println("RESULT: " + resultSinglePost);
 
         //Ver si el post que hemos seleccionado tiene mi `Like`
         boolean myLike = false;
